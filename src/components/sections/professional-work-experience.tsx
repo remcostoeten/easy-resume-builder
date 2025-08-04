@@ -6,6 +6,7 @@ import { Briefcase, Plus, Calendar, MapPin, Building } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { EmptyState } from "../ui/empty-state"
 import { WorkExperienceForm } from "./work-experience-form"
 import { resumeReducer } from "../../store/resume-store"
 import { formatDateRange } from "../../utils/date-utils"
@@ -74,7 +75,7 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
           </div>
         </div>
 
-        {!isFormVisible && (
+        {!isFormVisible && data.length > 0 && (
           <Button onClick={handleAddNew} className="gap-2">
             <Plus className="h-4 w-4" />
             Add New Experience
@@ -170,22 +171,13 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
           </AnimatePresence>
 
           {data.length === 0 && (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-4">
-                  <Briefcase className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">Ready to showcase your career journey?</h3>
-                <p className="text-muted-foreground text-center mb-6 max-w-md">
-                  Add your work experiences to create a compelling professional timeline. Include your roles,
-                  achievements, and the impact you've made.
-                </p>
-                <Button onClick={handleAddNew} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add Your First Position
-                </Button>
-              </CardContent>
-            </Card>
+            <EmptyState
+              icon={<Briefcase className="h-8 w-8" />}
+              title="Ready to showcase your career journey?"
+              description="Add your work experiences to create a compelling professional timeline. Include your roles, achievements, and the impact you've made."
+              actionLabel="Add Your First Position"
+              onAction={handleAddNew}
+            />
           )}
         </div>
       )}

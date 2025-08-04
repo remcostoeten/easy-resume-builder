@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { siteConfig } from "@/core/config/site-config"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,8 +10,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Resume Builder - Professional",
-  description: "Build professional resumes with ease",
+  title: siteConfig.name,
+  description: siteConfig.description,
     generator: 'easy-resume-builder.com'
 }
 

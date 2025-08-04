@@ -8,6 +8,8 @@ import { ProfessionalWorkExperience } from "../sections/professional-work-experi
 import { ProfessionalProjects } from "../sections/professional-projects"
 import { EducationSection } from "../sections/education-section"
 import { SkillsSection } from "../sections/skills-section"
+import { EmptyState } from "../ui/empty-state"
+import { SECTION_CONFIGS } from "../../constants/section-configs"
 import type { TResumeSection, TResumeData } from "../../types/resume"
 
 export type TProfessionalEditingAreaProps = {
@@ -35,6 +37,9 @@ export function ProfessionalEditingArea({ sections, resumeData }: TProfessionalE
   function renderSectionContent() {
     if (!currentSection) return null
 
+    const config = SECTION_CONFIGS[currentSection.type]
+    const IconComponent = config.icon
+
     switch (currentSection.type) {
       case "personal-info":
         return <ProfessionalPersonalInfo data={resumeData.personalInfo} />
@@ -51,16 +56,30 @@ export function ProfessionalEditingArea({ sections, resumeData }: TProfessionalE
       case "skills":
         return <SkillsSection data={resumeData.skills} />
 
+      case "certifications":
+      case "languages":
+        return (
+          <div className="max-w-4xl mx-auto p-8">
+            <EmptyState
+              icon={<IconComponent className="h-8 w-8" />}
+              title={`${currentSection.title} Coming Soon`}
+              description={`The ${currentSection.title.toLowerCase()} section is currently under development. Check back soon for this feature!`}
+              actionLabel={`Add ${currentSection.title}`}
+              onAction={() => console.log(`${currentSection.title} functionality coming soon`)}
+            />
+          </div>
+        )
+
       default:
         return (
           <div className="max-w-4xl mx-auto p-8">
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                <currentSection.type className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h2 className="text-xl font-semibold mb-2 text-foreground">{currentSection.title}</h2>
-              <p className="text-muted-foreground">This section is coming soon!</p>
-            </div>
+            <EmptyState
+              icon={<IconComponent className="h-8 w-8" />}
+              title="Unknown Section"
+              description="This section type is not supported yet."
+              actionLabel="Go Back"
+              onAction={() => console.log("Unknown section type")}
+            />
           </div>
         )
     }

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { FormSection } from "../form/form-section"
+import { EmptyState } from "../ui/empty-state"
 import { SkillsForm } from "./skills-form"
 import { resumeReducer } from "../../store/resume-store"
 import type { TSkillCategory } from "../../types/resume"
@@ -158,17 +159,25 @@ export function SkillsSection({ data }: TSkillsSectionProps) {
             </AnimatePresence>
 
             {data.length === 0 && (
-              <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                <Code className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No Skills Added</h3>
-                <p className="text-muted-foreground mb-4">Add your technical and professional skills.</p>
-              </div>
+              <EmptyState
+                icon={<Code className="h-8 w-8" />}
+                title="No Skills Added"
+                description="Add your technical and professional skills to highlight your expertise and capabilities."
+                actionLabel="Add Skill Category"
+                onAction={handleAddNew}
+              />
             )}
 
-            <Button onClick={handleAddNew} className="w-full flex items-center gap-2 bg-transparent" variant="outline">
-              <Plus className="h-4 w-4" />
-              Add Skill Category
-            </Button>
+            {data.length > 0 && (
+              <Button
+                onClick={handleAddNew}
+                className="w-full flex items-center gap-2 bg-transparent"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                Add Skill Category
+              </Button>
+            )}
           </div>
         )}
       </div>

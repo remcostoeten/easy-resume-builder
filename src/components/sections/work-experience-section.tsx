@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FormSection } from "../form/form-section"
+import { EmptyState } from "../ui/empty-state"
 import { WorkExperienceForm } from "./work-experience-form"
 import { resumeReducer } from "../../store/resume-store"
 import { formatDateRange } from "../../utils/date-utils"
@@ -160,19 +161,25 @@ export function WorkExperienceSection({ data }: TWorkExperienceSectionProps) {
             </AnimatePresence>
 
             {data.length === 0 && (
-              <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No Work Experience Added</h3>
-                <p className="text-muted-foreground mb-4">
-                  Add your professional work experience to showcase your career.
-                </p>
-              </div>
+              <EmptyState
+                icon={<Briefcase className="h-8 w-8" />}
+                title="No Work Experience Added"
+                description="Add your professional work experience to showcase your career journey and key achievements."
+                actionLabel="Add Work Experience"
+                onAction={handleAddNew}
+              />
             )}
 
-            <Button onClick={handleAddNew} className="w-full flex items-center gap-2 bg-transparent" variant="outline">
-              <Plus className="h-4 w-4" />
-              Add Work Experience
-            </Button>
+            {data.length > 0 && (
+              <Button
+                onClick={handleAddNew}
+                className="w-full flex items-center gap-2 bg-transparent"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4" />
+                Add Work Experience
+              </Button>
+            )}
           </div>
         )}
       </div>

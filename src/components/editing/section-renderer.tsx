@@ -4,6 +4,7 @@ import { PersonalInfoSection } from "../sections/personal-info-section"
 import { WorkExperienceSection } from "../sections/work-experience-section"
 import { EducationSection } from "../sections/education-section"
 import { SkillsSection } from "../sections/skills-section"
+import { EmptyState } from "../ui/empty-state"
 import { SECTION_CONFIGS } from "../../constants/section-configs"
 import type { TResumeSection, TResumeData } from "../../types/resume"
 
@@ -14,6 +15,7 @@ export type TSectionRendererProps = {
 
 export function SectionRenderer({ section, resumeData }: TSectionRendererProps) {
   const config = SECTION_CONFIGS[section.type]
+  const IconComponent = config.icon
 
   switch (section.type) {
     case "personal-info":
@@ -32,20 +34,27 @@ export function SectionRenderer({ section, resumeData }: TSectionRendererProps) 
     case "certifications":
     case "languages":
       return (
-        <div className="text-center py-12">
-          <div className="text-4xl mb-4">
-            {config.icon && <config.icon className="h-12 w-12 mx-auto text-muted-foreground" />}
-          </div>
-          <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
-          <p className="text-muted-foreground">This section is coming soon!</p>
+        <div className="max-w-4xl mx-auto p-8">
+          <EmptyState
+            icon={<IconComponent className="h-8 w-8" />}
+            title={`${section.title} Coming Soon`}
+            description={`The ${section.title.toLowerCase()} section is currently under development. Check back soon for this feature!`}
+            actionLabel={`Add ${section.title}`}
+            onAction={() => console.log(`${section.title} functionality coming soon`)}
+          />
         </div>
       )
 
     default:
       return (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Unknown Section</h2>
-          <p className="text-muted-foreground">This section type is not supported.</p>
+        <div className="max-w-4xl mx-auto p-8">
+          <EmptyState
+            icon={<IconComponent className="h-8 w-8" />}
+            title="Unknown Section"
+            description="This section type is not supported yet."
+            actionLabel="Go Back"
+            onAction={() => console.log("Unknown section type")}
+          />
         </div>
       )
   }

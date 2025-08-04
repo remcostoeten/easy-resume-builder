@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { EmptyState } from "../ui/empty-state"
 import { FormGrid } from "../form/form-grid"
 
 type TProject = {
@@ -35,6 +36,10 @@ export function ProfessionalProjects() {
   } = useForm({
     mode: "onChange",
   })
+
+  function handleAddNew() {
+    setIsAddingNew(true)
+  }
 
   function handleAddTechnology() {
     if (techInput.trim() && !technologies.includes(techInput.trim())) {
@@ -84,8 +89,8 @@ export function ProfessionalProjects() {
           </div>
         </div>
 
-        {!isAddingNew && (
-          <Button onClick={() => setIsAddingNew(true)} className="gap-2 bg-primary hover:bg-primary/90">
+        {!isAddingNew && projects.length > 0 && (
+          <Button onClick={handleAddNew} className="gap-2 bg-primary hover:bg-primary/90">
             <Plus className="h-4 w-4" />
             Add New Project
           </Button>
@@ -272,22 +277,13 @@ export function ProfessionalProjects() {
       )}
 
       {!isAddingNew && projects.length === 0 && (
-        <Card className="border-dashed border-border bg-card">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-              <FolderOpen className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-medium mb-2 text-card-foreground">No projects added yet</h3>
-            <p className="text-muted-foreground text-center mb-6 max-w-md">
-              Showcase your personal projects, open-source contributions, or side work. Projects help demonstrate your
-              practical skills and passion for development.
-            </p>
-            <Button onClick={() => setIsAddingNew(true)} className="gap-2 bg-primary hover:bg-primary/90">
-              <Plus className="h-4 w-4" />
-              Add Your First Project
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<FolderOpen className="h-8 w-8" />}
+          title="No Projects Added"
+          description="Showcase your personal projects, open-source contributions, or side work. Projects help demonstrate your practical skills and passion for development."
+          actionLabel="Add Your First Project"
+          onAction={handleAddNew}
+        />
       )}
     </div>
   )
