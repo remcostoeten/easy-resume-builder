@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { Progress } from '@/src/components/ui/progress';
 import type { TResumeData, TResumeSection } from '../../types/resume';
 import { SectionRenderer } from './section-renderer';
 

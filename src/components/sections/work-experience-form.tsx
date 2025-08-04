@@ -5,19 +5,19 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Building, Calendar, Plus, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Input } from '@/src/components/ui/input';
+import { Label } from '@/src/components/ui/label';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/src/components/ui/select';
+import { Switch } from '@/src/components/ui/switch';
+import { Textarea } from '@/src/components/ui/textarea';
 import { type TWorkItemForm, workItemSchema } from '../../schemas/resume-schemas';
 import type { TWorkItem } from '../../types/resume';
 import { createEntity } from '../../utils/entity';

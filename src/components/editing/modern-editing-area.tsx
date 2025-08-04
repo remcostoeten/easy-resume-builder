@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/src/components/ui/button';
 import type { TResumeData, TResumeSection } from '../../types/resume';
 import { FloatingActionButton } from '../ui/floating-action-button';
 import { GradientCard } from '../ui/gradient-card';

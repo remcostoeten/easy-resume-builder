@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-
+import { cn } from 'utilities';
 export type TProgressRingProps = {
 	readonly progress: number;
 	readonly size?: number;

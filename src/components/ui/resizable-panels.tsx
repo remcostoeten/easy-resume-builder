@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { cn } from '@/lib/utils';
-
+import { cn } from 'utilities';
 const ResizablePanelGroup = React.forwardRef<
 	React.ElementRef<typeof PanelGroup>,
 	React.ComponentPropsWithoutRef<typeof PanelGroup>

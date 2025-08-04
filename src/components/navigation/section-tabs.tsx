@@ -3,10 +3,9 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { SECTION_CONFIGS } from '../../constants/section-configs';
+import { Button } from '@/src/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip';
+import { cn } from 'utilities';import { SECTION_CONFIGS } from '../../config/section-configs';
 import type { TResumeSection } from '../../types/resume';
 
 type TProps = {

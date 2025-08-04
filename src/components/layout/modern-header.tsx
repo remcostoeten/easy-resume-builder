@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Download, Eye, Settings, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/src/components/ui/button';
 import { ProgressRing } from '../ui/progress-ring';
 
 type TProps = {

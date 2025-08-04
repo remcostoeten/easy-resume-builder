@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { cn } from 'utilities';
 type TProps = {
 	readonly title: string;
 	readonly icon?: ReactNode;

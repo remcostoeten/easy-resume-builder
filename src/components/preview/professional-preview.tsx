@@ -1,8 +1,8 @@
 'use client';
 
 import { Eye, Maximize2, Printer } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@/src/components/ui/button';
+import { Card } from '@/src/components/ui/card';
 import type { TResumeData } from '../../types/resume';
 import { ResumePreview } from './resume-preview';
 

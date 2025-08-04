@@ -3,10 +3,9 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
+import { cn } from 'utilities';
 type TProps = {
 	readonly icon: ReactNode;
 	readonly title: string;

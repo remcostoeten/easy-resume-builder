@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/src/components/ui/button';
 import { personalInfoSchema, type TPersonalInfoForm } from '../../schemas/resume-schemas';
 import { resumeReducer } from '../../store/resume-store';
 import type { TPersonalInfo } from '../../types/resume';

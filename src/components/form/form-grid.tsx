@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-
+import { cn } from 'utilities';
 export type TFormGridProps = {
 	readonly children: ReactNode;
 	readonly columns?: 1 | 2 | 3;

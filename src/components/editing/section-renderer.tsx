@@ -1,6 +1,6 @@
 'use client';
 
-import { SECTION_CONFIGS } from '../../constants/section-configs';
+import { SECTION_CONFIGS } from '../../config/section-configs';
 import type { TResumeData, TResumeSection } from '../../types/resume';
 import { EducationSection } from '../sections/education-section';
 import { PersonalInfoSection } from '../sections/personal-info-section';

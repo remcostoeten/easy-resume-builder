@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 
-import { SECTION_CONFIGS } from '../../constants/section-configs';
+import { SECTION_CONFIGS } from '../../config/section-configs';
 import type { TResumeData, TResumeSection } from '../../types/resume';
 import { SectionTabs } from '../navigation/section-tabs';
 import { EducationSection } from '../sections/education-section';

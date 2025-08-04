@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Briefcase, Calendar, Edit, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
 import { resumeReducer } from '../../store/resume-store';
 import type { TWorkItem } from '../../types/resume';
 import { formatDateRange } from '../../utils/date-utils';

@@ -5,20 +5,20 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Input } from '@/src/components/ui/input';
+import { Label } from '@/src/components/ui/label';
+import { Progress } from '@/src/components/ui/progress';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
+} from '@/src/components/ui/select';
+import { Slider } from '@/src/components/ui/slider';
+import { Switch } from '@/src/components/ui/switch';
 import { skillCategorySchema, type TSkillCategoryForm } from '../../schemas/resume-schemas';
 import type { TSkill, TSkillCategory } from '../../types/resume';
 import { createEntity } from '../../utils/entity';

@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { Building, Calendar, Github, Globe, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/src/components/ui/progress';
+import { Separator } from '@/src/components/ui/separator';
 import type { TResumeData } from '../../types/resume';
 import { formatDateRange } from '../../utils/date-utils';
 

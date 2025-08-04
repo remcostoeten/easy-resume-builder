@@ -21,10 +21,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
-import { SECTION_CONFIGS } from '../../constants/section-configs';
+import { Button } from '@/src/components/ui/button';
+import { Switch } from '@/src/components/ui/switch';
+import { cn } from 'utilities';import { SECTION_CONFIGS } from '../../config/section-configs';
 import type { TResumeSection } from '../../types/resume';
 
 type TProps = {
