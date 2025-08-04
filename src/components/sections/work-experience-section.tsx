@@ -1,0 +1,181 @@
+"use client"
+
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Briefcase, Plus, Edit, Calendar, MapPin } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { FormSection } from "../form/form-section"
+import { WorkExperienceForm } from "./work-experience-form"
+import { resumeReducer } from "../../store/resume-store"
+import { formatDateRange } from "../../utils/date-utils"
+import type { TWorkItem } from "../../types/resume"
+
+export type TWorkExperienceSectionProps = {
+  readonly data: readonly TWorkItem[]
+}
+
+export function WorkExperienceSection({ data }: TWorkExperienceSectionProps) {
+  const [isAddingNew, setIsAddingNew] = useState(false)
+  const [editingItem, setEditingItem] = useState<TWorkItem | null>(null)
+
+  function handleAddNew() {
+    setIsAddingNew(true)
+    setEditingItem(null)
+  }
+
+  function handleEdit(item: TWorkItem) {
+    setEditingItem(item)
+    setIsAddingNew(false)
+  }
+
+  function handleSave(workItem: TWorkItem) {
+    if (editingItem) {
+      resumeReducer({
+        type: "UPDATE_WORK_EXPERIENCE",
+        id: workItem.id,
+        data: workItem,
+      })
+    } else {
+      resumeReducer({
+        type: "ADD_WORK_EXPERIENCE",
+        data: workItem,
+      })
+    }
+    setIsAddingNew(false)
+    setEditingItem(null)
+  }
+
+  function handleCancel() {
+    setIsAddingNew(false)
+    setEditingItem(null)
+  }
+
+  function handleDelete(id: string) {
+    resumeReducer({
+      type: "REMOVE_WORK_EXPERIENCE",
+      id,
+    })
+    setEditingItem(null)
+  }
+
+  const isFormVisible = isAddingNew || editingItem
+
+  return (
+    <FormSection title="Work Experience" icon={<Briefcase className="h-5 w-5" />}>
+      <div className="space-y-6">
+        <AnimatePresence>
+          {isFormVisible && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <WorkExperienceForm
+                workItem={editingItem || undefined}
+                onSave={handleSave}
+                onCancel={handleCancel}
+                onDelete={editingItem ? handleDelete : undefined}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!isFormVisible && (
+          <div className="space-y-4">
+            <AnimatePresence>
+              {data.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer group">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-lg">{item.position}</h4>
+                            {item.dateRange.isCurrentPosition && (
+                              <Badge variant="secondary" className="text-xs">
+                                Current
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Briefcase className="h-4 w-4" />
+                              <span>{item.company}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-4 w-4" />
+                              <span>{item.location}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-4 w-4" />
+                              <span>{formatDateRange(item.dateRange)}</span>
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+
+                          {item.achievements.length > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-medium text-muted-foreground">Key Achievements:</p>
+                              <ul className="text-sm space-y-1">
+                                {item.achievements.slice(0, 2).map((achievement, idx) => (
+                                  <li key={idx} className="flex items-start gap-2">
+                                    <span className="text-primary mt-1.5 text-xs">•</span>
+                                    <span className="line-clamp-1">{achievement}</span>
+                                  </li>
+                                ))}
+                                {item.achievements.length > 2 && (
+                                  <li className="text-xs text-muted-foreground">
+                                    +{item.achievements.length - 2} more achievements
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(item)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {data.length === 0 && (
+              <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
+                <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">No Work Experience Added</h3>
+                <p className="text-muted-foreground mb-4">
+                  Add your professional work experience to showcase your career.
+                </p>
+              </div>
+            )}
+
+            <Button onClick={handleAddNew} className="w-full flex items-center gap-2 bg-transparent" variant="outline">
+              <Plus className="h-4 w-4" />
+              Add Work Experience
+            </Button>
+          </div>
+        )}
+      </div>
+    </FormSection>
+  )
+}
