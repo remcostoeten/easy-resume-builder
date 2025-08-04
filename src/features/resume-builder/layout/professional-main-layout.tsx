@@ -1,17 +1,18 @@
 'use client';
 
-import {toast} from 'sonner'
+import * as React from 'react';
+
+import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/src/shared/components/ui';
+import { ProfessionalEditingArea } from '../editing/professional-editing-area';
+import { ProfessionalPreview } from '../preview/professional-preview';
+import { ProfessionalSidebar } from '../sidebar/professional-sidebar';
+import { ProfessionalHeader } from './professional-header';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/src/shared/components/ui/resizable-panels';
 import { resumeStore, resumeReducer } from '@/src/store/resume-store';
 import { TResumeSection } from '@/src/types/resume';
-import { ProfessionalEditingArea } from '../features/resume-builder/editing/professional-editing-area';
-import { ProfessionalHeader } from '../features/resume-builder/layout/professional-header';
-import { ProfessionalPreview } from '../features/resume-builder/preview/professional-preview';
-import { ProfessionalSidebar } from '../features/resume-builder/sidebar';
-import { useState } from 'react';
 
-export function HomeView() {
+export function ProfessionalMainLayout() {
 	const resumeData = useSnapshot(resumeStore).data;
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
@@ -53,9 +54,7 @@ export function HomeView() {
 	}
 
 	function handlePreview() {
-	
-	toast.error('Not implemented');
-	console.log('Preview mode:', !isPreviewMode);
+		console.log('Preview mode:', !isPreviewMode);
 	}
 
 	function handleDownload() {
@@ -63,7 +62,6 @@ export function HomeView() {
 	}
 
 	function handleSettings() {
-	toast.error('Not implemented');
 		console.log('Open settings');
 	}
 

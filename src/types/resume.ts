@@ -70,11 +70,11 @@ export type TSectionType =
 	| 'languages';
 
 export type TResumeSection = TEntityBase & {
-	readonly type: TSectionType;
-	readonly title: string;
-	readonly isEnabled: boolean;
-	readonly order: number;
-	readonly isRequired: boolean;
+	type: TSectionType;
+	title: string;
+	isEnabled: boolean;
+	order: number;
+	isRequired: boolean;
 };
 
 // Main Resume Data
@@ -83,7 +83,7 @@ export type TResumeData = TEntityBase & {
 	readonly workExperience: readonly TWorkItem[];
 	readonly education: readonly TEducationItem[];
 	readonly skills: readonly TSkillCategory[];
-	readonly sections: readonly TResumeSection[];
+	sections: TResumeSection[];
 	readonly metadata: {
 		readonly title: string;
 		readonly template: string;

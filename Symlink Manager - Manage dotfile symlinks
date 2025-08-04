@@ -1,0 +1,167 @@
+[38;5;238m───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+       [38;5;238m│ [0m[1mSTDIN[0m
+[38;5;238m───────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m
+[38;5;238m   1[0m   [38;5;238m│[0m [38;2;248;248;242mcat package.json | head -n 20[0m
+[38;5;238m   2[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.ts" -o -name "*.tsx" | head -20 | xargs grep -l "const.*=.*=>" | head -10[0m
+[38;5;238m   3[0m   [38;5;238m│[0m [38;2;248;248;242mcat ./logs/nvme0n1-2025-07-29_19-51-19.txt[0m
+[38;5;238m   4[0m   [38;5;238m│[0m [38;2;248;248;242msudo nvme list --output-format=json | jq '.Devices[]' | head -20[0m
+[38;5;238m   5[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms/src/components -name "*.tsx" | grep -E "(checkbox|primitives)" | head -20[0m
+[38;5;238m   6[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms -type f -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20[0m
+[38;5;238m   7[0m   [38;5;238m│[0m [38;2;248;248;242mfind src/routes -name "*.tsx" -o -name "*.ts" | head -20[0m
+[38;5;238m   8[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms -name "*.ts" -o -name "*.tsx" | grep -E "(animation|reveal|hook)" | head -20[0m
+[38;5;238m   9[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/Documents/rssr-solid-cms && timeout 30 bun run build 2>&1 | head -20[0m
+[38;5;238m  10[0m   [38;5;238m│[0m [38;2;248;248;242mtimeout 5 curl -s http://localhost:3000/ | head -20 || echo "Server might not be running"[0m
+[38;5;238m  11[0m   [38;5;238m│[0m [38;2;248;248;242mbun run dev 2>&1 | head -20[0m
+[38;5;238m  12[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/dev/nvme-health-qwik -type f -name "*.json" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" | head -20[0m
+[38;5;238m  13[0m   [38;5;238m│[0m [38;2;248;248;242mhead -3 nvme-health-report-2025-07-28T20-26-32-375Z.csv[0m
+[38;5;238m  14[0m   [38;5;238m│[0m [38;2;248;248;242mecho "📋 Visual Regression & Accessibility Test Summary[0m
+[38;5;238m  15[0m   [38;5;238m│[0m 
+[38;5;238m  16[0m   [38;5;238m│[0m [38;2;248;248;242m✅ COMPLETED CHANGES:[0m
+[38;5;238m  17[0m   [38;5;238m│[0m [38;2;248;248;242m1. ✅ Fixed IntroSection to be more concise (reduced viewport usage)[0m
+[38;5;238m  18[0m   [38;5;238m│[0m [38;2;248;248;242m2. ✅ Fixed location history to update automatically on location changes[0m
+[38;5;238m  19[0m   [38;5;238m│[0m [38;2;248;248;242m3. ✅ Created comprehensive test suite at test-suite.html[0m
+[38;5;238m  20[0m   [38;5;238m│[0m 
+[38;5;238m  21[0m   [38;5;238m│[0m [38;2;248;248;242m🧪 TESTS TO PERFORM:[0m
+[38;5;238m  22[0m   [38;5;238m│[0m [38;2;248;248;242m1. 🍞 Toast Functionality - Test success and error toasts[0m
+[38;5;238m  23[0m   [38;5;238m│[0m [38;2;248;248;242m2. 🎨 Contrast Testing - Verify text contrast ratios using DevTools[0m
+[38;5;238m  24[0m   [38;5;238m│[0m [38;2;248;248;242m3. 🌅 Light/Reduced Motion - Test IntroSection in light theme with reduced motion[0m
+[38;5;238m  25[0m   [38;5;238m│[0m [38;2;248;248;242m4. 📱 Mobile Responsiveness - Test on iPhone 12 (390x844) and small screens (320x568)[0m
+[38;5;238m  26[0m   [38;5;238m│[0m [38;2;248;248;242m5. ⌨️  Keyboard Navigation - Verify download button accessibility via Tab navigation[0m
+[38;5;238m  27[0m   [38;5;238m│[0m 
+[38;5;238m  28[0m   [38;5;238m│[0m [38;2;248;248;242m🚀 NEXT STEPS:[0m
+[38;5;238m  29[0m   [38;5;238m│[0m [38;2;248;248;242m1. Open test-suite.html in your browser: file://$(pwd)/test-suite.html[0m
+[38;5;238m  30[0m   [38;5;238m│[0m [38;2;248;248;242m2. Ensure dev server is running: npm run dev (should be at http://localhost:8081)[0m
+[38;5;238m  31[0m   [38;5;238m│[0m [38;2;248;248;242m3. Follow the test instructions in each section[0m
+[38;5;238m  32[0m   [38;5;238m│[0m 
+[38;5;238m  33[0m   [38;5;238m│[0m [38;2;248;248;242m📱 APP IMPROVEMENTS MADE:[0m
+[38;5;238m  34[0m   [38;5;238m│[0m [38;2;248;248;242m- IntroSection now uses less vertical space (p-4 md:p-6 vs p-8)[0m
+[38;5;238m  35[0m   [38;5;238m│[0m [38;2;248;248;242m- Reduced heading size (text-2xl md:text-3xl vs text-4xl md:text-5xl) [0m
+[38;5;238m  36[0m   [38;5;238m│[0m [38;2;248;248;242m- Shortened description text and removed feature list[0m
+[38;5;238m  37[0m   [38;5;238m│[0m [38;2;248;248;242m- Location history now updates immediately when location changes (fixed processLocationUpdate)[0m
+[38;5;238m  38[0m   [38;5;238m│[0m 
+[38;5;238m  39[0m   [38;5;238m│[0m [38;2;248;248;242mThe app should now show more of the actual geolocation tracker in the viewport while maintaining all functionality."[0m
+[38;5;238m  40[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/nvme-health-qwik && timeout 5 npm run dev > /dev/null 2>&1 & sleep 2 && curl -s http://localhost:5173/api/nvme/health | head -20[0m
+[38;5;238m  41[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -type f -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" | head -20[0m
+[38;5;238m  42[0m   [38;5;238m│[0m [38;2;248;248;242mfind src -type f -name "*.tsx" -o -name "*.ts" | head -20[0m
+[38;5;238m  43[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/dev/nvme-health-qwik -type f -name "*.tsx" -o -name "*.ts" -o -name "*.jsx" -o -name "*.js" | head -20[0m
+[38;5;238m  44[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -s http://localhost:3000 | head -20[0m
+[38;5;238m  45[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -s "https://number-flow.barvian.me/" | head -200[0m
+[38;5;238m  46[0m   [38;5;238m│[0m [38;2;248;248;242mnpm run lint 2>&1 | tail -20[0m
+[38;5;238m  47[0m   [38;5;238m│[0m [38;2;248;248;242mnpm run lint 2>&1 | grep -E "(Error:|Warning:)" | head -20[0m
+[38;5;238m  48[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/projects/kechs-library -name "*.tsx" -o -name "*.ts" | head -20[0m
+[38;5;238m  49[0m   [38;5;238m│[0m [38;2;248;248;242mfind src -name "*.tsx" -o -name "*.ts" | grep -E "(component|util|hook|lib)" | head -20[0m
+[38;5;238m  50[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.tsx" -o -name "*.ts" -o -name "*.js" | head -20 | xargs grep -l "unused\\|deprecated\\|HACK" 2>/dev/null || echo "No obvious hack/unused markers found"[0m
+[38;5;238m  51[0m   [38;5;238m│[0m [38;2;248;248;242mtop -b -n 1 | head -20[0m
+[38;5;238m  52[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -L -o /tmp/vital-installer.exe "https://account.vital.audio/releases/download/v1.5.5/Vital%20Installer.exe"[0m
+[38;5;238m  53[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -L -o /tmp/surge-xt-latest.deb "https://github.com/surge-synthesizer/surge/releases/download/Nightly/surge-xt-linux-x64-NIGHTLY-2025-07-15-107a502.deb"[0m
+[38;5;238m  54[0m   [38;5;238m│[0m [38;2;248;248;242mapt search surge | head -20[0m
+[38;5;238m  55[0m   [38;5;238m│[0m [38;2;248;248;242mnode -e "[0m
+[38;5;238m  56[0m   [38;5;238m│[0m [38;2;248;248;242mconst crypto = require('crypto');[0m
+[38;5;238m  57[0m   [38;5;238m│[0m [38;2;248;248;242mconst password = 'Mhca6r4g1!';[0m
+[38;5;238m  58[0m   [38;5;238m│[0m [38;2;248;248;242mconst salt = 'kechs-library-secure-salt-2024';[0m
+[38;5;238m  59[0m   [38;5;238m│[0m [38;2;248;248;242mconst hash = crypto.createHash('sha256').update(password + salt).digest('hex');[0m
+[38;5;238m  60[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('ADMIN_PASSWORD_HASH=' + hash);[0m
+[38;5;238m  61[0m   [38;5;238m│[0m [38;2;248;248;242m"[0m
+[38;5;238m  62[0m   [38;5;238m│[0m [38;2;248;248;242mtail -20 dev.log[0m
+[38;5;238m  63[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/projects/kechs-library && node -e "[0m
+[38;5;238m  64[0m   [38;5;238m│[0m [38;2;248;248;242mconst crypto = require('crypto');[0m
+[38;5;238m  65[0m   [38;5;238m│[0m [38;2;248;248;242mconst password = 'Mhca6r4g1!';[0m
+[38;5;238m  66[0m   [38;5;238m│[0m [38;2;248;248;242mconst salt = 'kechs-library-secure-salt-2024';[0m
+[38;5;238m  67[0m   [38;5;238m│[0m [38;2;248;248;242mconst hash = crypto.createHash('sha256').update(password + salt).digest('hex');[0m
+[38;5;238m  68[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('Password:', password);[0m
+[38;5;238m  69[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('Salt:', salt);[0m
+[38;5;238m  70[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('Expected hash:', hash);[0m
+[38;5;238m  71[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('Current hash in .env.local:', '07dd3625fec53461af8944040768c39578e5f3fc42bf2b6a148d3162ee2d534f');[0m
+[38;5;238m  72[0m   [38;5;238m│[0m [38;2;248;248;242mconsole.log('Hashes match:', hash === '07dd3625fec53461af8944040768c39578e5f3fc42bf2b6a148d3162ee2d534f');[0m
+[38;5;238m  73[0m   [38;5;238m│[0m [38;2;248;248;242m"[0m
+[38;5;238m  74[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.css" -o -name "tailwind.config.*" -o -name "postcss.config.*" | grep -v node_modules | head -20[0m
+[38;5;238m  75[0m   [38;5;238m│[0m [38;2;248;248;242mgrep -rn "//" /home/remcostoeten/Documents/rssr-solid/src --include="*.ts" --include="*.tsx" | head -20[0m
+[38;5;238m  76[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -s "http://localhost:3334/api/analytics/events" \[0m
+[38;5;238m  77[0m   [38;5;238m│[0m [38;2;248;248;242m  -X POST \[0m
+[38;5;238m  78[0m   [38;5;238m│[0m [38;2;248;248;242m  -H "Content-Type: application/json" \[0m
+[38;5;238m  79[0m   [38;5;238m│[0m [38;2;248;248;242m  -d '{[0m
+[38;5;238m  80[0m   [38;5;238m│[0m [38;2;248;248;242m    "eventType": "page_view",[0m
+[38;5;238m  81[0m   [38;5;238m│[0m [38;2;248;248;242m    "page": "/",[0m
+[38;5;238m  82[0m   [38;5;238m│[0m [38;2;248;248;242m    "referrer": null,[0m
+[38;5;238m  83[0m   [38;5;238m│[0m [38;2;248;248;242m    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",[0m
+[38;5;238m  84[0m   [38;5;238m│[0m [38;2;248;248;242m    "sessionId": "manual_session_1",[0m
+[38;5;238m  85[0m   [38;5;238m│[0m [38;2;248;248;242m    "userId": null,[0m
+[38;5;238m  86[0m   [38;5;238m│[0m [38;2;248;248;242m    "data": null,[0m
+[38;5;238m  87[0m   [38;5;238m│[0m [38;2;248;248;242m    "ipAddress": "203.0.113.1",[0m
+[38;5;238m  88[0m   [38;5;238m│[0m [38;2;248;248;242m    "country": "United States",[0m
+[38;5;238m  89[0m   [38;5;238m│[0m [38;2;248;248;242m    "region": "California",[0m
+[38;5;238m  90[0m   [38;5;238m│[0m [38;2;248;248;242m    "city": "Mountain View"[0m
+[38;5;238m  91[0m   [38;5;238m│[0m [38;2;248;248;242m  }' | jq[0m
+[38;5;238m  92[0m   [38;5;238m│[0m [38;2;248;248;242m/api/analytics/metrics?startDate=2025-07-18T22%3A00%3A00.000Z&endDate=2025-07-26T21%3A59%3A59.999Z:1[0m
+[38;5;238m  93[0m   [38;5;238m│[0m [38;2;248;248;242mtail -20 /home/remcostoeten/Documents/rssr/api/index.ts[0m
+[38;5;238m  94[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -s https://remco-6lq54jslx-remcostoetens-projects.vercel.app/api/health | head -20[0m
+[38;5;238m  95[0m   [38;5;238m│[0m [38;2;248;248;242mcurl -s http://localhost:3334/api/analytics/metrics | head -20[0m
+[38;5;238m  96[0m   [38;5;238m│[0m [38;2;248;248;242m./volume_down 20[0m
+[38;5;238m  97[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/sites/fync -name "*.tsx" -o -name "page.tsx" -o -name "layout.tsx" | head -20[0m
+[38;5;238m  98[0m   [38;5;238m│[0m [38;2;248;248;242mtar -xzf android-studio-2024.2.1.11-linux.tar.gz[0m
+[38;5;238m  99[0m   [38;5;238m│[0m [38;2;248;248;242mwget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2024.2.1.11/android-studio-2024.2.1.11-linux.tar.gz[0m
+[38;5;238m 100[0m   [38;5;238m│[0m [38;2;248;248;242mcd /tmp && wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2024.2.1.11/android-studio-2024.2.1.11-linux.tar.gz[0m
+[38;5;238m 101[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20[0m
+[38;5;238m 102[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/sites/fync -name "*.js" -o -name "*.d.ts" | head -20[0m
+[38;5;238m 103[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/kunze-clone-project-copy-37-main -name "*" -type f | grep -E '[A-Z]' | grep -v node_modules | grep -v dist | head -20[0m
+[38;5;238m 104[0m   [38;5;238m│[0m [38;2;248;248;242mfind ~/dev ~/projects ~/sites ~/Documents -name "*.env*" -o -name ".env*" 2>/dev/null | head -20[0m
+[38;5;238m 105[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.env*" -o -name ".env*" 2>/dev/null | head -20[0m
+[38;5;238m 106[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/guestbook-module && npx tsc api/mutations/create-comment.ts --noEmit --skipLibCheck --esModuleInterop --target es2022 --lib es2022,dom --moduleResolution node --module es2022[0m
+[38;5;238m 107[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/guestbook-module && npx tsc hooks/use-rate-limit.ts --noEmit --skipLibCheck --esModuleInterop --target es2022 --lib es2022,dom --moduleResolution node --module es2022 --jsx preserve[0m
+[38;5;238m 108[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/guestbook-module && npx tsc utils/rate-limiter.ts --noEmit --skipLibCheck --esModuleInterop --target es2022 --lib es2022,dom --moduleResolution node --module es2022[0m
+[38;5;238m 109[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/guestbook-module && npx tsc utils/rate-limiter.ts --noEmit --skipLibCheck --esModuleInterop --target es2022 --lib es2022,dom --moduleResolution node[0m
+[38;5;238m 110[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/dev/guestbook-example && npx tsc utils/rate-limiter.ts --noEmit --skipLibCheck --esModuleInterop --target es2022 --lib es2022,dom --moduleResolution node[0m
+[38;5;238m 111[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 8835[0m
+[38;5;238m 112[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 8843[0m
+[38;5;238m 113[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 12959[0m
+[38;5;238m 114[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 82092[0m
+[38;5;238m 115[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 82139[0m
+[38;5;238m 116[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 82210[0m
+[38;5;238m 117[0m   [38;5;238m│[0m [38;2;248;248;242mkill -9 97062[0m
+[38;5;238m 118[0m   [38;5;238m│[0m 
+[38;5;238m 119[0m   [38;5;238m│[0m [38;2;248;248;242mremcost+   97062  0.0  0.0 391892 27200 ?        SNl  00:54   0:00 warp-terminal[0m
+[38;5;238m 120[0m   [38;5;238m│[0m [38;2;248;248;242m20.25[0m
+[38;5;238m 121[0m   [38;5;238m│[0m [38;2;248;248;242mkill $(lsof -t -i :1420)[0m
+[38;5;238m 122[0m   [38;5;238m│[0m 
+[38;5;238m 123[0m   [38;5;238m│[0m [38;2;248;248;242m# kill all processes on port 1420[0m
+[38;5;238m 124[0m   [38;5;238m│[0m [38;2;248;248;242mlsof -ti:1420 | xargs kill -9[0m
+[38;5;238m 125[0m   [38;5;238m│[0m 
+[38;5;238m 126[0m   [38;5;238m│[0m [38;2;248;248;242mmv 7680-4320-gradient-blur-4k-wallapapers-v0-6u0dhbv51tbb1.webp  ~/.config/kitty/assets/new_background.png[0m
+[38;5;238m 127[0m   [38;5;238m│[0m [38;2;248;248;242mcp ~/Pictures/7680-4320-gradient-blur-4k-wallapapers-v0-6u0dhbv51tbb1.webp ~/Pictures/blur.webp[0m
+[38;5;238m 128[0m   [38;5;238m│[0m [38;2;248;248;242mnpx builder.io@latest code --url "https://builder.io/content/102f88186ab64d4a9c6209a417deda91/edit?selectedBlock=builder-efd8d4c4eef0152d104c8fde688cb47c"[0m
+[38;5;238m 129[0m   [38;5;238m│[0m [38;2;248;248;242mgh api --method GET /octocat \[0m
+[38;5;238m 130[0m   [38;5;238m│[0m [38;2;248;248;242m--header 'Accept: application/vnd.github+json' \[0m
+[38;5;238m 131[0m   [38;5;238m│[0m [38;2;248;248;242m--header "X-GitHub-Api-Version: 2022-11-28"[0m
+[38;5;238m 132[0m   [38;5;238m│[0m [38;2;248;248;242mrm warp-terminal_0.2025.04.30.08.11.stable.01_amd64.deb[0m
+[38;5;238m 133[0m   [38;5;238m│[0m 
+[38;5;238m 134[0m   [38;5;238m│[0m [38;2;248;248;242m~/dev/kill-dev-tool master[0m
+[38;5;238m 135[0m   [38;5;238m│[0m [38;2;248;248;242m❯ ls[0m
+[38;5;238m 136[0m   [38;5;238m│[0m [38;2;248;248;242mindex.js*  package.json  README.md[0m
+[38;5;238m 137[0m   [38;5;238m│[0m 
+[38;5;238m 138[0m   [38;5;238m│[0m [38;2;248;248;242m~/dev/kill-dev-tool master[0m
+[38;5;238m 139[0m   [38;5;238m│[0m [38;2;248;248;242m❯ npm i -g[0m
+[38;5;238m 140[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! code EACCES[0m
+[38;5;238m 141[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! syscall mkdir[0m
+[38;5;238m 142[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! path /usr/local/lib/node_modules/kill-dev[0m
+[38;5;238m 143[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! errno -13[0m
+[38;5;238m 144[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/kill-dev'[0m
+[38;5;238m 145[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!  [Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/kill-dev'] {[0m
+[38;5;238m 146[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!   errno: -13,[0m
+[38;5;238m 147[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!   code: 'EACCES',[0m
+[38;5;238m 148[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!   syscall: 'mkdir',[0m
+[38;5;238m 149[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!   path: '/usr/local/lib/node_modules/kill-dev'[0m
+[38;5;238m 150[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! }[0m
+[38;5;238m 151[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR![0m
+[38;5;238m 152[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! The operation was rejected by your operating system.[0m
+[38;5;238m 153[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! It is likely you do not have the permissions to access this file as the current user[0m
+[38;5;238m 154[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR![0m
+[38;5;238m 155[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! If you believe this might be a permissions issue, please double-check the[0m
+[38;5;238m 156[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! permissions of the file and its containing directories, or try running[0m
+[38;5;238m 157[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! the command again as root/Administrator.[0m
+[38;5;238m 158[0m   [38;5;238m│[0m 
+[38;5;238m 159[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR! A complete log of this run can be found in:[0m
+[38;5;238m 160[0m   [38;5;238m│[0m [38;2;248;248;242mnpm ERR!     /home/remcostoeten/.npm/_logs/2025-05-17T17_01_34_062Z-debug-0.log[0m
+[38;5;238m 161[0m   [38;5;238m│[0m 
+[38;5;238m 162[0m   [38;5;238m│[0m [38;2;248;248;242m~/dev/kill-dev-tool master[0m
+[38;5;238m 163[0m   [38;5;238m│[0m [38;2;248;248;242m❯ sudo npm i -g[0m
+[38;5;238m───────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[0m

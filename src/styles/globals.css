@@ -1,3 +1,125 @@
+
+/* Font utility classes */
+
+/* Poppins */
+.poppins {
+	font-family: var(--font-poppins);
+}
+.poppins-100 {
+	font-family: var(--font-poppins);
+	font-weight: 100;
+}
+.poppins-200 {
+	font-family: var(--font-poppins);
+	font-weight: 200;
+}
+.poppins-300 {
+	font-family: var(--font-poppins);
+	font-weight: 300;
+}
+.poppins-400 {
+	font-family: var(--font-poppins);
+	font-weight: 400;
+}
+.poppins-500 {
+	font-family: var(--font-poppins);
+	font-weight: 500;
+}
+.poppins-600 {
+	font-family: var(--font-poppins);
+	font-weight: 600;
+}
+.poppins-700 {
+	font-family: var(--font-poppins);
+	font-weight: 700;
+}
+.poppins-800 {
+	font-family: var(--font-poppins);
+	font-weight: 800;
+}
+.poppins-900 {
+	font-family: var(--font-poppins);
+	font-weight: 900;
+}
+.poppins-bold {
+	font-family: var(--font-poppins);
+	font-weight: 700;
+}
+.poppins-italic {
+	font-family: var(--font-poppins);
+	font-style: italic;
+}
+
+/* Lora */
+.lora {
+	font-family: var(--font-lora);
+}
+.lora-400 {
+	font-family: var(--font-lora);
+	font-weight: 400;
+}
+.lora-500 {
+	font-family: var(--font-lora);
+	font-weight: 500;
+}
+.lora-600 {
+	font-family: var(--font-lora);
+	font-weight: 600;
+}
+.lora-700 {
+	font-family: var(--font-lora);
+	font-weight: 700;
+}
+.lora-bold {
+	font-family: var(--font-lora);
+	font-weight: 700;
+}
+.lora-italic {
+	font-family: var(--font-lora);
+	font-style: italic;
+}
+
+/* Nunito */
+.nunito {
+	font-family: var(--font-nunito);
+}
+.nunito-200 {
+	font-family: var(--font-nunito);
+	font-weight: 200;
+}
+.nunito-300 {
+	font-family: var(--font-nunito);
+	font-weight: 300;
+}
+.nunito-400 {
+	font-family: var(--font-nunito);
+	font-weight: 400;
+}
+.nunito-600 {
+	font-family: var(--font-nunito);
+	font-weight: 600;
+}
+.nunito-700 {
+	font-family: var(--font-nunito);
+	font-weight: 700;
+}
+.nunito-800 {
+	font-family: var(--font-nunito);
+	font-weight: 800;
+}
+.nunito-900 {
+	font-family: var(--font-nunito);
+	font-weight: 900;
+}
+.nunito-bold {
+	font-family: var(--font-nunito);
+	font-weight: 700;
+}
+.nunito-italic {
+	font-family: var(--font-nunito);
+	font-style: italic;
+}
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
