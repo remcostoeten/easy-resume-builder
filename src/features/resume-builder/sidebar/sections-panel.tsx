@@ -21,9 +21,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/shared/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { SectionItem } from './section-item';
-import { TResumeSection } from '@/src/types/resume';
+import { TResumeSection } from '@/types/resume';
 
 export type TSectionsPanelProps = {
 	readonly sections: readonly TResumeSection[];

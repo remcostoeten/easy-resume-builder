@@ -9,7 +9,7 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from '@/src/shared/components/ui/dialog';
+} from '@/shared/components/ui/dialog';
 import { cn } from 'utilities';
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
 	return (

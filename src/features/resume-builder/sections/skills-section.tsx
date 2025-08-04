@@ -3,13 +3,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Code, Edit, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '@/src/shared/components/ui/badge';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent } from '@/src/shared/components/ui/card';
-import { Progress } from '@/src/shared/components/ui/progress';
-import { EmptyState } from '@/src/shared/components/ui';
-import { resumeReducer } from '@/src/store/resume-store';
-import { TSkillCategory } from '@/src/types/resume';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { Progress } from '@/shared/components/ui/progress';
+import { EmptyState } from '@/shared/components/ui';
+import { resumeReducer } from '@/store/resume-store';
+import { TSkillCategory } from '@/types/resume';
 import { FormSection } from '../form/form-section';
 import { SkillsForm } from './skills-form';
 

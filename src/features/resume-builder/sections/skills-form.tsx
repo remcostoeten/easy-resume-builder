@@ -5,23 +5,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/shared/components/ui/card';
-import { Input } from '@/src/shared/components/ui/input';
-import { Label } from '@/src/shared/components/ui/label';
-import { Progress } from '@/src/shared/components/ui/progress';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
+import { Progress } from '@/shared/components/ui/progress';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/src/shared/components/ui/select';
-import { Slider } from '@/src/shared/components/ui/slider';
-import { Switch } from '@/src/shared/components/ui/switch';
+} from '@/shared/components/ui/select';
+import { Slider } from '@/shared/components/ui/slider';
+import { Switch } from '@/shared/components/ui/switch';
 import { FormField } from '../form/form-field';
-import { TSkillCategory, TSkill } from '@/src/types/resume';
-import { createEntity } from '@/src/utils/entity';
+import { TSkillCategory, TSkill } from '@/types/resume';
+import { createEntity } from '@/utils/entity';
 import { TSkillCategoryForm, skillCategorySchema } from '../../resume-schemas';
 
 export type TSkillsFormProps = {

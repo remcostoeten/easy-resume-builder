@@ -19,9 +19,9 @@
 		],
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"],
-			"utilities":["./src/shared/utilities/index.ts"],
-			"ui":["./src/shared/components/ui/index.ts"],
+			      "@/*": ["src/*"],
+				"utilities": ["src/shared/utilities/index.ts"],
+				"ui": ["src/shared/components/ui/index.ts"],
 		},
 		"target": "ES2017"
 	},

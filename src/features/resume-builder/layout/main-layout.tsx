@@ -4,9 +4,9 @@ import { useSnapshot } from 'valtio';
 import { EditingArea } from '../editing/editing-area';
 import { PreviewArea } from '../preview/preview-area';
 import { SectionsPanel } from '../sidebar/sections-panel';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/src/shared/components/ui';
-import { resumeStore, resumeReducer } from '@/src/store/resume-store';
-import { TResumeSection } from '@/src/types/resume';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui';
+import { resumeStore, resumeReducer } from '@/store/resume-store';
+import { TResumeSection } from '@/types/resume';
 
 export function MainLayout() {
 	const resumeData = useSnapshot(resumeStore).data;

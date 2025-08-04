@@ -2,8 +2,8 @@
 
 import { GraduationCap } from 'lucide-react';
 import { FormSection } from '../form/form-section';
-import { EmptyState } from '@/src/shared/components/ui';
-import { TEducationItem } from '@/src/types/resume';
+import { EmptyState } from '@/shared/components/ui';
+import { TEducationItem } from '@/types/resume';
 
 type TProps = {
 	readonly data: readonly TEducationItem[];

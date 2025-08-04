@@ -3,11 +3,11 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/src/shared/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/shared/components/ui/tooltip';
-import { SECTION_CONFIGS } from '@/src/core/config/section-configs';
-import { cn } from '@/src/shared/utilities';
-import { TResumeSection } from '@/src/types/resume';
+import { Button } from '@/shared/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/components/ui/tooltip';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { cn } from '@/shared/utilities';
+import { TResumeSection } from '@/types/resume';
 
 type TProps = {
 	readonly sections: readonly TResumeSection[];

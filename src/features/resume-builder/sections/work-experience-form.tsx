@@ -5,23 +5,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Building, Calendar, Plus, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/shared/components/ui/card';
-import { Input } from '@/src/shared/components/ui/input';
-import { Label } from '@/src/shared/components/ui/label';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/src/shared/components/ui/select';
-import { Switch } from '@/src/shared/components/ui/switch';
-import { Textarea } from '@/src/shared/components/ui/textarea';
+} from '@/shared/components/ui/select';
+import { Switch } from '@/shared/components/ui/switch';
+import { Textarea } from '@/shared/components/ui/textarea';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
-import { TWorkItem } from '@/src/types/resume';
-import { createEntity } from '@/src/utils/entity';
+import { TWorkItem } from '@/types/resume';
+import { createEntity } from '@/utils/entity';
 import { TWorkItemForm, workItemSchema } from '../../resume-schemas';
 
 export type TWorkExperienceFormProps = {

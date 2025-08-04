@@ -4,11 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Badge } from '@/src/shared/components/ui/badge';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent } from '@/src/shared/components/ui/card';
-import { Progress } from '@/src/shared/components/ui/progress';
-import type { TResumeData, TResumeSection } from '@/src/types/resume';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { Progress } from '@/shared/components/ui/progress';
+import type { TResumeData, TResumeSection } from '@/types/resume';
 import { SectionRenderer } from './section-renderer';
 
 export type TEditingAreaProps = {

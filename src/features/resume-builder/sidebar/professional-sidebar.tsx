@@ -21,11 +21,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/src/shared/components/ui/button';
-import { Switch } from '@/src/shared/components/ui/switch';
-import { SECTION_CONFIGS } from '@/src/core/config/section-configs';
-import { cn } from '@/src/shared/utilities';
-import { TResumeSection } from '@/src/types/resume';
+import { Button } from '@/shared/components/ui/button';
+import { Switch } from '@/shared/components/ui/switch';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { cn } from '@/shared/utilities';
+import { TResumeSection } from '@/types/resume';
 
 type TProps = {
 	readonly sections: readonly TResumeSection[];

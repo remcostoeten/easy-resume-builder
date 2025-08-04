@@ -9,9 +9,9 @@ import { ProfessionalPersonalInfo } from '../sections/professional-personal-info
 import { ProfessionalProjects } from '../sections/professional-projects';
 import { ProfessionalWorkExperience } from '../sections/professional-work-experience';
 import { SkillsSection } from '../sections/skills-section';
-import { SECTION_CONFIGS } from '@/src/core/config/section-configs';
-import { EmptyState } from '@/src/shared/components/ui';
-import { TResumeSection, TResumeData } from '@/src/types/resume';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { EmptyState } from '@/shared/components/ui';
+import { TResumeSection, TResumeData } from '@/types/resume';
 
 export type TProfessionalEditingAreaProps = {
 	readonly sections: readonly TResumeSection[];

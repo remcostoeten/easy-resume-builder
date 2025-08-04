@@ -3,14 +3,14 @@
 import { Calendar, Code, ExternalLink, FolderOpen, Plus, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Badge } from '@/src/shared/components/ui/badge';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/shared/components/ui/card';
-import { Input } from '@/src/shared/components/ui/input';
-import { Label } from '@/src/shared/components/ui/label';
-import { Textarea } from '@/src/shared/components/ui/textarea';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
+import { Textarea } from '@/shared/components/ui/textarea';
 import { FormGrid } from '../form/form-grid';
-import { EmptyState } from '@/src/shared/components/ui';
+import { EmptyState } from '@/shared/components/ui';
 
 type TProject = {
 	id: string;

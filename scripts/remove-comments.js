@@ -48,7 +48,7 @@ ${Colors.Bright}${Colors.FgCyan}Examples:${Colors.Reset}
   ${Colors.FgYellow}node ${path.basename(process.argv[1])}${Colors.Reset}
     Remove comments from all .ts and .tsx files (excluding node_modules, .next, and configured paths).
 
-  ${Colors.FgYellow}node ${path.basename(process.argv[1])} --files src/foo.ts src/bar.tsx${Colors.Reset}
+  ${Colors.FgYellow}node ${path.basename(process.argv[1])} --files foo.ts bar.tsx${Colors.Reset}
     Remove comments from specific files.
 
   ${Colors.FgYellow}node ${path.basename(process.argv[1])} --revert${Colors.Reset}

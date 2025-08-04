@@ -3,14 +3,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Briefcase, Building, Calendar, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '@/src/shared/components/ui/badge';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent } from '@/src/shared/components/ui/card';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { WorkExperienceForm } from './work-experience-form';
-import { EmptyState } from '@/src/shared/components/ui';
-import { resumeReducer } from '@/src/store/resume-store';
-import { TWorkItem } from '@/src/types/resume';
-import { formatDateRange } from '@/src/utils/date-utils';
+import { EmptyState } from '@/shared/components/ui';
+import { resumeReducer } from '@/store/resume-store';
+import { TWorkItem } from '@/types/resume';
+import { formatDateRange } from '@/utils/date-utils';
 
 export type TProfessionalWorkExperienceProps = {
 	readonly data: readonly TWorkItem[];

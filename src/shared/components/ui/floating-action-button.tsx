@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { Button } from '@/src/shared/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 import { cn } from 'utilities';
 export type TFloatingActionButtonProps = {
 	readonly onClick: () => void;

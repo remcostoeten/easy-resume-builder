@@ -8,9 +8,9 @@ import { ProfessionalEditingArea } from '../editing/professional-editing-area';
 import { ProfessionalPreview } from '../preview/professional-preview';
 import { ProfessionalSidebar } from '../sidebar/professional-sidebar';
 import { ProfessionalHeader } from './professional-header';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/src/shared/components/ui/resizable-panels';
-import { resumeStore, resumeReducer } from '@/src/store/resume-store';
-import { TResumeSection } from '@/src/types/resume';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui/resizable-panels';
+import { resumeStore, resumeReducer } from '@/store/resume-store';
+import { TResumeSection } from '@/types/resume';
 
 export function ProfessionalMainLayout() {
 	const resumeData = useSnapshot(resumeStore).data;

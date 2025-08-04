@@ -86,18 +86,6 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 		))
 	, []);
 
-	const badges = useMemo(() => 
-		BADGES.map((badge, index) => (
-			<span 
-				key={`badge-${index}`}
-				className={`bg-${badge.color}/10 text-${badge.color} border border-${badge.color}/20 px-2 py-1 rounded text-sm gap-1 inline-flex items-center`}
-			>
-				<span role="img" aria-hidden="true">{badge.icon}</span>
-				{badge.text}
-			</span>
-		))
-	, []);
-
 	if (!isOpen) return null;
 
 	return (
@@ -111,7 +99,7 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 		>
 			<div className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'>
 				<div className='relative flex flex-col h-full'>
-					<header className='relative p-6 pb-4 text-center bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 rounded-t-lg'>
+					<header className='relative p-6 pb-4 text-center bg-gradient-to-r from-primary/20 via-primary/5 to-primary/30 rounded-t-lg'>
 						<div className='flex items-center justify-center mb-4'>
 							<div className='relative'>
 								<div className='p-3 rounded-2xl bg-gradient-to-r from-primary to-secondary shadow-xl'>
@@ -139,10 +127,6 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 								Create professional, ATS-optimized resumes in minutes. Join
 								thousands who've landed their dream positions.
 							</p>
-						</div>
-
-						<div className='flex justify-center flex-wrap gap-2 mt-3' role="list">
-							{badges}
 						</div>
 					</header>
 

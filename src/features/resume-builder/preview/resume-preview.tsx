@@ -12,11 +12,11 @@ import {
 	Phone,
 } from 'lucide-react';
 import React from 'react';
-import { Progress } from '@/src/shared/components/ui/progress';
-import { Separator } from '@/src/shared/components/ui/separator';
+import { Progress } from '@/shared/components/ui/progress';
+import { Separator } from '@/shared/components/ui/separator';
 import type { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
-import { TResumeData } from '@/src/types/resume';
-import { formatDateRange } from '@/src/utils/date-utils';
+import { TResumeData } from '@/types/resume';
+import { formatDateRange } from '@/utils/date-utils';
 
 export type TResumePreviewProps = {
 	readonly resumeData: TResumeData;

@@ -3,13 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/src/shared/components/ui/button';
-import { personalInfoSchema, type TPersonalInfoForm } from '../../features/resume-schemas';
-import { resumeReducer } from '../../store/resume-store';
-import type { TPersonalInfo } from '../../types/resume';
+import { Button } from '@/shared/components/ui/button';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
 import { FormSection } from '../form/form-section';
+import { resumeReducer } from '@/store/resume-store';
+import { TPersonalInfo } from '@/types/resume';
+import { TPersonalInfoForm, personalInfoSchema } from '../../resume-schemas';
 
 type TProps = {
 	readonly data: TPersonalInfo;

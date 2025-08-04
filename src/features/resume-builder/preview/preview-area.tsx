@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion';
 import { Download, Eye, Maximize2, Printer } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '@/src/shared/components/ui/badge';
-import { Button } from '@/src/shared/components/ui/button';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import type { TResumeData } from '../../types/resume';
 import { ResumePreview } from './resume-preview';
 

@@ -3,12 +3,12 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { resumeReducer, resumeStore } from '@/src/store/resume-store';
-import type { TResumeSection } from '@/src/types/resume';
-import { ModernEditingArea } from '@/src/features/resume-builder/editing/modern-editing-area';
-import { PreviewArea } from '@/src/features/resume-builder/preview/preview-area';
-import { ModernSectionsPanel } from '@/src/features/resume-builder/sidebar/modern-sections-panel';
-import { AnimatedBackground } from '@/src/shared/components/ui/animated-background';
+import { resumeReducer, resumeStore } from '@/store/resume-store';
+import type { TResumeSection } from '@/types/resume';
+import { ModernEditingArea } from '@/features/resume-builder/editing/modern-editing-area';
+import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
+import { ModernSectionsPanel } from '@/features/resume-builder/sidebar/modern-sections-panel';
+import { AnimatedBackground } from '@/shared/components/ui/animated-background';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../shared/components/ui/resizable-panels';
 import { ModernHeader } from './modern-header';
 

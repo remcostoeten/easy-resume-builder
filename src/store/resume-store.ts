@@ -17,7 +17,7 @@ export type TResumeAction =
 	| { type: 'UPDATE_SKILL_CATEGORY'; id: string; data: TSkillCategory }
 	| { type: 'REMOVE_SKILL_CATEGORY'; id: string };
 
-function createDefaultSections(): TResumeSection[] {
+function createDefaultSections(): readonly TResumeSection[] {
 	const sectionConfigs: Array<{
 		type: TSectionType;
 		title: string;
@@ -33,7 +33,7 @@ function createDefaultSections(): TResumeSection[] {
 		{ type: 'languages', title: 'Languages', isRequired: false, order: 6 },
 	];
 
-return sectionConfigs.map((config) =>
+	return sectionConfigs.map((config) =>
 		createEntity<TResumeSection>({
 			...config,
 			isEnabled: config.isRequired || config.order <= 2,
@@ -57,7 +57,7 @@ function createInitialResumeData(): TResumeData {
 		workExperience: [],
 		education: [],
 		skills: [],
-		sections: createDefaultSections(),
+		sections: createDefaultSections() as TResumeSection[],
 		metadata: {
 			title: 'Untitled Resume',
 			template: 'default',
@@ -104,7 +104,7 @@ export function resumeReducer(action: TResumeAction): void {
 		}
 
 		case 'ADD_WORK_EXPERIENCE': {
-(resumeStore.data.workExperience as TResumeData['workExperience']).push
+			resumeStore.data.workExperience.push(action.data);
 			resumeStore.data.updatedAt = new Date();
 			break;
 		}
@@ -126,14 +126,14 @@ export function resumeReducer(action: TResumeAction): void {
 				(item) => item.id === action.id
 			);
 			if (workIndex !== -1) {
-(resumeStore.data.workExperience as TResumeData['workExperience']).splice
+				resumeStore.data.workExperience.splice(workIndex, 1);
 				resumeStore.data.updatedAt = new Date();
 			}
 			break;
 		}
 
 		case 'ADD_SKILL_CATEGORY': {
-(resumeStore.data.skills as TResumeData['skills']).push
+			resumeStore.data.skills.push(action.data);
 			resumeStore.data.updatedAt = new Date();
 			break;
 		}
@@ -154,7 +154,7 @@ export function resumeReducer(action: TResumeAction): void {
 				(category) => category.id === action.id
 			);
 			if (skillIndex !== -1) {
-(resumeStore.data.skills as TResumeData['skills']).splice
+				resumeStore.data.skills.splice(skillIndex, 1);
 				resumeStore.data.updatedAt = new Date();
 			}
 			break;

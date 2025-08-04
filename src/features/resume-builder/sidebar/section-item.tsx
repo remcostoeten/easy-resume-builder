@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { GripVertical } from 'lucide-react';
-import { Label } from '@/src/shared/components/ui/label';
-import { Switch } from '@/src/shared/components/ui/switch';
-import { SECTION_CONFIGS } from '@/src/core/config/section-configs';
-import { cn } from '@/src/shared/utilities';
-import { TResumeSection } from '@/src/types/resume';
+import { Label } from '@/shared/components/ui/label';
+import { Switch } from '@/shared/components/ui/switch';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { cn } from '@/shared/utilities';
+import { TResumeSection } from '@/types/resume';
 
 type TProps = {
 	readonly section: TResumeSection;

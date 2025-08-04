@@ -5,9 +5,9 @@
 [38;5;238m   2[0m   [38;5;238m│[0m [38;2;248;248;242mfind . -name "*.ts" -o -name "*.tsx" | head -20 | xargs grep -l "const.*=.*=>" | head -10[0m
 [38;5;238m   3[0m   [38;5;238m│[0m [38;2;248;248;242mcat ./logs/nvme0n1-2025-07-29_19-51-19.txt[0m
 [38;5;238m   4[0m   [38;5;238m│[0m [38;2;248;248;242msudo nvme list --output-format=json | jq '.Devices[]' | head -20[0m
-[38;5;238m   5[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms/src/components -name "*.tsx" | grep -E "(checkbox|primitives)" | head -20[0m
+[38;5;238m   5[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms/components -name "*.tsx" | grep -E "(checkbox|primitives)" | head -20[0m
 [38;5;238m   6[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms -type f -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20[0m
-[38;5;238m   7[0m   [38;5;238m│[0m [38;2;248;248;242mfind src/routes -name "*.tsx" -o -name "*.ts" | head -20[0m
+[38;5;238m   7[0m   [38;5;238m│[0m [38;2;248;248;242mfind routes -name "*.tsx" -o -name "*.ts" | head -20[0m
 [38;5;238m   8[0m   [38;5;238m│[0m [38;2;248;248;242mfind /home/remcostoeten/Documents/rssr-solid-cms -name "*.ts" -o -name "*.tsx" | grep -E "(animation|reveal|hook)" | head -20[0m
 [38;5;238m   9[0m   [38;5;238m│[0m [38;2;248;248;242mcd /home/remcostoeten/Documents/rssr-solid-cms && timeout 30 bun run build 2>&1 | head -20[0m
 [38;5;238m  10[0m   [38;5;238m│[0m [38;2;248;248;242mtimeout 5 curl -s http://localhost:3000/ | head -20 || echo "Server might not be running"[0m

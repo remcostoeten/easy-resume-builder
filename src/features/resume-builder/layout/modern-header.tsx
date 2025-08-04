@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { Download, Eye, Settings, Sparkles } from 'lucide-react';
-import { Button } from '@/src/shared/components/ui/button';
-import { ProgressRing } from '@/src/shared/components/ui/progress-ring';
+import { Button } from '@/shared/components/ui/button';
+import { ProgressRing } from '@/shared/components/ui/progress-ring';
 
 type TProps = {
 	readonly progress: number;

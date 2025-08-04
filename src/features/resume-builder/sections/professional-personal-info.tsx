@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload, User } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/src/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/shared/components/ui/card';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { FormField } from '../form/form-field';
-import { resumeReducer } from '@/src/store/resume-store';
-import { TPersonalInfo } from '@/src/types/resume';
+import { resumeReducer } from '@/store/resume-store';
+import { TPersonalInfo } from '@/types/resume';
 import { TPersonalInfoForm, personalInfoSchema } from '../../resume-schemas';
 
 export type TProfessionalPersonalInfoProps = {
