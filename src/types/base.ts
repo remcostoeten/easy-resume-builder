@@ -1,17 +1,13 @@
-// Base entity types with timestamps and ID
-export type TEntityBase = {
-  readonly id: string
-  readonly createdAt: Date
-  readonly updatedAt: Date
-}
+import type { TTimestamps, TBaseEntity } from './base-entity';
 
-export type TTimestamps = Pick<TEntityBase, "createdAt" | "updatedAt">
+// Base entity types with timestamps and ID
+export type TEntityBase = TBaseEntity;
 
 // Utility type for creating new entities
-export type TCreateEntity<T> = Omit<T, keyof TEntityBase>
+export type TCreateEntity<T> = Omit<T, keyof TEntityBase>;
 
 // Utility type for updating entities
-export type TUpdateEntity<T> = Partial<Omit<T, "id" | "createdAt">> & {
-  readonly id: string
-  readonly updatedAt: Date
-}
+export type TUpdateEntity<T> = Partial<Omit<T, 'id' | 'createdAt'>> & {
+	readonly id: string;
+	readonly updatedAt: Date;
+};

@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { ProfessionalMainLayout } from "../src/components/layout/professional-main-layout"
+import HomeView from './views/home.view';
 
 export default function Page() {
-  return <ProfessionalMainLayout />
+	return <HomeView />;
 }
