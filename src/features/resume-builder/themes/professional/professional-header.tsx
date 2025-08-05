@@ -1,11 +1,12 @@
 'use client';
 
-import { Download, Edit, Eye, EyeOff, Moon, Save, Split, Sun } from 'lucide-react';
+import { Download, Edit, Eye, EyeOff, Moon, RotateCcw, Save, Split, Sun, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { SaveButton } from '@/features/resume-builder/components/save-button';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { setResumeDraft } from '@/store/resume-store';
+import { clearAllFormData } from '@/utils/storage/form-storage';
+import { resetStore, setResumeDraft } from '@/store/resume-store';
 
 type TProps = {
 	readonly onPreview: () => void;
@@ -29,6 +30,7 @@ export function ProfessionalHeader({
 	isSplitMode = true,
 }: TProps) {
 	const [isDarkMode, setIsDarkMode] = useState(true);
+	const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
 	function toggleTheme() {
 		setIsDarkMode(!isDarkMode);
@@ -46,6 +48,21 @@ export function ProfessionalHeader({
 
 	function handleSplit() {
 		onToggleSplit?.();
+	}
+
+	function handleRestart() {
+		if (showRestartConfirm) {
+			// Confirmed - clear everything
+			clearAllFormData();
+			resetStore();
+			setShowRestartConfirm(false);
+			console.log('🔄 Resume data cleared completely');
+		} else {
+			// First click - show confirmation
+			setShowRestartConfirm(true);
+			// Auto-hide confirmation after 3 seconds
+			setTimeout(function() { setShowRestartConfirm(false); }, 3000);
+		}
 	}
 
 	function prefillDemoCV() {
@@ -237,6 +254,27 @@ export function ProfessionalHeader({
 							onClick={prefillDemoCV}
 						>
 							Prefill Demo CV
+						</Button>
+						<Button
+							variant={showRestartConfirm ? 'destructive' : 'ghost'}
+							size='sm'
+							className={`text-xs ${
+								showRestartConfirm ? 'bg-destructive text-destructive-foreground' : ''
+							}`}
+							onClick={handleRestart}
+							title={showRestartConfirm ? 'Click again to confirm' : 'Clear all resume data'}
+						>
+							{showRestartConfirm ? (
+								<>
+									<Trash2 className='h-3 w-3 mr-1' />
+									Confirm Clear?
+								</>
+							) : (
+								<>
+									<RotateCcw className='h-3 w-3 mr-1' />
+									Restart
+								</>
+							)}
 						</Button>
 						<Button variant='ghost' size='sm' className='text-xs'>
 							Template: <span className='font-medium ml-1'>General</span>

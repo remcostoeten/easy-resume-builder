@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Upload, User, Save, Check } from 'lucide-react';
+import { Upload, User, Save, Check, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
@@ -9,7 +9,7 @@ import { personalInfoSchema, type TPersonalInfoForm } from '@/features/resume-sc
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { updatePersonalInfo } from '@/store/resume-store';
-import { getFormData } from '@/utils/storage';
+import { getFormData, removeFormData } from '@/utils/storage';
 import type { TPersonalInfo } from '@/types/resume';
 import { FormField } from '../../form/form-field';
 
@@ -144,7 +144,31 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 						<CardTitle className='text-lg text-card-foreground'>
 							Personal Information
 						</CardTitle>
-						<Button variant='outline' size='sm' className='gap-2 bg-transparent'>
+							<Button
+								variant='ghost'
+								size='sm'
+								onClick={function() {
+									removeFormData('personal-info');
+									reset({
+										firstName: '',
+										lastName: '',
+										email: '',
+										phone: '',
+										location: '',
+										website: '',
+										linkedin: '',
+										github: '',
+										summary: '',
+									});
+									console.log('🗑️ Personal info section cleared');
+								}}
+								title='Clear this section'
+								className='text-xs text-muted-foreground'
+							>
+								<Trash2 className='h-3 w-3 mr-1' />
+								Clear Section
+							</Button>
+							<Button variant='outline' size='sm' className='gap-2 bg-transparent'>
 							<Upload className='h-4 w-4' />
 							Upload Photo
 							<span className='text-xs text-muted-foreground ml-1'>

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
+import { removeFormData } from '@/utils/storage/form-storage';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { Input } from '@/shared/components/ui/input';
@@ -60,6 +61,7 @@ export function WorkExperienceForm({
 		handleSubmit,
 		setValue,
 		getValues,
+		reset,
 		formState: { errors },
 		handleFormSubmit,
 		saveStatus,
@@ -161,6 +163,32 @@ export function WorkExperienceForm({
 						{workItem ? 'Edit Work Experience' : 'Add New Experience'}
 					</CardTitle>
 					<div className='flex items-center gap-2'>
+						<Button
+								variant='ghost'
+								size='sm'
+								onClick={() => {
+									removeFormData('work-experience');
+									reset({
+										company: '',
+										position: '',
+										location: '',
+										description: '',
+										achievements: [],
+										dateRange: {
+											startDate: new Date(),
+											endDate: undefined,
+											isCurrentPosition: false,
+											dateFormat: 'month-year',
+										},
+									});
+									console.log('🗑️ Work experience section cleared');
+								}}
+								title='Clear this section'
+								className='text-xs text-muted-foreground'
+							>
+								<Trash2 className='h-3 w-3 mr-1' />
+								Clear Section
+							</Button>
 						{workItem && onDelete && (
 							<Button
 								variant='destructive'
