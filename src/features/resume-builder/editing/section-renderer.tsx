@@ -11,15 +11,16 @@ import { WorkExperienceSection } from '../sections/work-experience-section';
 type TProps = {
 	readonly section: TResumeSection;
 	readonly resumeData: TResumeData;
+	readonly isLoading?: boolean;
 };
 
-export function SectionRenderer({ section, resumeData }: TProps) {
+export function SectionRenderer({ section, resumeData, isLoading }: TProps) {
 	const config = SECTION_CONFIGS[section.type];
 	const IconComponent = config.icon;
 
 	switch (section.type) {
 		case 'personal-info':
-			return <PersonalInfoSection data={resumeData.personalInfo} />;
+			return <PersonalInfoSection data={resumeData.personalInfo} isLoading={isLoading} />;
 
 		case 'work-experience':
 			return <WorkExperienceSection data={resumeData.workExperience} />;

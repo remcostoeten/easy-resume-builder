@@ -21,6 +21,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import type { TResumeSection } from '@/types/resume';
 import { SectionItem } from './section-item';
@@ -29,6 +30,7 @@ export type TSectionsPanelProps = {
 	readonly sections: readonly TResumeSection[];
 	readonly onToggleSection: (sectionId: string) => void;
 	readonly onReorderSections: (sections: readonly TResumeSection[]) => void;
+	readonly onToggleLoading?: (isLoading: boolean) => void;
 };
 
 function SortableSectionItem({
@@ -63,6 +65,7 @@ export function SectionsPanel({
 	sections,
 	onToggleSection,
 	onReorderSections,
+	onToggleLoading,
 }: TSectionsPanelProps) {
 	const [_activeId, setActiveId] = useState<string | null>(null);
 
@@ -138,9 +141,19 @@ export function SectionsPanel({
 				</DndContext>
 
 				<div className='mt-4 p-3 rounded-lg bg-muted/50 border-dashed border-2'>
-					<p className='text-xs text-muted-foreground text-center'>
+					<p className='text-xs text-muted-foreground text-center mb-2'>
 						Drag sections to reorder • Toggle switches to show/hide
 					</p>
+					{onToggleLoading && (
+						<Button
+							size='sm'
+							variant='outline'
+							onClick={() => onToggleLoading(true)}
+							className='w-full text-xs'
+						>
+							Demo: Show Skeleton
+						</Button>
+					)}
 				</div>
 			</CardContent>
 		</Card>

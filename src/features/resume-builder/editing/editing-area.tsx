@@ -14,9 +14,10 @@ import { SectionRenderer } from './section-renderer';
 export type TEditingAreaProps = {
 	readonly sections: readonly TResumeSection[];
 	readonly resumeData: TResumeData;
+	readonly isLoading?: boolean;
 };
 
-export function EditingArea({ sections, resumeData }: TEditingAreaProps) {
+export function EditingArea({ sections, resumeData, isLoading }: TEditingAreaProps) {
 	const enabledSections = useMemo(
 		() => sections.filter((section) => section.isEnabled).sort((a, b) => a.order - b.order),
 		[sections]
@@ -100,7 +101,7 @@ export function EditingArea({ sections, resumeData }: TEditingAreaProps) {
 					<AnimatePresence mode='wait'>
 						<div key={currentSection?.id}>
 							{currentSection && (
-								<SectionRenderer section={currentSection} resumeData={resumeData} />
+								<SectionRenderer section={currentSection} resumeData={resumeData} isLoading={isLoading} />
 							)}
 						</div>
 					</AnimatePresence>

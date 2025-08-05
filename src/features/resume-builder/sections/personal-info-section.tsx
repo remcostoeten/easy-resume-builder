@@ -9,13 +9,19 @@ import { getFormData } from '@/utils/storage';
 import type { TPersonalInfo } from '@/types/resume';
 import { FormSection } from '../form/form-section';
 import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
+import { PersonalInfoSkeleton } from '@/shared/components/skeletons';
 
 type TProps = {
 	readonly className?: string;
 	readonly data: TPersonalInfo;
+	readonly isLoading?: boolean;
 };
 
-export function PersonalInfoSection({ className, data }: TProps) {
+export function PersonalInfoSection({ className, data, isLoading }: TProps) {
+	if (isLoading) {
+		return <PersonalInfoSkeleton />;
+	}
+
 	const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
 	async function handleFormSubmit(e: React.FormEvent) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAtomValue } from 'jotai/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { EditingArea } from '@/features/resume-builder/editing/editing-area';
 import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
 import { SectionsPanel } from '@/features/resume-builder/sidebar/sections-panel';
@@ -12,6 +12,7 @@ import type { TResumeData, TResumeSection } from '@/types/resume';
 export function MainLayout() {
 	const resumeData = useAtomValue(resumeAtom);
 	const sections = resumeData.sections as unknown as readonly TResumeSection[];
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(function() {
 		console.log('MainLayout render - store data:', {
@@ -36,6 +37,14 @@ export function MainLayout() {
 		reorderSections(sections);
 	}
 
+	function handleToggleLoading(loading: boolean) {
+		setIsLoading(loading);
+		if (loading) {
+			// Auto-hide after 3 seconds for demo purposes
+			setTimeout(function() { setIsLoading(false); }, 3000);
+		}
+	}
+
 	return (
 		<div className='h-screen bg-background'>
 			<ResizablePanelGroup direction='horizontal' className='h-full'>
@@ -52,6 +61,7 @@ export function MainLayout() {
 							sections={sections}
 							onToggleSection={handleToggleSection}
 							onReorderSections={handleReorderSections}
+							onToggleLoading={handleToggleLoading}
 						/>
 					</div>
 				</ResizablePanel>
@@ -63,6 +73,7 @@ export function MainLayout() {
 						<EditingArea
 							sections={sections}
 							resumeData={resumeData as unknown as TResumeData}
+							isLoading={isLoading}
 						/>
 					</div>
 				</ResizablePanel>
