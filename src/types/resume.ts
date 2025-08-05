@@ -6,9 +6,12 @@ export type TPersonalInfo = TEntityBase & {
 	readonly email: string;
 	readonly phone: string;
 	readonly location: string;
+	readonly jobTitle?: string;
 	readonly website?: string;
+	readonly portfolio?: string;
 	readonly linkedin?: string;
 	readonly github?: string;
+	readonly twitter?: string;
 	readonly summary?: string;
 };
 

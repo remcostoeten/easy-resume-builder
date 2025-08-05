@@ -98,17 +98,11 @@ export function EditingArea({ sections, resumeData }: TEditingAreaProps) {
 			<div className='flex-1 overflow-auto'>
 				<div className='p-6'>
 					<AnimatePresence mode='wait'>
-						<motion.div
-							key={currentSection?.id}
-							initial={{ opacity: 0, x: 20 }}
-							animate={{ opacity: 1, x: 0 }}
-							exit={{ opacity: 0, x: -20 }}
-							transition={{ duration: 0.3, ease: 'easeInOut' }}
-						>
+						<div key={currentSection?.id}>
 							{currentSection && (
 								<SectionRenderer section={currentSection} resumeData={resumeData} />
 							)}
-						</motion.div>
+						</div>
 					</AnimatePresence>
 				</div>
 			</div>

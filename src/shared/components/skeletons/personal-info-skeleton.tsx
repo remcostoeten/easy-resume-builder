@@ -2,30 +2,39 @@
 
 import { FormFieldSkeleton } from './form-field-skeleton';
 import { FormSectionSkeleton } from './form-section-skeleton';
-import { SkeletonButton, SkeletonText } from './skeleton-factory';
+import { SkeletonIcon, SkeletonText } from './skeleton-factory';
 
 export function PersonalInfoSkeleton() {
 	return (
 		<FormSectionSkeleton isRequired titleWidth='long'>
 			<form className='space-y-6'>
-				{/* First row - First Name, Last Name */}
-				<div className='grid grid-cols-2 gap-4'>
+				{/* First Row - First Name & Last Name */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<FormFieldSkeleton required labelWidth='medium' />
 					<FormFieldSkeleton required labelWidth='medium' />
 				</div>
 
-				{/* Second row - Email, Phone */}
-				<div className='grid grid-cols-2 gap-4'>
+				{/* Second Row - Email & Phone */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<FormFieldSkeleton type='email' required labelWidth='short' />
 					<FormFieldSkeleton type='tel' required labelWidth='short' />
 				</div>
 
-				{/* Location */}
-				<FormFieldSkeleton required labelWidth='medium' />
+				{/* Third Row - Location & Job Title */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<FormFieldSkeleton required labelWidth='medium' />
+					<FormFieldSkeleton labelWidth='medium' />
+				</div>
 
-				{/* Third row - Website, LinkedIn, GitHub */}
-				<div className='grid grid-cols-3 gap-4'>
+				{/* Fourth Row - Website, Portfolio, LinkedIn */}
+				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					<FormFieldSkeleton type='url' labelWidth='medium' />
+					<FormFieldSkeleton type='url' labelWidth='medium' />
+					<FormFieldSkeleton type='url' labelWidth='medium' />
+				</div>
+
+				{/* Fifth Row - GitHub, Twitter */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<FormFieldSkeleton type='url' labelWidth='medium' />
 					<FormFieldSkeleton type='url' labelWidth='medium' />
 				</div>
@@ -33,14 +42,11 @@ export function PersonalInfoSkeleton() {
 				{/* Professional Summary */}
 				<FormFieldSkeleton type='textarea' labelWidth='long' />
 
-				{/* Action buttons and status */}
-				<div className='flex justify-between items-center pt-4'>
-					<div className='flex items-center gap-2'>
+				{/* Save Status and Button - matches the border-t styling */}
+				<div className='flex justify-between items-center pt-4 border-t'>
+					<div className='flex items-center gap-2 text-sm'>
+						<SkeletonIcon className='h-4 w-4' />
 						<SkeletonText className='h-4 w-32' />
-					</div>
-					<div className='flex gap-2'>
-						<SkeletonButton className='w-28' />
-						<SkeletonButton className='w-32' />
 					</div>
 				</div>
 			</form>

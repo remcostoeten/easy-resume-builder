@@ -116,14 +116,7 @@ export function AutoSaveIndicator({
 		return (
 			<span className={cn('flex items-center gap-1 text-muted-foreground', className)}>
 				{showIcon && <Save className='h-3 w-3' />}
-				<NumberFlow
-					value={value}
-					className='font-mono text-xs'
-					format={{
-						minimumIntegerDigits: 1,
-						maximumFractionDigits: 0,
-					}}
-				/>
+					<span className='font-mono text-xs'>{value}</span>
 				<span className='text-xs'>{unit} ago</span>
 			</span>
 		);
@@ -138,14 +131,7 @@ export function AutoSaveIndicator({
 					'just now'
 				) : (
 					<>
-						<NumberFlow
-							value={value}
-							className='font-mono font-medium'
-							format={{
-								minimumIntegerDigits: 1,
-								maximumFractionDigits: 0,
-							}}
-						/>
+						<span className='font-mono font-medium'>{value}</span>
 						<span className='ml-0.5'>saved {unit} ago</span>
 					</>
 				)}

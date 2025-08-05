@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload, User, Save, Check, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { personalInfoSchema, type TPersonalInfoForm } from '@/features/resume-schemas';
@@ -46,13 +46,13 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 
 	const formValues = watch();
 
-	function setAllFormValues(loadedData: Record<string, any>) {
+	const setAllFormValues = useCallback((loadedData: Record<string, any>) => {
 		console.log('🔄 Loading form data from localStorage:', loadedData);
 		Object.entries(loadedData).forEach(([key, value]) => {
 			setValue(key as keyof TPersonalInfoForm, value);
 		});
 		console.log('✅ Form values after loading:', getValues());
-	}
+	}, [setValue, getValues]);
 
 	const { loadFormData, createChangeHandler, createBlurHandler } = useFormPersistence({
 		formKey: 'personal-info',
@@ -69,7 +69,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 
 	useEffect(function() {
 		loadFormData();
-	}, [loadFormData]);
+	}, []);
 
 	async function handleFormSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -146,37 +146,40 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 						<CardTitle className='text-lg text-card-foreground'>
 							Personal Information
 						</CardTitle>
-							<Button
-								variant='ghost'
-								size='sm'
-								onClick={function() {
-									removeFormData('personal-info');
-									reset({
-										firstName: '',
-										lastName: '',
-										email: '',
-										phone: '',
-										location: '',
-										website: '',
-										linkedin: '',
-										github: '',
-										summary: '',
-									});
-									console.log('🗑️ Personal info section cleared');
-								}}
-								title='Clear this section'
-								className='text-xs text-muted-foreground'
-							>
-								<Trash2 className='h-3 w-3 mr-1' />
-								Clear Section
-							</Button>
-							<Button variant='outline' size='sm' className='gap-2 bg-transparent'>
-							<Upload className='h-4 w-4' />
-							Upload Photo
-							<span className='text-xs text-muted-foreground ml-1'>
-								JPG, PNG up to 2MB
-							</span>
-						</Button>
+							<div className='flex items-center gap-3'>
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={function() {
+										removeFormData('personal-info');
+										reset({
+											firstName: '',
+											lastName: '',
+											email: '',
+											phone: '',
+											location: '',
+											website: '',
+											linkedin: '',
+											github: '',
+											summary: '',
+										});
+										console.log('🗑️ Personal info section cleared');
+									}}
+									title='Clear all form data'
+									className='text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-3 py-2 h-8'
+								>
+									<Trash2 className='h-3.5 w-3.5 mr-1.5' />
+									<span className='text-xs font-medium'>Clear Section</span>
+								</Button>
+								<div className='h-4 w-px bg-border' />
+								<Button variant='outline' size='sm' className='gap-2 bg-transparent'>
+									<Upload className='h-4 w-4' />
+									Upload Photo
+									<span className='text-xs text-muted-foreground ml-1'>
+										JPG, PNG up to 2MB
+									</span>
+								</Button>
+							</div>
 					</div>
 				</CardHeader>
 

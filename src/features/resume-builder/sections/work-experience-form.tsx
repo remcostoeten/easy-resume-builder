@@ -162,7 +162,7 @@ export function WorkExperienceForm({
 						<Building className='h-5 w-5 text-primary' />
 						{workItem ? 'Edit Work Experience' : 'Add New Experience'}
 					</CardTitle>
-					<div className='flex items-center gap-2'>
+					<div className='flex items-center gap-3'>
 						<Button
 								variant='ghost'
 								size='sm'
@@ -183,12 +183,14 @@ export function WorkExperienceForm({
 									});
 									console.log('🗑️ Work experience section cleared');
 								}}
-								title='Clear this section'
-								className='text-xs text-muted-foreground'
+								title='Clear all form data'
+								className='text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-3 py-2 h-8'
 							>
-								<Trash2 className='h-3 w-3 mr-1' />
-								Clear Section
+								<Trash2 className='h-3.5 w-3.5 mr-1.5' />
+								<span className='text-xs font-medium'>Clear Section</span>
 							</Button>
+						
+						<div className='h-4 w-px bg-border' />
 						{workItem && onDelete && (
 							<Button
 								variant='destructive'

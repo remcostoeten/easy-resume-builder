@@ -274,7 +274,7 @@ function handleDocumentKeyDown(event: KeyboardEvent) {
 						className='absolute top-4 right-4 opacity-20 pointer-events-none'
 						aria-hidden='true'
 					>
-						<div className='animate-spin' style={{ animationDuration: '20s' }}>
+						<div className=''>
 							<span className='text-primary text-lg'>✨</span>
 						</div>
 					</div>
@@ -282,10 +282,7 @@ function handleDocumentKeyDown(event: KeyboardEvent) {
 						className='absolute bottom-4 left-4 opacity-20 pointer-events-none'
 						aria-hidden='true'
 					>
-						<div
-							className='animate-spin'
-							style={{ animationDuration: '25s', animationDirection: 'reverse' }}
-						>
+						<div className=''>
 							<span className='text-secondary text-base'>⭐</span>
 						</div>
 					</div>

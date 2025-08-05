@@ -67,19 +67,14 @@ export function ModernMainLayout() {
 							id='modern-sections-panel'
 							order={1}
 						>
-							<motion.div
-								className='h-full border-r border-white/10 bg-gradient-to-b from-slate-900/50 to-blue-900/50 backdrop-blur-sm'
-								initial={{ x: -100, opacity: 0 }}
-								animate={{ x: 0, opacity: 1 }}
-								transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-							>
+							<div className='h-full border-r border-white/10 bg-gradient-to-b from-slate-900/50 to-blue-900/50 backdrop-blur-sm'>
 								<ModernSectionsPanel
 									sections={sections}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 									currentSectionId={currentSection?.id}
 								/>
-							</motion.div>
+							</div>
 						</ResizablePanel>
 
 						<ResizableHandle withHandle />
@@ -90,23 +85,13 @@ export function ModernMainLayout() {
 							id='modern-editing-area'
 							order={2}
 						>
-							<motion.div
-								className='h-full bg-gradient-to-b from-slate-900/30 to-purple-900/30 backdrop-blur-sm'
-								initial={{ y: 100, opacity: 0 }}
-								animate={{ y: 0, opacity: 1 }}
-								transition={{
-									type: 'spring',
-									stiffness: 300,
-									damping: 30,
-									delay: 0.1,
-								}}
-							>
+							<div className='h-full bg-gradient-to-b from-slate-900/30 to-purple-900/30 backdrop-blur-sm'>
 								<ModernEditingArea
 									sections={sections}
 									resumeData={resumeData as unknown as TResumeData}
 									onStepChange={setCurrentStepIndex}
 								/>
-							</motion.div>
+							</div>
 						</ResizablePanel>
 
 						<ResizableHandle withHandle />
@@ -117,19 +102,9 @@ export function ModernMainLayout() {
 							id='modern-preview-area'
 							order={3}
 						>
-							<motion.div
-								className='h-full border-l border-white/10 bg-gradient-to-b from-blue-900/30 to-purple-900/50 backdrop-blur-sm'
-								initial={{ x: 100, opacity: 0 }}
-								animate={{ x: 0, opacity: 1 }}
-								transition={{
-									type: 'spring',
-									stiffness: 300,
-									damping: 30,
-									delay: 0.2,
-								}}
-							>
+							<div className='h-full border-l border-white/10 bg-gradient-to-b from-blue-900/30 to-purple-900/50 backdrop-blur-sm'>
 								<PreviewArea />
-							</motion.div>
+							</div>
 						</ResizablePanel>
 					</ResizablePanelGroup>
 				</div>

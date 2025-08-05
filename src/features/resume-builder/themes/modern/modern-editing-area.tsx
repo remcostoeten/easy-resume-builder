@@ -53,11 +53,7 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 	if (enabledSections.length === 0) {
 		return (
 			<div className='h-full flex items-center justify-center p-8'>
-				<motion.div
-					initial={{ opacity: 0, scale: 0.9 }}
-					animate={{ opacity: 1, scale: 1 }}
-					className='text-center max-w-md'
-				>
+				<div className='text-center max-w-md'>
 					<GradientCard className='p-8'>
 						<Sparkles className='h-16 w-16 mx-auto text-blue-400 mb-4' />
 						<h2 className='text-2xl font-bold text-white mb-2'>Ready to Start?</h2>
@@ -68,7 +64,7 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 							Get Started
 						</Button>
 					</GradientCard>
-				</motion.div>
+				</div>
 			</div>
 		);
 	}
@@ -76,11 +72,7 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 	return (
 		<div className='h-full flex flex-col'>
 			{/* Step Navigation */}
-			<motion.div
-				className='border-b border-white/10 bg-gradient-to-r from-slate-900/50 to-blue-900/50 backdrop-blur-sm p-6'
-				initial={{ opacity: 0, y: -20 }}
-				animate={{ opacity: 1, y: 0 }}
-			>
+			<div className='border-b border-white/10 bg-gradient-to-r from-slate-900/50 to-blue-900/50 backdrop-blur-sm p-6'>
 				<div className='flex items-center justify-between mb-4'>
 					<div>
 						<h1 className='text-2xl font-bold text-white'>
@@ -132,19 +124,13 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 						</motion.button>
 					))}
 				</div>
-			</motion.div>
+			</div>
 
 			{/* Content Area */}
 			<div className='flex-1 overflow-auto'>
 				<div className='p-6'>
 					<AnimatePresence mode='wait'>
-						<motion.div
-							key={currentSection?.id}
-							initial={{ opacity: 0, x: 20 }}
-							animate={{ opacity: 1, x: 0 }}
-							exit={{ opacity: 0, x: -20 }}
-							transition={{ duration: 0.3, ease: 'easeInOut' }}
-						>
+						<div key={currentSection?.id}>
 							{currentSection && (
 								<GradientCard className='p-6'>
 									<SectionRenderer
@@ -153,17 +139,13 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 									/>
 								</GradientCard>
 							)}
-						</motion.div>
+						</div>
 					</AnimatePresence>
 				</div>
 			</div>
 
 			{/* Navigation Footer */}
-			<motion.div
-				className='border-t border-white/10 bg-gradient-to-r from-slate-900/50 to-purple-900/50 backdrop-blur-sm p-6'
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-			>
+			<div className='border-t border-white/10 bg-gradient-to-r from-slate-900/50 to-purple-900/50 backdrop-blur-sm p-6'>
 				<div className='flex justify-between items-center'>
 					<Button
 						variant='outline'
@@ -196,7 +178,7 @@ export function ModernEditingArea({ sections, resumeData, onStepChange }: TModer
 						<ChevronRight className='h-4 w-4' />
 					</Button>
 				</div>
-			</motion.div>
+			</div>
 
 			{/* Floating Action Button */}
 			<FloatingActionButton onClick={handleQuickAdd} label='Quick Add' variant='secondary' />

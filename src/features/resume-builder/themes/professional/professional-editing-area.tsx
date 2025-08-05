@@ -114,16 +114,12 @@ export function ProfessionalEditingArea({ sections, resumeData }: TProfessionalE
 
 			<div className='flex-1 overflow-auto bg-background'>
 				<AnimatePresence mode='wait'>
-					<motion.div
+					<div
 						key={activeSection}
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -20 }}
-						transition={{ duration: 0.2 }}
 						className='min-h-full'
 					>
 						{renderSectionContent()}
-					</motion.div>
+					</div>
 				</AnimatePresence>
 			</div>
 		</div>

@@ -106,20 +106,34 @@ export function PersonalInfoSection({ className, data }: TProps) {
 					</div>
 				</div>
 
-				{/* Third Row - Location */}
-				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-1'>
-						Location <span className='text-red-500'>*</span>
-					</label>
-					<PersistedInput
-						formKey='personal-info'
-						fieldName='location'
-						placeholder='New York, NY'
-						defaultValue={data.location}
-					/>
+				{/* Third Row - Location & Job Title */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<div>
+						<label className='block text-sm font-medium text-gray-700 mb-1'>
+							Location <span className='text-red-500'>*</span>
+						</label>
+						<PersistedInput
+							formKey='personal-info'
+							fieldName='location'
+							placeholder='New York, NY'
+							defaultValue={data.location}
+						/>
+					</div>
+					
+					<div>
+						<label className='block text-sm font-medium text-gray-700 mb-1'>
+							Job Title
+						</label>
+						<PersistedInput
+							formKey='personal-info'
+							fieldName='jobTitle'
+							placeholder='Software Engineer'
+							defaultValue={data.jobTitle || ''}
+						/>
+					</div>
 				</div>
 
-				{/* Fourth Row - Website, LinkedIn, GitHub */}
+				{/* Fourth Row - Website, Portfolio, LinkedIn */}
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					<div>
 						<label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -136,6 +150,19 @@ export function PersonalInfoSection({ className, data }: TProps) {
 					
 					<div>
 						<label className='block text-sm font-medium text-gray-700 mb-1'>
+							Portfolio
+						</label>
+						<PersistedInput
+							formKey='personal-info'
+							fieldName='portfolio'
+							type='url'
+							placeholder='https://portfolio.johndoe.com'
+							defaultValue={data.portfolio || ''}
+						/>
+					</div>
+					
+					<div>
+						<label className='block text-sm font-medium text-gray-700 mb-1'>
 							LinkedIn
 						</label>
 						<PersistedInput
@@ -146,7 +173,10 @@ export function PersonalInfoSection({ className, data }: TProps) {
 							defaultValue={data.linkedin || ''}
 						/>
 					</div>
-					
+				</div>
+				
+				{/* Fifth Row - GitHub, Twitter */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
 						<label className='block text-sm font-medium text-gray-700 mb-1'>
 							GitHub
@@ -157,6 +187,19 @@ export function PersonalInfoSection({ className, data }: TProps) {
 							type='url'
 							placeholder='https://github.com/johndoe'
 							defaultValue={data.github || ''}
+						/>
+					</div>
+					
+					<div>
+						<label className='block text-sm font-medium text-gray-700 mb-1'>
+							Twitter
+						</label>
+						<PersistedInput
+							formKey='personal-info'
+							fieldName='twitter'
+							type='url'
+							placeholder='https://twitter.com/johndoe'
+							defaultValue={data.twitter || ''}
 						/>
 					</div>
 				</div>

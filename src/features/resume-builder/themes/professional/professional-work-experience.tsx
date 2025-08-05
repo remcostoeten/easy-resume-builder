@@ -81,19 +81,14 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 
 			<AnimatePresence>
 				{isFormVisible && (
-					<motion.div
-						initial={{ opacity: 0, height: 0 }}
-						animate={{ opacity: 1, height: 'auto' }}
-						exit={{ opacity: 0, height: 0 }}
-						transition={{ duration: 0.3 }}
-					>
+					<div>
 						<WorkExperienceForm
 							workItem={editingItem || undefined}
 							onSave={handleSave}
 							onCancel={handleCancel}
 							onDelete={editingItem ? handleDelete : undefined}
 						/>
-					</motion.div>
+					</div>
 				)}
 			</AnimatePresence>
 
@@ -101,12 +96,8 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 				<div className='space-y-4'>
 					<AnimatePresence>
 						{data.map((item, index) => (
-							<motion.div
+							<div
 								key={item.id}
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: -20 }}
-								transition={{ delay: index * 0.1 }}
 							>
 								<Card
 									className='hover:shadow-sm transition-shadow cursor-pointer'
@@ -184,7 +175,7 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 										</div>
 									</CardContent>
 								</Card>
-							</motion.div>
+							</div>
 						))}
 					</AnimatePresence>
 

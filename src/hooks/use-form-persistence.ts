@@ -125,12 +125,6 @@ export function useFormPersistence({
 		};
 	}, [saveField]);
 	
-	/**
-	 * Load data on mount
-	 */
-	useEffect(() => {
-		loadFormData();
-	}, [loadFormData]);
 	
 	return {
 		loadFormData,

@@ -123,34 +123,25 @@ export function SectionsPanel({
 						strategy={verticalListSortingStrategy}
 					>
 						<AnimatePresence mode='popLayout'>
-							{sortedSections.map((section) => (
-								<motion.div
+						{sortedSections.map((section) => (
+								<div
 									key={section.id}
-									layout
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									exit={{ opacity: 0, scale: 0.8 }}
-									transition={{ duration: 0.2 }}
 								>
 									<SortableSectionItem
 										section={section}
 										onToggle={onToggleSection}
 									/>
-								</motion.div>
+								</div>
 							))}
 						</AnimatePresence>
 					</SortableContext>
 				</DndContext>
 
-				<motion.div
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					className='mt-4 p-3 rounded-lg bg-muted/50 border-dashed border-2'
-				>
+				<div className='mt-4 p-3 rounded-lg bg-muted/50 border-dashed border-2'>
 					<p className='text-xs text-muted-foreground text-center'>
 						Drag sections to reorder • Toggle switches to show/hide
 					</p>
-				</motion.div>
+				</div>
 			</CardContent>
 		</Card>
 	);

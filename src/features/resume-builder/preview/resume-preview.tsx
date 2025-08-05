@@ -1,6 +1,5 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai/react';
 import { Building, Calendar, Github, Globe, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import type { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from 'react';
@@ -69,14 +68,8 @@ export function ResumePreview() {
 
 	return (
 		<div className='w-full bg-white text-black p-8 space-y-6'>
-			<AnimatePresence>
-				{hasPersonalInfo && (
-					<motion.header
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -20 }}
-						className='text-center space-y-4'
-					>
+			{hasPersonalInfo && (
+				<header className='text-center space-y-4'>
 						<div>
 							<h1 className='text-3xl font-bold text-gray-900'>
 								{personalInfo.firstName} {personalInfo.lastName}
@@ -126,15 +119,13 @@ export function ResumePreview() {
 								</div>
 							)}
 						</div>
-					</motion.header>
-				)}
-			</AnimatePresence>
+				</header>
+			)}
 
 			{hasPersonalInfo && enabledSections.length > 1 && <Separator />}
 
 			<div className='space-y-6'>
-				<AnimatePresence>
-					{enabledSections
+				{enabledSections
 						.filter((section: { type: string }) => section.type !== 'personal-info')
 						.map(
 							(
@@ -168,14 +159,10 @@ export function ResumePreview() {
 								},
 								index: number
 							) => (
-								<motion.section
-									key={section.id}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -20 }}
-									transition={{ delay: index * 0.1 }}
-									className='space-y-4'
-								>
+									<section
+										key={section.id}
+										className='space-y-4'
+									>
 									<h2 className='text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2'>
 										{section.title}
 									</h2>
@@ -328,10 +315,9 @@ export function ResumePreview() {
 											</p>
 										)}
 									</div>
-								</motion.section>
+									</section>
 							)
-						)}
-				</AnimatePresence>
+					)}
 			</div>
 
 			{enabledSections.length === 0 && (

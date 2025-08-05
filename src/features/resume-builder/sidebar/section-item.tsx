@@ -26,12 +26,7 @@ export function SectionItem({ section, onToggle, isDragging, dragHandleProps }: 
 	}
 
 	return (
-		<motion.div
-			layout
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -20 }}
-			transition={{ duration: 0.2 }}
+		<div
 			className={cn(
 				'flex items-center gap-3 p-3 rounded-lg border bg-card transition-all duration-200',
 				isDragging && 'shadow-lg scale-105 bg-accent',
@@ -74,6 +69,6 @@ export function SectionItem({ section, onToggle, isDragging, dragHandleProps }: 
 				disabled={section.isRequired}
 				aria-label={`Toggle ${section.title} section`}
 			/>
-		</motion.div>
+		</div>
 	);
 }

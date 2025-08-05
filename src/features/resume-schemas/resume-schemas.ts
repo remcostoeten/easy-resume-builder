@@ -6,18 +6,41 @@ export const personalInfoSchema = z.object({
 	email: z.string().email('Invalid email address'),
 	phone: z.string().min(1, 'Phone number is required'),
 	location: z.string().min(1, 'Location is required'),
-	website: z.string().optional().refine(
-		(val) => !val || val === '' || z.string().url().safeParse(val).success,
-		{ message: 'Invalid URL format' }
-	),
-	linkedin: z.string().optional().refine(
-		(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('linkedin.com'),
-		{ message: 'Invalid LinkedIn URL format' }
-	),
-	github: z.string().optional().refine(
-		(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('github.com'),
-		{ message: 'Invalid GitHub URL format' }
-	),
+	jobTitle: z.string().optional(),
+	website: z
+		.string()
+		.optional()
+		.refine((val) => !val || val === '' || z.string().url().safeParse(val).success, {
+			message: 'Invalid URL format',
+		}),
+	portfolio: z
+		.string()
+		.optional()
+		.refine((val) => !val || val === '' || z.string().url().safeParse(val).success, {
+			message: 'Invalid URL format',
+		}),
+	linkedin: z
+		.string()
+		.optional()
+		.refine(
+			(val) =>
+				!val || val === '' || z.string().url().safeParse(val).success || val.includes('linkedin.com'),
+			{ message: 'Invalid LinkedIn URL format' }
+		),
+	github: z
+		.string()
+		.optional()
+		.refine(
+			(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('github.com'),
+			{ message: 'Invalid GitHub URL format' }
+		),
+	twitter: z
+		.string()
+		.optional()
+		.refine(
+			(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('twitter.com'),
+			{ message: 'Invalid Twitter URL format' }
+		),
 	summary: z.string().optional(),
 });
 

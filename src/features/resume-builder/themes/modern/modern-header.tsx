@@ -16,12 +16,7 @@ type TProps = {
 
 export function ModernHeader({ progress, currentStep, onPreview, onDownload, onSettings }: TProps) {
 	return (
-		<motion.header
-			className='relative border-b border-white/10 bg-gradient-to-r from-slate-900/95 via-blue-900/95 to-purple-900/95 backdrop-blur-xl'
-			initial={{ y: -100, opacity: 0 }}
-			animate={{ y: 0, opacity: 1 }}
-			transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-		>
+		<header className='relative border-b border-white/10 bg-gradient-to-r from-slate-900/95 via-blue-900/95 to-purple-900/95 backdrop-blur-xl'>
 			<div className='absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10' />
 
 			<div className='relative px-6 py-4'>
@@ -97,6 +92,6 @@ export function ModernHeader({ progress, currentStep, onPreview, onDownload, onS
 					</div>
 				</div>
 			</div>
-		</motion.header>
+		</header>
 	);
 }
