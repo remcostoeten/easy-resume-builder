@@ -1,0 +1,71 @@
+'use client';
+
+import { useEffect } from 'react';
+import { getDefaultStore } from 'jotai';
+import { resumeAtom } from '@/store/resume-store';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import type { TResumeData, TResumeSection } from '@/types/resume';
+import type { Mutable } from '@/store/resume-store';
+
+function createDefaultSections(): Mutable<TResumeSection>[] {
+	const now = new Date();
+
+	return Object.values(SECTION_CONFIGS)
+		.sort((a, b) => a.defaultOrder - b.defaultOrder)
+		.map((config) => ({
+			id: `section-${config.type}`,
+			createdAt: now,
+			updatedAt: now,
+			type: config.type,
+			title: config.title,
+			isEnabled:
+				config.type === 'personal-info' ||
+				config.type === 'work-experience' ||
+				config.type === 'skills',
+			order: config.defaultOrder,
+			isRequired: config.isRequired,
+		})) as Mutable<TResumeSection>[];
+}
+
+function createEmptyResumeData(): Mutable<TResumeData> {
+	const now: Date = new Date();
+
+	return {
+		id: 'resume-root',
+		createdAt: now,
+		updatedAt: now,
+		personalInfo: {
+			id: 'personal-info',
+			createdAt: now,
+			updatedAt: now,
+			firstName: '',
+			lastName: '',
+			email: '',
+			phone: '',
+			location: '',
+		},
+		workExperience: [],
+		education: [],
+		skills: [],
+		sections: createDefaultSections(),
+		metadata: {
+			title: 'Untitled Resume',
+			template: 'professional',
+			lastModified: now,
+		},
+	} as Mutable<TResumeData>;
+}
+
+
+type TClientWrapperProps = {
+	children: React.ReactNode;
+};
+
+export function ClientWrapper({ children }: TClientWrapperProps) {
+	useEffect(() => {
+		const store = getDefaultStore();
+		store.set(resumeAtom, createEmptyResumeData());
+	}, []);
+
+	return <>{children}</>;
+}

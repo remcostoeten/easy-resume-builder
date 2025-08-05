@@ -3,14 +3,9 @@
 import { Eye, Maximize2, Printer } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Card } from '@/shared/components/ui/card';
-import type { TResumeData } from '@/types/resume';
 import { ResumePreview } from '../../preview/resume-preview';
 
-export type TProfessionalPreviewProps = {
-	readonly resumeData: TResumeData;
-};
-
-export function ProfessionalPreview({ resumeData }: TProfessionalPreviewProps) {
+export function ProfessionalPreview() {
 	function _handleDownload() {
 		console.log('Download resume as PDF');
 	}
@@ -53,7 +48,7 @@ export function ProfessionalPreview({ resumeData }: TProfessionalPreviewProps) {
 			<div className='flex-1 overflow-auto p-6'>
 				<div className='max-w-[8.5in] mx-auto'>
 					<Card className='shadow-lg bg-white text-black'>
-						<ResumePreview resumeData={resumeData} />
+						<ResumePreview />
 					</Card>
 				</div>
 

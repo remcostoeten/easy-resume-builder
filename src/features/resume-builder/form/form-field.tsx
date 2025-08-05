@@ -12,6 +12,12 @@ type TProps = {
 	readonly hasError?: boolean;
 	readonly required?: boolean;
 	readonly className?: string;
+	// Allow all standard HTML input/textarea attributes and register() props
+	readonly onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+	readonly onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+	readonly value?: string;
+	readonly defaultValue?: string;
+	[key: string]: any; // Allow additional props from register()
 };
 
 export const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, TProps>(

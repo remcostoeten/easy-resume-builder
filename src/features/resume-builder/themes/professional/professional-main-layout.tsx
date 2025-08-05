@@ -8,14 +8,14 @@ import {
 	ResizablePanel,
 	ResizablePanelGroup,
 } from '@/shared/components/ui/resizable-panels';
-import { reorderSections, resumeAtomWithMigration, toggleSection } from '@/store/resume-store';
+import { reorderSections, resumeAtom, toggleSection } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 import { ProfessionalEditingArea } from './professional-editing-area';
 import { ProfessionalHeader } from './professional-header';
 import { ProfessionalPreview } from './professional-preview';
 import { ProfessionalSidebar } from './professional-sidebar';
 export function ProfessionalMainLayout() {
-	const [resumeData] = useAtom(resumeAtomWithMigration);
+	const [resumeData] = useAtom(resumeAtom);
 	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
@@ -64,10 +64,6 @@ export function ProfessionalMainLayout() {
 		window.print();
 	}
 
-	function handleSettings() {
-		console.log('Open settings');
-	}
-
 	const sidebarSize = isPreviewMode ? 0 : 20;
 	const editingSize = isPreviewMode ? 0 : isSplitMode ? 50 : isEditMode ? 80 : 0;
 	const previewSize = isPreviewMode ? 100 : isSplitMode ? 30 : isEditMode ? 0 : 100;
@@ -77,7 +73,6 @@ export function ProfessionalMainLayout() {
 			<ProfessionalHeader
 				onPreview={handlePreview}
 				onDownload={handleDownload}
-				onSettings={handleSettings}
 				onTogglePreview={handleTogglePreview}
 				onToggleEdit={handleToggleEdit}
 				onToggleSplit={handleToggleSplit}
@@ -132,9 +127,7 @@ export function ProfessionalMainLayout() {
 							id='professional-preview-area'
 							order={3}
 						>
-							<ProfessionalPreview
-								resumeData={resumeData as unknown as TResumeData}
-							/>
+							<ProfessionalPreview />
 						</ResizablePanel>
 					)}
 				</ResizablePanelGroup>

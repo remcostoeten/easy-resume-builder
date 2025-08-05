@@ -5,7 +5,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
 import { AnimatedBackground } from '@/shared/components/ui/animated-background';
-import { reorderSections, resumeAtomWithMigration, toggleSection } from '@/store/resume-store';
+import { reorderSections, resumeAtom, toggleSection } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 import { PreviewArea } from '../../preview/preview-area';
 import { ModernEditingArea } from './modern-editing-area';
@@ -13,7 +13,7 @@ import { ModernHeader } from './modern-header';
 import { ModernSectionsPanel } from './modern-sections-panel';
 
 export function ModernMainLayout() {
-	const [resumeData] = useAtom(resumeAtomWithMigration);
+	const [resumeData] = useAtom(resumeAtom);
 	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -128,7 +128,7 @@ export function ModernMainLayout() {
 									delay: 0.2,
 								}}
 							>
-								<PreviewArea resumeData={resumeData as unknown as TResumeData} />
+								<PreviewArea />
 							</motion.div>
 						</ResizablePanel>
 					</ResizablePanelGroup>

@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAtomValue } from 'jotai/react';
 import { Building, Calendar, Github, Globe, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import type { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from 'react';
 import React from 'react';
@@ -8,12 +9,10 @@ import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
 import type { TResumeData } from '@/types/resume';
 import { formatDateRange } from '@/shared/utilities/date-utils';
+import { resumeAtom } from '@/store/resume-store';
 
-export type TResumePreviewProps = {
-	readonly resumeData: TResumeData;
-};
-
-export function ResumePreview({ resumeData }: TResumePreviewProps) {
+export function ResumePreview() {
+	const resumeData = useAtomValue(resumeAtom) as unknown as TResumeData;
 	const { personalInfo, workExperience, skills, sections } = resumeData;
 	const enabledSections = React.useMemo(
 		function computeEnabledSections() {

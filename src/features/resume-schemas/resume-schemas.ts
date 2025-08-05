@@ -4,11 +4,20 @@ export const personalInfoSchema = z.object({
 	firstName: z.string().min(1, 'First name is required'),
 	lastName: z.string().min(1, 'Last name is required'),
 	email: z.string().email('Invalid email address'),
-	phone: z.string().optional(),
-	location: z.string().optional(),
-	website: z.string().url('Invalid URL').optional().or(z.literal('')),
-	linkedin: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
-	github: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
+	phone: z.string().min(1, 'Phone number is required'),
+	location: z.string().min(1, 'Location is required'),
+	website: z.string().optional().refine(
+		(val) => !val || val === '' || z.string().url().safeParse(val).success,
+		{ message: 'Invalid URL format' }
+	),
+	linkedin: z.string().optional().refine(
+		(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('linkedin.com'),
+		{ message: 'Invalid LinkedIn URL format' }
+	),
+	github: z.string().optional().refine(
+		(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('github.com'),
+		{ message: 'Invalid GitHub URL format' }
+	),
 	summary: z.string().optional(),
 });
 

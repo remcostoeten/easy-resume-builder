@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, Edit, Eye, EyeOff, Moon, Split, Sun } from 'lucide-react';
+import { Download, Edit, Eye, EyeOff, Moon, Save, Split, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { SaveButton } from '@/features/resume-builder/components/save-button';
 import { Badge } from '@/shared/components/ui/badge';
@@ -10,7 +10,6 @@ import { setResumeDraft } from '@/store/resume-store';
 type TProps = {
 	readonly onPreview: () => void;
 	readonly onDownload: () => void;
-	readonly onSettings: () => void;
 	readonly onTogglePreview?: () => void;
 	readonly onToggleEdit?: () => void;
 	readonly onToggleSplit?: () => void;
@@ -22,7 +21,6 @@ type TProps = {
 export function ProfessionalHeader({
 	onPreview,
 	onDownload,
-	onSettings,
 	onTogglePreview,
 	onToggleEdit,
 	onToggleSplit,
@@ -247,7 +245,10 @@ export function ProfessionalHeader({
 				</div>
 
 				<div className='flex items-center gap-2'>
-					<SaveButton className='[&>div]:text-muted-foreground' />
+					<div className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<Save className='h-4 w-4' />
+						Auto-saved
+					</div>
 
 					<div className='h-6 w-px bg-border' />
 

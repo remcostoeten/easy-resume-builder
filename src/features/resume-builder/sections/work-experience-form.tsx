@@ -2,9 +2,16 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Building, Calendar, Plus, Save, Trash2, X } from 'lucide-react';
+import {
+	Building,
+	Calendar,
+	Plus,
+	Save,
+	Trash2,
+	X,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { Input } from '@/shared/components/ui/input';
@@ -18,8 +25,9 @@ import {
 } from '@/shared/components/ui/select';
 import { Switch } from '@/shared/components/ui/switch';
 import { Textarea } from '@/shared/components/ui/textarea';
-import type { TWorkItem } from '@/types/resume';
 import { createEntity } from '@/shared/utilities/entity';
+import { useSmartForm } from '@/shared/utilities/';
+import type { TWorkItem } from '@/types/resume';
 import { type TWorkItemForm, workItemSchema } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
@@ -50,99 +58,99 @@ export function WorkExperienceForm({
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid: _isValid },
 		setValue,
-		watch: _watch,
-	} = useForm<TWorkItemForm>({
-		resolver: zodResolver(workItemSchema),
-		defaultValues: workItem
-			? {
-					company: workItem.company,
-					position: workItem.position,
-					location: workItem.location,
-					description: workItem.description,
-					achievements: [...workItem.achievements],
-					dateRange: {
-						startDate: workItem.dateRange?.startDate,
-						endDate: workItem.dateRange?.endDate,
-						isCurrentPosition: workItem.dateRange?.isCurrentPosition,
-						dateFormat: workItem.dateRange?.dateFormat,
+		getValues,
+		formState: { errors },
+		handleFormSubmit,
+		saveStatus,
+	} = useSmartForm<TWorkItemForm>(
+		{
+			resolver: zodResolver(workItemSchema),
+			defaultValues: workItem
+				? {
+						...workItem,
+						achievements: [...workItem.achievements],
+						dateRange: {
+							...workItem.dateRange,
+						},
+					}
+				: {
+						company: '',
+						position: '',
+						location: '',
+						description: '',
+						achievements: [],
+						dateRange: {
+							startDate: new Date(),
+							endDate: undefined,
+							isCurrentPosition: false,
+							dateFormat: 'month-year',
+						},
 					},
-				}
-			: {
-					company: '',
-					position: '',
-					location: '',
-					description: '',
-					achievements: [],
-					dateRange: {
-						startDate: new Date(),
-						endDate: undefined,
-						isCurrentPosition: false,
-						dateFormat: 'month-year',
-					},
-				},
-		mode: 'onChange',
+			mode: 'onChange',
+		},
+		async function handleSubmit(formData: TWorkItemForm) {
+			const item: TWorkItem = workItem
+				? {
+						...workItem,
+						...formData,
+					achievements: achievements.filter(function(a) { return a.trim() !== ''; }),
+						dateRange: {
+							...formData.dateRange,
+							isCurrentPosition,
+							dateFormat,
+						},
+						updatedAt: new Date(),
+					}
+				: createEntity<TWorkItem>({
+						...formData,
+						achievements: achievements.filter(function(a) { return a.trim() !== ''; }),
+						dateRange: {
+							...formData.dateRange,
+							isCurrentPosition,
+							dateFormat,
+						},
+					});
+
+			onSave(item);
+		}
+	);
+
+	function setAllFormValues(loadedData: Record<string, any>) {
+		Object.entries(loadedData).forEach(function([key, value]) {
+			setValue(key as keyof TWorkItemForm, value);
+		});
+		if (loadedData.achievements) {
+			setAchievements(loadedData.achievements);
+		}
+		if (loadedData.isCurrentPosition) {
+			setIsCurrentPosition(loadedData.isCurrentPosition);
+		}
+		if (loadedData.dateFormat) {
+			setDateFormat(loadedData.dateFormat);
+		}
+	}
+
+	const { loadFormData, createChangeHandler } = useFormPersistence({
+		formKey: 'work-experience',
+		onDataLoaded: setAllFormValues,
 	});
 
-	// Update form values when props change
-	useEffect(() => {
+	function setValueWrapper(name: string, value: any) {
+		setValue(name as keyof TWorkItemForm, value);
+	}
+
+	const enhancedSetValue = createChangeHandler(setValueWrapper, getValues);
+
+	useEffect(function() {
+		loadFormData();
+	}, [loadFormData]);
+
+	// Keep RHF values in sync
+	useEffect(function() {
 		setValue('dateRange.isCurrentPosition', isCurrentPosition);
 		setValue('dateRange.dateFormat', dateFormat);
 	}, [isCurrentPosition, dateFormat, setValue]);
-
-	function handleFormSubmit(formData: TWorkItemForm) {
-		const workItemData = workItem
-			? {
-					...workItem,
-					...formData,
-					achievements: achievements.filter((a) => a.trim() !== ''),
-					dateRange: {
-						...formData.dateRange,
-						isCurrentPosition,
-						dateFormat,
-					},
-					updatedAt: new Date(),
-				}
-			: createEntity<TWorkItem>({
-					...formData,
-					achievements: achievements.filter((a) => a.trim() !== ''),
-					dateRange: {
-						...formData.dateRange,
-						isCurrentPosition,
-						dateFormat,
-					},
-				});
-
-		onSave(workItemData);
-	}
-
-	function handleAddAchievement() {
-		setAchievements([...achievements, '']);
-	}
-
-	function handleUpdateAchievement(index: number, value: string) {
-		const updated = [...achievements];
-		updated[index] = value;
-		setAchievements(updated);
-	}
-
-	function handleRemoveAchievement(index: number) {
-		setAchievements(achievements.filter((_, i) => i !== index));
-	}
-
-	function handleCurrentPositionToggle(checked: boolean) {
-		setIsCurrentPosition(checked);
-		if (checked) {
-			setValue('dateRange.endDate', undefined);
-		}
-	}
-
-	function handleDelete() {
-		if (workItem && onDelete) {
-			onDelete(workItem.id);
-		}
-	}
 
 	return (
 		<Card className='border-border bg-card'>
@@ -157,14 +165,19 @@ export function WorkExperienceForm({
 							<Button
 								variant='destructive'
 								size='sm'
-								onClick={handleDelete}
+								onClick={function() { onDelete(workItem.id); }}
 								className='gap-2'
 							>
 								<Trash2 className='h-4 w-4' />
 								Delete
 							</Button>
 						)}
-						<Button variant='ghost' size='sm' onClick={onCancel} className='gap-2'>
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={onCancel}
+							className='gap-2'
+						>
 							<X className='h-4 w-4' />
 							Cancel
 						</Button>
@@ -173,7 +186,7 @@ export function WorkExperienceForm({
 			</CardHeader>
 
 			<CardContent>
-				<form onSubmit={handleSubmit(handleFormSubmit as any)} className='space-y-6'>
+				<form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
 					<FormGrid columns={2}>
 						<FormField
 							label='Company'
@@ -216,7 +229,12 @@ export function WorkExperienceForm({
 								<Switch
 									id='current-position'
 									checked={isCurrentPosition}
-									onCheckedChange={handleCurrentPositionToggle}
+								onCheckedChange={function(checked) {
+									setIsCurrentPosition(checked);
+									if (checked) {
+										setValue('dateRange.endDate', undefined);
+									}
+								}}
 								/>
 								<Label
 									htmlFor='current-position'
@@ -234,9 +252,9 @@ export function WorkExperienceForm({
 								</Label>
 								<Select
 									value={dateFormat}
-									onValueChange={(value: 'year' | 'month-year' | 'full-date') =>
-										setDateFormat(value)
-									}
+								onValueChange={function(value: 'year' | 'month-year' | 'full-date') {
+									setDateFormat(value);
+								}}
 								>
 									<SelectTrigger>
 										<SelectValue />
@@ -257,13 +275,13 @@ export function WorkExperienceForm({
 											dateFormat === 'month-year' ? '2023-01' : '2023'
 										}
 										{...register('dateRange.startDate', {
-											setValueAs: (value) => {
-												if (!value) return new Date();
-												if (dateFormat === 'month-year') {
-													return new Date(`${value}-01`);
-												}
-												return new Date(`${value}-01-01`);
-											},
+									setValueAs: function(value) {
+										if (!value) return new Date();
+										if (dateFormat === 'month-year') {
+											return new Date(`${value}-01`);
+										}
+										return new Date(`${value}-01-01`);
+									},
 										})}
 									/>
 								</div>
@@ -277,13 +295,13 @@ export function WorkExperienceForm({
 												dateFormat === 'month-year' ? '2024-01' : '2024'
 											}
 											{...register('dateRange.endDate', {
-												setValueAs: (value) => {
-													if (!value) return undefined;
-													if (dateFormat === 'month-year') {
-														return new Date(`${value}-01`);
-													}
-													return new Date(`${value}-01-01`);
-												},
+											setValueAs: function(value) {
+												if (!value) return undefined;
+												if (dateFormat === 'month-year') {
+													return new Date(`${value}-01`);
+												}
+												return new Date(`${value}-01-01`);
+											},
 											})}
 										/>
 									</div>
@@ -311,7 +329,7 @@ export function WorkExperienceForm({
 								type='button'
 								variant='outline'
 								size='sm'
-								onClick={handleAddAchievement}
+								onClick={function() { setAchievements([...achievements, '']); }}
 								className='gap-2 bg-transparent'
 							>
 								<Plus className='h-4 w-4' />
@@ -329,10 +347,12 @@ export function WorkExperienceForm({
 									className='flex gap-2'
 								>
 									<Input
-										placeholder='Increased team productivity by 25% through process optimization...'
+										placeholder='Increased team productivity by 25%...'
 										value={achievement}
 										onChange={(e) =>
-											handleUpdateAchievement(index, e.target.value)
+											setAchievements((prev) =>
+												prev.map((item, i) => (i === index ? e.target.value : item))
+											)
 										}
 										className='flex-1'
 									/>
@@ -340,7 +360,9 @@ export function WorkExperienceForm({
 										type='button'
 										variant='ghost'
 										size='sm'
-										onClick={() => handleRemoveAchievement(index)}
+										onClick={() =>
+											setAchievements(achievements.filter((_, i) => i !== index))
+										}
 										className='text-muted-foreground hover:text-destructive'
 									>
 										<Trash2 className='h-4 w-4' />
