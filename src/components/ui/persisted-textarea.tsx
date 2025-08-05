@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePersistedInput } from '@/hooks/use-persisted-input';
 
-export type TPersistedInputProps = {
+export type TPersistedTextareaProps = {
 	/**
 	 * Form key to group related fields
 	 */
@@ -15,7 +15,7 @@ export type TPersistedInputProps = {
 	fieldName: string;
 	
 	/**
-	 * Input placeholder text
+	 * Textarea placeholder text
 	 */
 	placeholder?: string;
 	
@@ -23,11 +23,6 @@ export type TPersistedInputProps = {
 	 * Default value if nothing is stored
 	 */
 	defaultValue?: string;
-	
-	/**
-	 * Input type
-	 */
-	type?: 'text' | 'email' | 'tel' | 'url' | 'password';
 	
 	/**
 	 * Whether to save immediately on change
@@ -38,20 +33,25 @@ export type TPersistedInputProps = {
 	 * Additional CSS classes
 	 */
 	className?: string;
+
+	/**
+	 * Number of rows
+	 */
+	rows?: number;
 };
 
 /**
- * Input component with automatic localStorage persistence
+ * Textarea component with automatic localStorage persistence
  */
-export function PersistedInput({
+export function PersistedTextarea({
 	formKey,
 	fieldName,
 	placeholder,
 	defaultValue = '',
-	type = 'text',
 	saveImmediately = false,
 	className = '',
-}: TPersistedInputProps) {
+	rows = 4,
+}: TPersistedTextareaProps) {
 	const { value, setValue, isLoading } = usePersistedInput({
 		formKey,
 		fieldName,
@@ -59,35 +59,35 @@ export function PersistedInput({
 		saveImmediately,
 	});
 	
-	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+	function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const newValue = e.target.value;
 		setValue(newValue, false); // Don't save immediately, just update state
 	}
 
-	function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+	function handleBlur(e: React.FocusEvent<HTMLTextAreaElement>) {
 		const newValue = e.target.value;
 		setValue(newValue, true); // Save on blur
 	}
 	
 	if (isLoading) {
 		return (
-			<div className={`animate-pulse bg-gray-200 h-10 rounded ${className}`} />
+			<div className={`animate-pulse bg-gray-200 h-24 rounded ${className}`} />
 		);
 	}
 	
-		return (
-			<input
-				type={type}
-				value={value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				placeholder={placeholder}
-				className={`
-					w-full px-3 py-2 border border-gray-300 rounded-md
-					focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-					transition-colors duration-200
-					${className}
-				`.trim()}
-			/>
-		);
+	return (
+		<textarea
+			value={value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			placeholder={placeholder}
+			rows={rows}
+			className={`
+				w-full px-3 py-2 border border-gray-300 rounded-md
+				focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+				transition-colors duration-200 resize-y
+				${className}
+			`.trim()}
+		/>
+	);
 }

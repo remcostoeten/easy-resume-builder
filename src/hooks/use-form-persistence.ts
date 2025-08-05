@@ -108,10 +108,10 @@ export function useFormPersistence({
 	) => {
 		const debouncedSave = createDebouncedSave(saveFormToPersistence);
 		
-		return (name: string, value: any) => {
+		return (name: string, value: any, shouldSave?: boolean) => {
 			setValue(name, value);
 			
-			if (autoSave) {
+			if (shouldSave || (autoSave && !shouldSave)) {
 				// Save individual field immediately
 				saveField(name, value);
 				
@@ -120,6 +120,20 @@ export function useFormPersistence({
 			}
 		};
 	}, [createDebouncedSave, saveFormToPersistence, autoSave, saveField]);
+
+	/**
+	 * Create blur handler for save-on-blur behavior
+	 */
+	const createBlurHandler = useCallback((
+		setValue: (name: string, value: any) => void,
+		getValues: () => Record<string, any>
+	) => {
+		return (name: string, value: any) => {
+			// Always save on blur
+			saveField(name, value);
+			saveFormToPersistence(getValues());
+		};
+	}, [saveField, saveFormToPersistence]);
 	
 	/**
 	 * Load data on mount
@@ -133,5 +147,6 @@ export function useFormPersistence({
 		saveFormData: saveFormToPersistence,
 		saveField,
 		createChangeHandler,
+		createBlurHandler,
 	};
 }

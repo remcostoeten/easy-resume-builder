@@ -7,6 +7,7 @@ import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { clearAllFormData } from '@/utils/storage/form-storage';
 import { resetStore, setResumeDraft } from '@/store/resume-store';
+import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
 
 type TProps = {
 	readonly onPreview: () => void;
@@ -283,10 +284,7 @@ export function ProfessionalHeader({
 				</div>
 
 				<div className='flex items-center gap-2'>
-					<div className='flex items-center gap-2 text-sm text-muted-foreground'>
-						<Save className='h-4 w-4' />
-						Auto-saved
-					</div>
+					<AutoSaveIndicator variant='compact' />
 
 					<div className='h-6 w-px bg-border' />
 

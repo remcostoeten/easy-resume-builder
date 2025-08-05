@@ -12,6 +12,7 @@ import { updatePersonalInfo } from '@/store/resume-store';
 import { getFormData, removeFormData } from '@/utils/storage';
 import type { TPersonalInfo } from '@/types/resume';
 import { FormField } from '../../form/form-field';
+import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
 
 export type TProfessionalPersonalInfoProps = {
 	readonly data: TPersonalInfo;
@@ -297,19 +298,10 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 									<span className='text-red-500'>Failed to save</span>
 								)}
 								{saveStatus === 'idle' && (
-									<span className='text-muted-foreground'>
-										Auto-saved to localStorage as you type
-									</span>
+									<AutoSaveIndicator showIcon={false} />
 								)}
 							</div>
 							
-							<Button
-								type='submit'
-								disabled={saveStatus === 'saving'}
-								className='min-w-[120px]'
-							>
-								{saveStatus === 'saving' ? 'Saving...' : 'Save & Continue'}
-							</Button>
 						</div>
 					</form>
 				</CardContent>

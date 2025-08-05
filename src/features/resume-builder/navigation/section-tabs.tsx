@@ -199,7 +199,6 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 												className={cn(
 													'relative flex items-center gap-2 px-6 py-3 text-sm font-medium whitespace-nowrap transition-all duration-200',
 													'hover:text-foreground hover:bg-accent/50 border-b-2 border-transparent min-h-[48px]',
-													'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
 													isActive
 														? 'text-foreground bg-background border-b-primary'
 														: 'text-muted-foreground'

@@ -2,7 +2,7 @@ import type React from 'react';
 import './globals.css';
 
 import { Providers } from '../components/providers/providers';
-import { poppins } from '../core/config/fonts/poppins';
+import { poppins ,nunito} from '../core/config/fonts';
 import { metadata } from '../core/config/metadata-home';
 import { cn } from '../shared/utilities/cn';
 
@@ -15,8 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			suppressHydrationWarning
 			className={cn(
 				'dark',
-				poppins.variable
-				// , lora.variable, nunito.variable
+				nunito.variable
 			)}
 		>
 			<body className='font-sans antialiased bg-background text-foreground'>

@@ -16,10 +16,19 @@ const FORM_STORAGE_KEYS = {
  */
 export function saveFormData(formKey: string, data: Record<string, any>): boolean {
 	const storageKey = `${FORM_STORAGE_KEYS.RESUME_FORM_DATA}-${formKey}`;
-	return setStorageObject(storageKey, {
+	const success = setStorageObject(storageKey, {
 		data,
 		timestamp: new Date().toISOString(),
 	});
+	
+	// Dispatch custom event for auto-save indicator
+	if (success && typeof window !== 'undefined') {
+		window.dispatchEvent(new CustomEvent('localStorageUpdate', {
+			detail: { key: storageKey, action: 'save' }
+		}));
+	}
+	
+	return success;
 }
 
 /**

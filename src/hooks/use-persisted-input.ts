@@ -68,12 +68,13 @@ export function usePersistedInput({
 	);
 	
 	// Handle value changes
-	const handleChange = useCallback((newValue: string) => {
+	const handleChange = useCallback((newValue: string, shouldSave?: boolean) => {
 		setValue(newValue);
 		
-		if (saveImmediately) {
+		if (shouldSave || saveImmediately) {
 			saveFormField(formKey, fieldName, newValue);
 		} else {
+			// Only debounce if not saving immediately
 			debouncedSave(newValue);
 		}
 	}, [formKey, fieldName, saveImmediately, debouncedSave]);
