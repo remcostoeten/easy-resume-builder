@@ -146,7 +146,7 @@ export function AutoSaveIndicator({
 								maximumFractionDigits: 0,
 							}}
 						/>
-						<span className='ml-0.5'>{unit} ago</span>
+						<span className='ml-0.5'>saved {unit} ago</span>
 					</>
 				)}
 			</span>
