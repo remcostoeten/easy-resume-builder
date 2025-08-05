@@ -3,21 +3,24 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { resumeReducer, resumeStore } from '@/store/resume-store';
-import type { TResumeSection } from '@/types/resume';
-import { ModernEditingArea } from '@/features/resume-builder/editing/modern-editing-area';
-import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
-import { ModernSectionsPanel } from '@/features/resume-builder/sidebar/modern-sections-panel';
+import { resumeStore, resumeReducer } from '@/store/resume-store';
+import { TResumeSection } from '@/types/resume';
+import { convertStoreResumeData, convertStoreSections } from '@/utils/store-type-utils';
+import { ModernEditingArea } from '../editing/modern-editing-area';
+import { PreviewArea } from '../preview/preview-area';
+import { ModernSectionsPanel } from '../sidebar/modern-sections-panel';
 import { AnimatedBackground } from '@/shared/components/ui/animated-background';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../shared/components/ui/resizable-panels';
-import { ModernHeader } from './modern-header';
+	import { ModernHeader } from './modern-header';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
 
 export function ModernMainLayout() {
-	const resumeData = useSnapshot(resumeStore).data;
+	const storeSnapshot = useSnapshot(resumeStore).data;
+	const resumeData = convertStoreResumeData(storeSnapshot);
+	const sections = convertStoreSections(storeSnapshot.sections);
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 
-	const enabledSections = resumeData.sections
+	const enabledSections = sections
 		.filter((section) => section.isEnabled)
 		.sort((a, b) => a.order - b.order);
 	const currentSection = enabledSections[currentStepIndex];
@@ -63,6 +66,8 @@ export function ModernMainLayout() {
 							minSize={20}
 							maxSize={35}
 							className='min-w-[320px]'
+							id='modern-sections-panel'
+							order={1}
 						>
 							<motion.div
 								className='h-full border-r border-white/10 bg-gradient-to-b from-slate-900/50 to-blue-900/50 backdrop-blur-sm'
@@ -71,7 +76,7 @@ export function ModernMainLayout() {
 								transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 							>
 								<ModernSectionsPanel
-									sections={resumeData.sections}
+									sections={sections}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 									currentSectionId={currentSection?.id}
@@ -81,7 +86,7 @@ export function ModernMainLayout() {
 
 						<ResizableHandle withHandle />
 
-						<ResizablePanel defaultSize={isPreviewMode ? 35 : 50} minSize={30}>
+						<ResizablePanel defaultSize={isPreviewMode ? 35 : 50} minSize={30} id='modern-editing-area' order={2}>
 							<motion.div
 								className='h-full bg-gradient-to-b from-slate-900/30 to-purple-900/30 backdrop-blur-sm'
 								initial={{ y: 100, opacity: 0 }}
@@ -94,7 +99,7 @@ export function ModernMainLayout() {
 								}}
 							>
 								<ModernEditingArea
-									sections={resumeData.sections}
+									sections={sections}
 									resumeData={resumeData}
 									onStepChange={setCurrentStepIndex}
 								/>
@@ -103,7 +108,7 @@ export function ModernMainLayout() {
 
 						<ResizableHandle withHandle />
 
-						<ResizablePanel defaultSize={isPreviewMode ? 40 : 25} minSize={20}>
+						<ResizablePanel defaultSize={isPreviewMode ? 40 : 25} minSize={20} id='modern-preview-area' order={3}>
 							<motion.div
 								className='h-full border-l border-white/10 bg-gradient-to-b from-blue-900/30 to-purple-900/50 backdrop-blur-sm'
 								initial={{ x: 100, opacity: 0 }}

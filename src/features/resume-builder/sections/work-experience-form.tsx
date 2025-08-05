@@ -37,12 +37,12 @@ export function WorkExperienceForm({
 	onCancel,
 	onDelete,
 }: TWorkExperienceFormProps) {
-	const [achievements, setAchievements] = useState<string[]>(workItem?.achievements || ['']);
+	const [achievements, setAchievements] = useState<string[]>(workItem?.achievements ? [...workItem.achievements] : ['']);
 	const [isCurrentPosition, setIsCurrentPosition] = useState(
 		workItem?.dateRange.isCurrentPosition || false
 	);
 	const [dateFormat, setDateFormat] = useState<'year' | 'month-year' | 'full-date'>(
-		workItem?.dateRange.dateFormat || 'month-year'
+		workItem?.dateRange?.dateFormat || 'month-year'
 	);
 
 	const {
@@ -53,18 +53,18 @@ export function WorkExperienceForm({
 		watch,
 	} = useForm<TWorkItemForm>({
 		resolver: zodResolver(workItemSchema),
-		defaultValues: workItem
+	defaultValues: workItem
 			? {
 					company: workItem.company,
 					position: workItem.position,
 					location: workItem.location,
 					description: workItem.description,
-					achievements: workItem.achievements,
+					achievements: [...workItem.achievements],
 					dateRange: {
-						startDate: workItem.dateRange.startDate,
-						endDate: workItem.dateRange.endDate,
-						isCurrentPosition: workItem.dateRange.isCurrentPosition,
-						dateFormat: workItem.dateRange.dateFormat,
+						startDate: workItem.dateRange?.startDate,
+						endDate: workItem.dateRange?.endDate,
+						isCurrentPosition: workItem.dateRange?.isCurrentPosition,
+						dateFormat: workItem.dateRange?.dateFormat,
 					},
 				}
 			: {
@@ -171,7 +171,7 @@ export function WorkExperienceForm({
 			</CardHeader>
 
 			<CardContent>
-				<form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
+				<form onSubmit={handleSubmit(handleFormSubmit as any)} className='space-y-6'>
 					<FormGrid columns={2}>
 						<FormField
 							label='Company'

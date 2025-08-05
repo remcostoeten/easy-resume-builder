@@ -5,8 +5,8 @@ import { CheckCircle, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
 import type { TResumeData, TResumeSection } from '@/types/resume';
-import { FloatingActionButton } from '../../shared/components/ui/floating-action-button';
-import { GradientCard } from '../../shared/components/ui/gradient-card';
+import { FloatingActionButton } from '@/shared/components/ui/floating-action-button';
+import { GradientCard } from '@/shared/components/ui/gradient-card';
 import { SectionRenderer } from './section-renderer';
 
 export type TModernEditingAreaProps = {

@@ -4,16 +4,18 @@ import * as React from 'react';
 
 import { useState } from 'react';
 import { useSnapshot } from 'valtio';
-import { ProfessionalEditingArea } from '../editing/professional-editing-area';
-import { ProfessionalPreview } from '../preview/professional-preview';
-import { ProfessionalSidebar } from '../sidebar/professional-sidebar';
+import { ProfessionalEditingArea } from '@/features/resume-builder/editing/professional-editing-area';
+import { ProfessionalPreview } from '@/features/resume-builder/preview/professional-preview';
+import { ProfessionalSidebar } from '@/features/resume-builder/sidebar/professional-sidebar';
 import { ProfessionalHeader } from './professional-header';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui/resizable-panels';
 import { resumeStore, resumeReducer } from '@/store/resume-store';
 import { TResumeSection } from '@/types/resume';
-
+import { convertStoreResumeData, convertStoreSections } from '@/utils/store-type-utils';
 export function ProfessionalMainLayout() {
-	const resumeData = useSnapshot(resumeStore).data;
+	const storeSnapshot = useSnapshot(resumeStore).data;
+	const resumeData = convertStoreResumeData(storeSnapshot);
+	const sections = convertStoreSections(storeSnapshot.sections);
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
 	const [isSplitMode, setIsSplitMode] = useState(true);
@@ -92,9 +94,11 @@ export function ProfessionalMainLayout() {
 								minSize={15}
 								maxSize={30}
 								className='min-w-[280px]'
+								id='professional-sidebar'
+								order={1}
 							>
 								<ProfessionalSidebar
-									sections={resumeData.sections}
+									sections={sections}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 								/>
@@ -105,9 +109,9 @@ export function ProfessionalMainLayout() {
 
 					{(isEditMode || isSplitMode) && !isPreviewMode && (
 						<>
-							<ResizablePanel defaultSize={editingSize} minSize={35}>
+							<ResizablePanel defaultSize={editingSize} minSize={35} id='professional-editing-area' order={2}>
 								<ProfessionalEditingArea
-									sections={resumeData.sections}
+									sections={sections}
 									resumeData={resumeData}
 								/>
 							</ResizablePanel>
@@ -116,7 +120,7 @@ export function ProfessionalMainLayout() {
 					)}
 
 					{(isSplitMode || isPreviewMode || (!isEditMode && !isSplitMode)) && (
-						<ResizablePanel defaultSize={previewSize} minSize={25}>
+						<ResizablePanel defaultSize={previewSize} minSize={25} id='professional-preview-area' order={3}>
 							<ProfessionalPreview resumeData={resumeData} />
 						</ResizablePanel>
 					)}

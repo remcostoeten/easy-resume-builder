@@ -44,7 +44,7 @@ export function PersonalInfoSection({ data }: TProps) {
 			type: 'UPDATE_PERSONAL_INFO',
 			data: formData,
 		});
-	}
+		}
 
 	function handleAutoSave() {
 		if (isDirty && isValid) {

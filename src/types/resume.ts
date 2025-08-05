@@ -1,6 +1,5 @@
 import type { TEntityBase } from './base';
 
-// Personal Information
 export type TPersonalInfo = TEntityBase & {
 	readonly firstName: string;
 	readonly lastName: string;
@@ -13,7 +12,6 @@ export type TPersonalInfo = TEntityBase & {
 	readonly summary?: string;
 };
 
-// Work Experience
 export type TDateRange = {
 	readonly startDate: Date;
 	readonly endDate?: Date;
@@ -30,7 +28,6 @@ export type TWorkItem = TEntityBase & {
 	readonly achievements: readonly string[];
 };
 
-// Skills
 export type TSkillProficiency = {
 	readonly level: number; // 1-5 or 1-10
 	readonly showLevel: boolean;
@@ -48,7 +45,6 @@ export type TSkillCategory = TEntityBase & {
 	readonly showGroupLabel: boolean;
 };
 
-// Education
 export type TEducationItem = TEntityBase & {
 	readonly institution: string;
 	readonly degree: string;
@@ -59,7 +55,6 @@ export type TEducationItem = TEntityBase & {
 	readonly achievements: readonly string[];
 };
 
-// Resume Sections
 export type TSectionType =
 	| 'personal-info'
 	| 'work-experience'
@@ -76,8 +71,7 @@ export type TResumeSection = TEntityBase & {
 	order: number;
 	isRequired: boolean;
 };
-
-// Main Resume Data
+				
 export type TResumeData = TEntityBase & {
 	readonly personalInfo: TPersonalInfo;
 	readonly workExperience: readonly TWorkItem[];

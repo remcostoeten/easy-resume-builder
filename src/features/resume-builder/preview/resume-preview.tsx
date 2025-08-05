@@ -168,7 +168,7 @@ const hasPersonalInfo = Boolean(
 												No work experience added yet.
 											</p>
 										) : (
-											workExperience.map((item: { id: Key | null | undefined; position: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; company: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; dateRange: any; location: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; description: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; achievements: any[]; }) => (
+											workExperience.map((item) => (
 												<div key={item.id} className='space-y-2'>
 													<div className='flex items-start justify-between'>
 														<div>
@@ -201,7 +201,7 @@ const hasPersonalInfo = Boolean(
 													{item.achievements.length > 0 && (
 														<ul className='text-sm text-gray-600 space-y-1 ml-4'>
 															{item.achievements.map(
-																(achievement: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, idx: Key | null | undefined) => (
+																(achievement: string, idx: number) => (
 																	<li
 																		key={idx}
 																		className='flex items-start gap-2'
@@ -226,7 +226,7 @@ const hasPersonalInfo = Boolean(
 											</p>
 										) : (
 											<div className='space-y-4'>
-												{skills.map((category: { id: Key | null | undefined; showGroupLabel: any; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; skills: any[]; }) => (
+												{skills.map((category) => (
 													<div key={category.id} className='space-y-2'>
 														{category.showGroupLabel && (
 															<h3 className='font-medium text-gray-800'>

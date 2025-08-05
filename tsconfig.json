@@ -22,7 +22,9 @@
 			      "@/*": ["src/*"],
 				"utilities": ["src/shared/utilities/index.ts"],
 				"ui": ["src/shared/components/ui/index.ts"],
-		},
+				"db": ["src/server/db/index.ts"],
+				"schema": ["src/server/db/schema.ts"]
+			},
 		"target": "ES2017"
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

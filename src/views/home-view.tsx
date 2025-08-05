@@ -1,10 +1,11 @@
 'use client';
 
-import {toast} from 'sonner'
-import { useSnapshot } from 'valtio';
+import { toast } from 'sonner'
+import { useAtom, useAtomValue } from 'jotai/react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui';
-import { resumeStore, resumeReducer } from '@/store/resume-store';
+import { resumeDraftAtom, setResumeDraft } from '@/store/resume-store';
 import { TResumeSection } from '@/types/resume';
+import type { TResumeData } from '@/types/resume';
 import { ProfessionalEditingArea } from '../features/resume-builder/editing/professional-editing-area';
 import { ProfessionalHeader } from '../features/resume-builder/layout/professional-header';
 import { ProfessionalPreview } from '../features/resume-builder/preview/professional-preview';
@@ -12,18 +13,22 @@ import { ProfessionalSidebar } from '../features/resume-builder/sidebar';
 import { useState } from 'react';
 
 export function HomeView() {
-	const resumeData = useSnapshot(resumeStore).data;
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
 	const [isSplitMode, setIsSplitMode] = useState(true);
+const resumeData = useAtomValue(resumeDraftAtom) as TResumeData;
+	
+function handleToggleSection(sectionId: string) {
+    const sections = resumeData?.sections || [];
+    const updatedSections = sections.map((section) =>
+      section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section
+    );
+    setResumeDraft({ sections: updatedSections });
+  }
 
-	function handleToggleSection(sectionId: string) {
-		resumeReducer({ type: 'TOGGLE_SECTION', sectionId });
-	}
-
-	function handleReorderSections(sections: readonly TResumeSection[]) {
-		resumeReducer({ type: 'REORDER_SECTIONS', sections });
-	}
+function handleReorderSections(sections: readonly TResumeSection[]) {
+    setResumeDraft({ sections });
+  }
 
 	function handleTogglePreview() {
 		setIsPreviewMode(!isPreviewMode);
@@ -96,7 +101,7 @@ export function HomeView() {
 								className='min-w-[280px]'
 							>
 								<ProfessionalSidebar
-									sections={resumeData.sections}
+									sections={resumeData?.sections || []}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 								/>
@@ -109,7 +114,7 @@ export function HomeView() {
 						<>
 							<ResizablePanel defaultSize={editingSize} minSize={35}>
 								<ProfessionalEditingArea
-									sections={resumeData.sections}
+									sections={resumeData?.sections || []}
 									resumeData={resumeData}
 								/>
 							</ResizablePanel>

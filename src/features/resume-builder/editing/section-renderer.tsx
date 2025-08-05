@@ -6,7 +6,7 @@ import { EducationSection } from '../sections/education-section';
 import { PersonalInfoSection } from '../sections/personal-info-section';
 import { SkillsSection } from '../sections/skills-section';
 import { WorkExperienceSection } from '../sections/work-experience-section';
-import { EmptyState } from '../../shared/components/ui/empty-state';
+import { EmptyState } from '@/shared/components/ui/empty-state';
 
 type TProps = {
 	readonly section: TResumeSection;

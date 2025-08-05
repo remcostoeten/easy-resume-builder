@@ -92,7 +92,6 @@ function SortableSectionItem({
 					checked={section.isEnabled}
 					onCheckedChange={handleToggle}
 					disabled={section.isRequired}
-					size='sm'
 				/>
 			</div>
 		</div>
@@ -100,7 +99,7 @@ function SortableSectionItem({
 }
 
 export function ProfessionalSidebar({ sections, onToggleSection, onReorderSections }: TProps) {
-	const [_activeId, setActiveId] = useState<string | null>(null);
+	const [activeId, setActiveId] = useState<string | null>(null);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -177,7 +176,6 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 				<div className='pt-4 border-t'>
 					<Button
 						variant='outline'
-						size='sm'
 						className='w-full justify-start bg-transparent'
 					>
 						<Plus className='h-4 w-4 mr-2' />

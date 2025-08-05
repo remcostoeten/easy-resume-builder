@@ -3,8 +3,8 @@
 import { Eye, Maximize2, Printer } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Card } from '@/shared/components/ui/card';
-import type { TResumeData } from '../../types/resume';
 import { ResumePreview } from './resume-preview';
+import type { TResumeData } from '@/types/resume';
 
 export type TProfessionalPreviewProps = {
 	readonly resumeData: TResumeData;

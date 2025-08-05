@@ -8,10 +8,10 @@ import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Progress } from '@/shared/components/ui/progress';
 import { EmptyState } from '@/shared/components/ui';
-import { resumeReducer } from '@/store/resume-store';
 import { TSkillCategory } from '@/types/resume';
 import { FormSection } from '../form/form-section';
 import { SkillsForm } from './skills-form';
+import { resumeReducer } from '@/store/resume-store';
 
 type TProps = {
 	readonly data: readonly TSkillCategory[];

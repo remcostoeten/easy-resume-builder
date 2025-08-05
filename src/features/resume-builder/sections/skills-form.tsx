@@ -36,11 +36,7 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 		skillCategory?.skills.map((skill) => ({ ...skill })) || [
 			createEntity<TSkill>({
 				name: '',
-				proficiency: {
-					level: 5,
-					showLevel: true,
-					displayType: 'bar',
-				},
+				proficiency: undefined,
 			}),
 		]
 	);
@@ -53,11 +49,11 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 		watch,
 	} = useForm<TSkillCategoryForm>({
 		resolver: zodResolver(skillCategorySchema),
-		defaultValues: skillCategory
+	defaultValues: skillCategory
 			? {
 					name: skillCategory.name,
 					showGroupLabel: skillCategory.showGroupLabel,
-					skills: skillCategory.skills,
+					skills: skillCategory.skills.map(skill => ({ ...skill })),
 				}
 			: {
 					name: '',
@@ -169,7 +165,7 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 			</CardHeader>
 
 			<CardContent>
-				<form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
+				<form onSubmit={handleSubmit(handleFormSubmit as any)} className='space-y-6'>
 					<div className='space-y-4'>
 						<FormField
 							label='Category Name'

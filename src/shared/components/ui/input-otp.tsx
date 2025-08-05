@@ -4,7 +4,7 @@ import { OTPInput, OTPInputContext } from 'input-otp';
 
 import * as React from 'react';
 
-import { cn } from 'utilities';
+import { cn } from '@/shared/utilities';
 function InputOTP({
 	className,
 	containerClassName,
@@ -65,7 +65,7 @@ function InputOTPSlot({
 	);
 }
 
-function InputOTPSeparator({ ...props }: React.ComponentProps<'div'>) {
+function InputOTPSeparator({ ...props }: React.ComponentProps<'hr'>) {
 	return <hr data-slot='input-otp-separator' {...props} />;
 }
 
