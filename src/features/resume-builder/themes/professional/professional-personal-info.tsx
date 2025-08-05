@@ -54,7 +54,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 		console.log('✅ Form values after loading:', getValues());
 	}
 
-	const { loadFormData, createChangeHandler } = useFormPersistence({
+	const { loadFormData, createChangeHandler, createBlurHandler } = useFormPersistence({
 		formKey: 'personal-info',
 		onDataLoaded: setAllFormValues,
 	});
@@ -64,6 +64,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 	}
 
 	const handleChange = createChangeHandler(setValueWrapper, getValues);
+	const handleBlur = createBlurHandler(setValueWrapper, getValues);
 
 
 	useEffect(function() {
@@ -190,6 +191,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								required
 								value={formValues.firstName}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('firstName', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('firstName', e.target.value)}
 								error={errors.firstName?.message}
 								hasError={Boolean(errors.firstName)}
 							/>
@@ -202,6 +204,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								required
 								value={formValues.lastName}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('lastName', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('lastName', e.target.value)}
 								error={errors.lastName?.message}
 								hasError={Boolean(errors.lastName)}
 							/>
@@ -216,6 +219,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								required
 								value={formValues.email}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('email', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('email', e.target.value)}
 								error={errors.email?.message}
 								hasError={Boolean(errors.email)}
 							/>
@@ -227,6 +231,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								placeholder='+1 (555) 123-4567'
 								value={formValues.phone}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('phone', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('phone', e.target.value)}
 								error={errors.phone?.message}
 								hasError={Boolean(errors.phone)}
 							/>
@@ -239,6 +244,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 							placeholder='New York, NY'
 							value={formValues.location}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('location', e.target.value)}
+							onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('location', e.target.value)}
 							error={errors.location?.message}
 							hasError={Boolean(errors.location)}
 						/>
@@ -251,6 +257,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								placeholder='https://johndoe.com'
 								value={formValues.website}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('website', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('website', e.target.value)}
 								error={errors.website?.message}
 								hasError={Boolean(errors.website)}
 							/>
@@ -262,6 +269,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 								placeholder='linkedin.com/in/johndoe'
 								value={formValues.linkedin}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('linkedin', e.target.value)}
+								onBlur={(e: React.FocusEvent<HTMLInputElement>) => handleBlur('linkedin', e.target.value)}
 								error={errors.linkedin?.message}
 								hasError={Boolean(errors.linkedin)}
 							/>
@@ -274,6 +282,7 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 							placeholder='Brief overview of your professional background and career objectives...'
 							value={formValues.summary}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('summary', e.target.value)}
+							onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => handleBlur('summary', e.target.value)}
 							error={errors.summary?.message}
 							hasError={Boolean(errors.summary)}
 								className='min-h-[120px]'

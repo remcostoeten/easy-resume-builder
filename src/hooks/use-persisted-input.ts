@@ -71,13 +71,12 @@ export function usePersistedInput({
 	const handleChange = useCallback((newValue: string, shouldSave?: boolean) => {
 		setValue(newValue);
 		
+		// Only save if explicitly requested (blur) or saveImmediately is true
 		if (shouldSave || saveImmediately) {
 			saveFormField(formKey, fieldName, newValue);
-		} else {
-			// Only debounce if not saving immediately
-			debouncedSave(newValue);
 		}
-	}, [formKey, fieldName, saveImmediately, debouncedSave]);
+		// Remove debounced saving to prevent flashing during typing
+	}, [formKey, fieldName, saveImmediately]);
 	
 	// Manual save function
 	const save = useCallback(() => {

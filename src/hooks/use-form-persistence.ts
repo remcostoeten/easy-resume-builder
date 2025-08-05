@@ -100,26 +100,22 @@ export function useFormPersistence({
 	}, [debounceMs]);
 	
 	/**
-	 * Create input change handler with auto-save
+	 * Create input change handler - only updates state, doesn't save
 	 */
 	const createChangeHandler = useCallback((
 		setValue: (name: string, value: any) => void,
 		getValues: () => Record<string, any>
 	) => {
-		const debouncedSave = createDebouncedSave(saveFormToPersistence);
-		
 		return (name: string, value: any, shouldSave?: boolean) => {
 			setValue(name, value);
 			
-			if (shouldSave || (autoSave && !shouldSave)) {
-				// Save individual field immediately
+			// Only save if explicitly requested (blur)
+			if (shouldSave) {
 				saveField(name, value);
-				
-				// Also save entire form after debounce
-				debouncedSave(getValues());
+				saveFormToPersistence(getValues());
 			}
 		};
-	}, [createDebouncedSave, saveFormToPersistence, autoSave, saveField]);
+	}, [saveField, saveFormToPersistence]);
 
 	/**
 	 * Create blur handler for save-on-blur behavior

@@ -31,7 +31,7 @@ export function AnimatedTimeAgo({ seconds, className = '' }: TProps) {
 					maximumFractionDigits: 0,
 				}}
 			/>
-			<span>{unit} ago</span>
+			<span>saved {unit} ago</span>
 		</span>
 	);
 }
