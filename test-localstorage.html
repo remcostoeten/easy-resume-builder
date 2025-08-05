@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test localStorage</title>
+</head>
+<body>
+    <h1>localStorage Test</h1>
+    <input type="text" id="testInput" placeholder="Type something here">
+    <button onclick="save()">Save</button>
+    <button onclick="load()">Load</button>
+    <button onclick="clear()">Clear</button>
+    <div id="output"></div>
+
+    <script>
+        const KEY = 'resume-builder-data';
+        
+        function save() {
+            const input = document.getElementById('testInput');
+            const data = {
+                testValue: input.value,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(KEY, JSON.stringify(data));
+            document.getElementById('output').innerHTML = 'Saved: ' + JSON.stringify(data);
+            console.log('Saved:', data);
+        }
+        
+        function load() {
+            const stored = localStorage.getItem(KEY);
+            if (stored) {
+                const data = JSON.parse(stored);
+                document.getElementById('testInput').value = data.testValue || '';
+                document.getElementById('output').innerHTML = 'Loaded: ' + stored;
+                console.log('Loaded:', data);
+            } else {
+                document.getElementById('output').innerHTML = 'No data found';
+                console.log('No data found');
+            }
+        }
+        
+        function clear() {
+            localStorage.removeItem(KEY);
+            document.getElementById('testInput').value = '';
+            document.getElementById('output').innerHTML = 'Cleared';
+            console.log('Cleared');
+        }
+        
+        // Auto-load on page load
+        window.onload = load;
+    </script>
+</body>
+</html>

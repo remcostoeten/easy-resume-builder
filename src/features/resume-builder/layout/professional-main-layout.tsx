@@ -3,27 +3,27 @@
 import * as React from 'react';
 
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
-import { ProfessionalEditingArea } from '../editing/professional-editing-area';
-import { ProfessionalPreview } from '../preview/professional-preview';
-import { ProfessionalSidebar } from '../sidebar/professional-sidebar';
+import { useAtom } from 'jotai';
+import { ProfessionalEditingArea } from '@/features/resume-builder/editing/professional-editing-area';
+import { ProfessionalPreview } from '@/features/resume-builder/preview/professional-preview';
+import { ProfessionalSidebar } from '@/features/resume-builder/sidebar/professional-sidebar';
 import { ProfessionalHeader } from './professional-header';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui/resizable-panels';
-import { resumeStore, resumeReducer } from '@/store/resume-store';
-import { TResumeSection } from '@/types/resume';
-
+import { resumeAtomWithMigration, toggleSection, reorderSections } from '@/store/resume-store';
+import { TResumeSection, TResumeData } from '@/types/resume';
 export function ProfessionalMainLayout() {
-	const resumeData = useSnapshot(resumeStore).data;
+	const [resumeData] = useAtom(resumeAtomWithMigration);
+	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
 	const [isSplitMode, setIsSplitMode] = useState(true);
 
 	function handleToggleSection(sectionId: string) {
-		resumeReducer({ type: 'TOGGLE_SECTION', sectionId });
+		toggleSection(sectionId);
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		resumeReducer({ type: 'REORDER_SECTIONS', sections });
+		reorderSections(sections);
 	}
 
 	function handleTogglePreview() {
@@ -92,9 +92,11 @@ export function ProfessionalMainLayout() {
 								minSize={15}
 								maxSize={30}
 								className='min-w-[280px]'
+								id='professional-sidebar'
+								order={1}
 							>
 								<ProfessionalSidebar
-									sections={resumeData.sections}
+									sections={sections}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 								/>
@@ -105,10 +107,10 @@ export function ProfessionalMainLayout() {
 
 					{(isEditMode || isSplitMode) && !isPreviewMode && (
 						<>
-							<ResizablePanel defaultSize={editingSize} minSize={35}>
+							<ResizablePanel defaultSize={editingSize} minSize={35} id='professional-editing-area' order={2}>
 								<ProfessionalEditingArea
-									sections={resumeData.sections}
-									resumeData={resumeData}
+									sections={sections}
+									resumeData={resumeData as unknown as TResumeData}
 								/>
 							</ResizablePanel>
 							{isSplitMode && <ResizableHandle withHandle />}
@@ -116,8 +118,8 @@ export function ProfessionalMainLayout() {
 					)}
 
 					{(isSplitMode || isPreviewMode || (!isEditMode && !isSplitMode)) && (
-						<ResizablePanel defaultSize={previewSize} minSize={25}>
-							<ProfessionalPreview resumeData={resumeData} />
+						<ResizablePanel defaultSize={previewSize} minSize={25} id='professional-preview-area' order={3}>
+							<ProfessionalPreview resumeData={resumeData as unknown as TResumeData} />
 						</ResizablePanel>
 					)}
 				</ResizablePanelGroup>

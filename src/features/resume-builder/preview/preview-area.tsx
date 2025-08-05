@@ -5,7 +5,7 @@ import { Download, Eye, Maximize2, Printer } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import type { TResumeData } from '../../types/resume';
+import type { TResumeData } from '@/types/resume';
 import { ResumePreview } from './resume-preview';
 
 export type TPreviewAreaProps = {

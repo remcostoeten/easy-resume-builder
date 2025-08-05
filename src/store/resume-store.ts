@@ -1,166 +1,367 @@
-import { proxy } from 'valtio';
-import type { TResumeData, TResumeSection, TSectionType, TSkillCategory } from '../types/resume';
-import { createEntity } from '../utils/entity';
+import { atom, getDefaultStore } from 'jotai';
+import type {
+  TResumeData,
+  TResumeSection,
+  TWorkItem,
+  TSkillCategory,
+  TPersonalInfo,
+} from '@/types/resume';
+import type { TPersonalInfoForm } from '@/features/resume-schemas/resume-schemas';
+import { SECTION_CONFIGS } from '@/core/config/section-configs';
 
-export type TResumeAction =
-	| { type: 'TOGGLE_SECTION'; sectionId: string }
-	| { type: 'REORDER_SECTIONS'; sections: readonly TResumeSection[] }
-	| { type: 'UPDATE_PERSONAL_INFO'; data: Partial<TResumeData['personalInfo']> }
-	| { type: 'ADD_WORK_EXPERIENCE'; data: TResumeData['workExperience'][0] }
-	| {
-			type: 'UPDATE_WORK_EXPERIENCE';
-			id: string;
-			data: Partial<TResumeData['workExperience'][0]>;
-	  }
-	| { type: 'REMOVE_WORK_EXPERIENCE'; id: string }
-	| { type: 'ADD_SKILL_CATEGORY'; data: TSkillCategory }
-	| { type: 'UPDATE_SKILL_CATEGORY'; id: string; data: TSkillCategory }
-	| { type: 'REMOVE_SKILL_CATEGORY'; id: string };
+// ---------------------- Jotai store ----------------------
 
-function createDefaultSections(): readonly TResumeSection[] {
-	const sectionConfigs: Array<{
-		type: TSectionType;
-		title: string;
-		isRequired: boolean;
-		order: number;
-	}> = [
-		{ type: 'personal-info', title: 'Personal Information', isRequired: true, order: 0 },
-		{ type: 'work-experience', title: 'Work Experience', isRequired: false, order: 1 },
-		{ type: 'education', title: 'Education', isRequired: false, order: 2 },
-		{ type: 'skills', title: 'Skills', isRequired: false, order: 3 },
-		{ type: 'projects', title: 'Projects', isRequired: false, order: 4 },
-		{ type: 'certifications', title: 'Certifications', isRequired: false, order: 5 },
-		{ type: 'languages', title: 'Languages', isRequired: false, order: 6 },
-	];
+// Utility type to convert all readonly properties in a deeply nested type to mutable
+// This allows state mutations while still deriving from our readonly domain model types.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type Mutable<T> = {
+  -readonly [P in keyof T]: T[P] extends object ? Mutable<T[P]> : T[P];
+};
 
-	return sectionConfigs.map((config) =>
-		createEntity<TResumeSection>({
-			...config,
-			isEnabled: config.isRequired || config.order <= 2,
-		})
-	);
+function createDefaultSections(): Mutable<TResumeSection>[] {
+  const now = new Date();
+  
+  return Object.values(SECTION_CONFIGS)
+    .sort((a, b) => a.defaultOrder - b.defaultOrder)
+    .map(config => ({
+      id: `section-${config.type}`,
+      createdAt: now,
+      updatedAt: now,
+      type: config.type,
+      title: config.title,
+      isEnabled: config.type === 'personal-info' || config.type === 'work-experience' || config.type === 'skills',
+      order: config.defaultOrder,
+      isRequired: config.isRequired,
+    })) as Mutable<TResumeSection>[];
 }
 
-function createInitialResumeData(): TResumeData {
-	return createEntity<TResumeData>({
-		personalInfo: createEntity({
-			firstName: '',
-			lastName: '',
-			email: '',
-			phone: '',
-			location: '',
-			website: '',
-			linkedin: '',
-			github: '',
-			summary: '',
-		}),
-		workExperience: [],
-		education: [],
-		skills: [],
-		sections: createDefaultSections() as TResumeSection[],
-		metadata: {
-			title: 'Untitled Resume',
-			template: 'default',
-			lastModified: new Date(),
-		},
-	});
+function createEmptyResumeData(): Mutable<TResumeData> {
+  const now: Date = new Date();
+
+  return {
+    id: 'resume-root',
+    createdAt: now,
+    updatedAt: now,
+    personalInfo: {
+      id: 'personal-info',
+      createdAt: now,
+      updatedAt: now,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      location: '',
+    },
+    workExperience: [],
+    education: [],
+    skills: [],
+    sections: createDefaultSections(),
+    metadata: {
+      title: 'Untitled Resume',
+      template: 'professional',
+      lastModified: now,
+    },
+  } as Mutable<TResumeData>;
 }
 
-export const resumeStore = proxy({
-	data: createInitialResumeData(),
-});
+// Storage key for localStorage
+const STORAGE_KEY = 'resume-builder-data';
 
-export function resumeReducer(action: TResumeAction): void {
-	switch (action.type) {
-		case 'TOGGLE_SECTION': {
-			const sectionIndex = resumeStore.data.sections.findIndex(
-				(s) => s.id === action.sectionId
-			);
-			if (sectionIndex !== -1 && !resumeStore.data.sections[sectionIndex].isRequired) {
-				resumeStore.data.sections[sectionIndex].isEnabled =
-					!resumeStore.data.sections[sectionIndex].isEnabled;
-				resumeStore.data.sections[sectionIndex].updatedAt = new Date();
-				resumeStore.data.updatedAt = new Date();
-			}
-			break;
-		}
+// Load data from localStorage or create empty
+function loadPersistedData(): Mutable<TResumeData> {
+  if (typeof window === 'undefined') {
+    console.log('loadPersistedData: window is undefined, returning empty data');
+    return createEmptyResumeData();
+  }
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    console.log('loadPersistedData: stored data from localStorage:', stored ? 'Found data' : 'No data found');
+    
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      console.log('loadPersistedData: parsed data:', {
+        personalInfo: parsed.personalInfo,
+        sectionsCount: parsed.sections?.length || 0
+      });
+      
+      // Convert date strings back to Date objects
+      const convertDates = (obj: any): any => {
+        if (obj && typeof obj === 'object') {
+          if (obj.createdAt) obj.createdAt = new Date(obj.createdAt);
+          if (obj.updatedAt) obj.updatedAt = new Date(obj.updatedAt);
+          if (obj.lastModified) obj.lastModified = new Date(obj.lastModified);
+          if (obj.startDate) obj.startDate = new Date(obj.startDate);
+          if (obj.endDate) obj.endDate = new Date(obj.endDate);
+          
+          // Recursively convert dates in nested objects and arrays
+          Object.keys(obj).forEach(key => {
+            if (Array.isArray(obj[key])) {
+              obj[key] = obj[key].map(convertDates);
+            } else if (obj[key] && typeof obj[key] === 'object') {
+              obj[key] = convertDates(obj[key]);
+            }
+          });
+        }
+        return obj;
+      };
+      
+      const converted = convertDates(parsed);
+      
+      // Ensure sections exist, if not add defaults
+      if (!converted.sections || converted.sections.length === 0) {
+        converted.sections = createDefaultSections();
+      }
+      
+      console.log('loadPersistedData: returning converted data');
+      return converted;
+    }
+  } catch (error) {
+    console.warn('Failed to load persisted resume data:', error);
+  }
+  
+  console.log('loadPersistedData: returning empty data');
+  return createEmptyResumeData();
+}
 
-		case 'REORDER_SECTIONS': {
-			const reorderedSections = action.sections.map((section, index) => ({
-				...section,
-				order: index,
-				updatedAt: new Date(),
-			}));
-			resumeStore.data.sections = reorderedSections;
-			resumeStore.data.updatedAt = new Date();
-			break;
-		}
+// Save data to localStorage
+function saveToStorage(data: Mutable<TResumeData>): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    console.log('Saving to localStorage:', {
+      personalInfo: data.personalInfo,
+      sectionsCount: data.sections.length,
+      storageKey: STORAGE_KEY
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    console.log('Successfully saved to localStorage');
+  } catch (error) {
+    console.warn('Failed to save resume data to localStorage:', error);
+  }
+}
 
-		case 'UPDATE_PERSONAL_INFO': {
-			Object.assign(resumeStore.data.personalInfo, action.data);
-			resumeStore.data.personalInfo.updatedAt = new Date();
-			resumeStore.data.updatedAt = new Date();
-			break;
-		}
+// ---------------------- Jotai store ----------------------
 
-		case 'ADD_WORK_EXPERIENCE': {
-			resumeStore.data.workExperience.push(action.data);
-			resumeStore.data.updatedAt = new Date();
-			break;
-		}
+// Main atom that holds the resume data
+export const resumeAtom = atom<Mutable<TResumeData>>(loadPersistedData());
 
-		case 'UPDATE_WORK_EXPERIENCE': {
-			const workIndex = resumeStore.data.workExperience.findIndex(
-				(item) => item.id === action.id
-			);
-			if (workIndex !== -1) {
-				Object.assign(resumeStore.data.workExperience[workIndex], action.data);
-				resumeStore.data.workExperience[workIndex].updatedAt = new Date();
-				resumeStore.data.updatedAt = new Date();
-			}
-			break;
-		}
+// Enhanced atom with automatic persistence and timestamp updates
+export const resumeAtomWithMigration = atom(
+  (get) => get(resumeAtom),
+  (get, set, update: Partial<Mutable<TResumeData>> | ((prev: Mutable<TResumeData>) => Mutable<TResumeData>)) => {
+    const current = get(resumeAtom);
+    const next = typeof update === 'function' ? update(current) : { ...current, ...update };
+    
+    // Update timestamps
+    const now = new Date();
+    next.updatedAt = now;
+    next.metadata = { ...next.metadata, lastModified: now };
+    
+    set(resumeAtom, next);
+    
+    // Save to localStorage
+    saveToStorage(next);
+  }
+);
 
-		case 'REMOVE_WORK_EXPERIENCE': {
-			const workIndex = resumeStore.data.workExperience.findIndex(
-				(item) => item.id === action.id
-			);
-			if (workIndex !== -1) {
-				resumeStore.data.workExperience.splice(workIndex, 1);
-				resumeStore.data.updatedAt = new Date();
-			}
-			break;
-		}
+// Legacy draft atom for backward compatibility (now aliases to resumeAtom)
+export const resumeDraftAtom = resumeAtomWithMigration;
 
-		case 'ADD_SKILL_CATEGORY': {
-			resumeStore.data.skills.push(action.data);
-			resumeStore.data.updatedAt = new Date();
-			break;
-		}
+// Replace the current draft with a shallow-merged version of the given update
+export function setResumeDraft(update: Partial<Mutable<TResumeData>>): void {
+  const store = getDefaultStore();
+  store.set(resumeAtomWithMigration, update);
+}
 
-		case 'UPDATE_SKILL_CATEGORY': {
-			const skillIndex = resumeStore.data.skills.findIndex(
-				(category) => category.id === action.id
-			);
-			if (skillIndex !== -1) {
-				resumeStore.data.skills[skillIndex] = action.data;
-				resumeStore.data.updatedAt = new Date();
-			}
-			break;
-		}
+// Clear the entire store back to its initial empty state
+export function clearStore(): void {
+  const store = getDefaultStore();
+  store.set(resumeAtom, createEmptyResumeData());
+}
 
-		case 'REMOVE_SKILL_CATEGORY': {
-			const skillIndex = resumeStore.data.skills.findIndex(
-				(category) => category.id === action.id
-			);
-			if (skillIndex !== -1) {
-				resumeStore.data.skills.splice(skillIndex, 1);
-				resumeStore.data.updatedAt = new Date();
-			}
-			break;
-		}
+// ---------------------- New Jotai helper functions ----------------------
 
-		default:
-			break;
-	}
+// Update personal info using the new atom
+export function updatePersonalInfo(data: TPersonalInfoForm): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  const now = new Date();
+  
+  const updated = {
+    ...current,
+    personalInfo: {
+      ...current.personalInfo,
+      ...data,
+      updatedAt: now,
+    },
+    updatedAt: now,
+    metadata: {
+      ...current.metadata,
+      lastModified: now,
+    },
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Toggle section enabled state using the new atom
+export function toggleSection(sectionId: string): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updatedSections = current.sections.map(section =>
+    section.id === sectionId
+      ? { ...section, isEnabled: !section.isEnabled }
+      : section
+  );
+  
+  const updated = {
+    ...current,
+    sections: updatedSections,
+    updatedAt: new Date(),
+  };
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Reorder sections using the new atom
+export function reorderSections(sections: readonly TResumeSection[]): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    sections: sections.map(s => ({ ...s })),
+    updatedAt: new Date(),
+  };
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Add work experience using the new atom
+export function addWorkExperience(data: TWorkItem): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    workExperience: [...current.workExperience, data as any] as Mutable<TWorkItem>[],
+    updatedAt: new Date(),
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Update work experience using the new atom
+export function updateWorkExperience(id: string, data: TWorkItem): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    workExperience: current.workExperience.map(item => 
+      item.id === id ? data : item
+    ) as any,
+    updatedAt: new Date(),
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Remove work experience using the new atom
+export function removeWorkExperience(id: string): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    workExperience: current.workExperience.filter(item => item.id !== id),
+    updatedAt: new Date(),
+  };
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Add skill category using the new atom
+export function addSkillCategory(data: TSkillCategory): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    skills: [...current.skills, data] as Mutable<TSkillCategory>[],
+    updatedAt: new Date(),
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Update skill category using the new atom
+export function updateSkillCategory(id: string, data: TSkillCategory): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    skills: current.skills.map(category => 
+      category.id === id ? data : category
+    ) as Mutable<TSkillCategory>[],
+    updatedAt: new Date(),
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Remove skill category using the new atom
+export function removeSkillCategory(id: string): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  const updated = {
+    ...current,
+    skills: current.skills.filter(category => category.id !== id) as Mutable<TSkillCategory>[],
+    updatedAt: new Date(),
+  } as Mutable<TResumeData>;
+  
+  store.set(resumeAtom, updated);
+  saveToStorage(updated);
+}
+
+// Reset the entire resume to empty state
+export function resetResume(): void {
+  const store = getDefaultStore();
+  const newData = createEmptyResumeData();
+  store.set(resumeAtom, newData);
+  saveToStorage(newData);
+}
+
+// Helper function to ensure sections are initialized
+export function initializeSections(): void {
+  const store = getDefaultStore();
+  const current = store.get(resumeAtom);
+  
+  if (current.sections.length === 0) {
+    const updated = {
+      ...current,
+      sections: createDefaultSections(),
+      updatedAt: new Date(),
+    };
+    
+    store.set(resumeAtom, updated);
+    saveToStorage(updated);
+  }
+}
+
+// Helper function to reset the entire store
+export function resetStore(): void {
+  resetResume();
 }

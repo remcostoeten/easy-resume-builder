@@ -2,33 +2,34 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
-import { resumeReducer, resumeStore } from '@/store/resume-store';
-import type { TResumeSection } from '@/types/resume';
-import { ModernEditingArea } from '@/features/resume-builder/editing/modern-editing-area';
-import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
-import { ModernSectionsPanel } from '@/features/resume-builder/sidebar/modern-sections-panel';
+import { useAtom } from 'jotai';
+import { resumeAtomWithMigration, toggleSection, reorderSections } from '@/store/resume-store';
+import { TResumeSection, TResumeData } from '@/types/resume';
+import { ModernEditingArea } from '../editing/modern-editing-area';
+import { PreviewArea } from '../preview/preview-area';
+import { ModernSectionsPanel } from '../sidebar/modern-sections-panel';
 import { AnimatedBackground } from '@/shared/components/ui/animated-background';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../shared/components/ui/resizable-panels';
-import { ModernHeader } from './modern-header';
+	import { ModernHeader } from './modern-header';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
 
 export function ModernMainLayout() {
-	const resumeData = useSnapshot(resumeStore).data;
+	const [resumeData] = useAtom(resumeAtomWithMigration);
+	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 
-	const enabledSections = resumeData.sections
+	const enabledSections = sections
 		.filter((section) => section.isEnabled)
 		.sort((a, b) => a.order - b.order);
 	const currentSection = enabledSections[currentStepIndex];
 	const progress = ((currentStepIndex + 1) / enabledSections.length) * 100;
 
 	function handleToggleSection(sectionId: string) {
-		resumeReducer({ type: 'TOGGLE_SECTION', sectionId });
+		toggleSection(sectionId);
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		resumeReducer({ type: 'REORDER_SECTIONS', sections });
+		reorderSections(sections);
 	}
 
 	function handlePreview() {
@@ -63,6 +64,8 @@ export function ModernMainLayout() {
 							minSize={20}
 							maxSize={35}
 							className='min-w-[320px]'
+							id='modern-sections-panel'
+							order={1}
 						>
 							<motion.div
 								className='h-full border-r border-white/10 bg-gradient-to-b from-slate-900/50 to-blue-900/50 backdrop-blur-sm'
@@ -71,7 +74,7 @@ export function ModernMainLayout() {
 								transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 							>
 								<ModernSectionsPanel
-									sections={resumeData.sections}
+									sections={sections}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 									currentSectionId={currentSection?.id}
@@ -81,7 +84,7 @@ export function ModernMainLayout() {
 
 						<ResizableHandle withHandle />
 
-						<ResizablePanel defaultSize={isPreviewMode ? 35 : 50} minSize={30}>
+						<ResizablePanel defaultSize={isPreviewMode ? 35 : 50} minSize={30} id='modern-editing-area' order={2}>
 							<motion.div
 								className='h-full bg-gradient-to-b from-slate-900/30 to-purple-900/30 backdrop-blur-sm'
 								initial={{ y: 100, opacity: 0 }}
@@ -94,8 +97,8 @@ export function ModernMainLayout() {
 								}}
 							>
 								<ModernEditingArea
-									sections={resumeData.sections}
-									resumeData={resumeData}
+									sections={sections}
+									resumeData={resumeData as unknown as TResumeData}
 									onStepChange={setCurrentStepIndex}
 								/>
 							</motion.div>
@@ -103,7 +106,7 @@ export function ModernMainLayout() {
 
 						<ResizableHandle withHandle />
 
-						<ResizablePanel defaultSize={isPreviewMode ? 40 : 25} minSize={20}>
+						<ResizablePanel defaultSize={isPreviewMode ? 40 : 25} minSize={20} id='modern-preview-area' order={3}>
 							<motion.div
 								className='h-full border-l border-white/10 bg-gradient-to-b from-blue-900/30 to-purple-900/50 backdrop-blur-sm'
 								initial={{ x: 100, opacity: 0 }}
@@ -115,7 +118,7 @@ export function ModernMainLayout() {
 									delay: 0.2,
 								}}
 							>
-								<PreviewArea resumeData={resumeData} />
+								<PreviewArea resumeData={resumeData as unknown as TResumeData} />
 							</motion.div>
 						</ResizablePanel>
 					</ResizablePanelGroup>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Download, Eye, Settings, Sparkles } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { ProgressRing } from '@/shared/components/ui/progress-ring';
+import { SaveButton } from '@/components/SaveButton';
 
 type TProps = {
 	readonly progress: number;
@@ -64,6 +65,8 @@ export function ModernHeader({ progress, currentStep, onPreview, onDownload, onS
 					</div>
 
 					<div className='flex items-center gap-3'>
+						<SaveButton className='text-white [&>button]:bg-green-600 [&>button]:hover:bg-green-700 [&>button]:text-white [&>button]:shadow-lg [&>button]:hover:shadow-xl [&>button]:transition-all [&>button]:duration-200' />
+						
 						<Button
 							variant='ghost'
 							size='sm'

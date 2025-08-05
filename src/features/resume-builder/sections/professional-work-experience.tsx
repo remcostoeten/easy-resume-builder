@@ -8,7 +8,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { WorkExperienceForm } from './work-experience-form';
 import { EmptyState } from '@/shared/components/ui';
-import { resumeReducer } from '@/store/resume-store';
+import { addWorkExperience, updateWorkExperience, removeWorkExperience } from '@/store/resume-store';
 import { TWorkItem } from '@/types/resume';
 import { formatDateRange } from '@/utils/date-utils';
 
@@ -32,16 +32,9 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 
 	function handleSave(workItem: TWorkItem) {
 		if (editingItem) {
-			resumeReducer({
-				type: 'UPDATE_WORK_EXPERIENCE',
-				id: workItem.id,
-				data: workItem,
-			});
+			updateWorkExperience(workItem.id, workItem);
 		} else {
-			resumeReducer({
-				type: 'ADD_WORK_EXPERIENCE',
-				data: workItem,
-			});
+			addWorkExperience(workItem);
 		}
 		setIsAddingNew(false);
 		setEditingItem(null);
@@ -53,10 +46,7 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 	}
 
 	function handleDelete(id: string) {
-		resumeReducer({
-			type: 'REMOVE_WORK_EXPERIENCE',
-			id,
-		});
+		removeWorkExperience(id);
 		setEditingItem(null);
 	}
 

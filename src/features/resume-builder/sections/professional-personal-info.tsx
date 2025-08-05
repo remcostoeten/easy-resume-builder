@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { FormField } from '../form/form-field';
-import { resumeReducer } from '@/store/resume-store';
+import { updatePersonalInfo } from '@/store/resume-store';
 import { TPersonalInfo } from '@/types/resume';
 import { TPersonalInfoForm, personalInfoSchema } from '../../resume-schemas';
 
@@ -43,19 +43,16 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 		const subscription = watch((value) => {
 			// Only update if we have valid data
 			if (value.firstName || value.lastName || value.email) {
-				resumeReducer({
-					type: 'UPDATE_PERSONAL_INFO',
-					data: {
-						firstName: value.firstName || '',
-						lastName: value.lastName || '',
-						email: value.email || '',
-						phone: value.phone || '',
-						location: value.location || '',
-						website: value.website || '',
-						linkedin: value.linkedin || '',
-						github: value.github || '',
-						summary: value.summary || '',
-					},
+				updatePersonalInfo({
+					firstName: value.firstName || '',
+					lastName: value.lastName || '',
+					email: value.email || '',
+					phone: value.phone || '',
+					location: value.location || '',
+					website: value.website || '',
+					linkedin: value.linkedin || '',
+					github: value.github || '',
+					summary: value.summary || '',
 				});
 			}
 		});

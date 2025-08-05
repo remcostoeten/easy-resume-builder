@@ -39,18 +39,5 @@
 			"jsxQuoteStyle": "single",
 			"arrowParentheses": "always"
 		}
-	},
-	"files": {
-		"ignore": [
-			".next/**",
-			"node_modules/**",
-			"dist/**",
-			"build/**",
-			"tmp/**",
-			"temp/**",
-			"coverage/**",
-			"public/**",
-			"scripts/**"
-		]
 	}
 }

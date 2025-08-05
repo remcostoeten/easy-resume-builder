@@ -13,19 +13,15 @@ export function forceShowWelcomeModal(): void {
 
 // Add to window for easy access in development console
 if (typeof window !== 'undefined') {
-	(window as Window & typeof globalThis).welcomeModalDevUtils = {
+(window as any).welcomeModalDevUtils = {
 		reset: resetWelcomeModal,
 		hasSeenModal: hasSeenWelcomeModal,
 		forceShow: forceShowWelcomeModal,
 	};
 
-	// Only log in development (this won't error if process.env is not available)
-	try {
-		if (process?.env?.NODE_ENV === 'development') {
-			console.log('Welcome Modal Dev Utils available at window.welcomeModalDevUtils');
-			console.log('Commands: reset(), hasSeenModal(), forceShow()');
-		}
-	} catch {
-		// Silently ignore if process.env is not available
+	// Only log in development
+	if (typeof window !== 'undefined') {
+		console.log('Welcome Modal Dev Utils available at window.welcomeModalDevUtils');
+		console.log('Commands: reset(), hasSeenModal(), forceShow()');
 	}
 }

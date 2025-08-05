@@ -3,11 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
+import { Check, Save } from 'lucide-react';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
 import { FormSection } from '../form/form-section';
-import { resumeReducer } from '@/store/resume-store';
+import { updatePersonalInfo } from '@/store/resume-store';
 import { TPersonalInfo } from '@/types/resume';
 import { TPersonalInfoForm, personalInfoSchema } from '../../resume-schemas';
 
@@ -37,13 +39,21 @@ export function PersonalInfoSection({ data }: TProps) {
 		mode: 'onChange',
 	});
 
-	const _watchedValues = watch();
+	const watchedValues = watch();
+	const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
 	function handleFormSubmit(formData: TPersonalInfoForm) {
-		resumeReducer({
-			type: 'UPDATE_PERSONAL_INFO',
-			data: formData,
-		});
+		setSaveStatus('saving');
+		try {
+			updatePersonalInfo(formData);
+			setSaveStatus('saved');
+			// Reset to idle after 2 seconds
+			setTimeout(() => setSaveStatus('idle'), 2000);
+		} catch (error) {
+			console.error('Failed to save form data:', error);
+			setSaveStatus('error');
+			setTimeout(() => setSaveStatus('idle'), 3000);
+		}
 	}
 
 	function handleAutoSave() {
@@ -51,6 +61,27 @@ export function PersonalInfoSection({ data }: TProps) {
 			handleSubmit(handleFormSubmit)();
 		}
 	}
+
+	// Auto-save when form values change (debounced)
+	useEffect(() => {
+		if (!isDirty || !isValid) return;
+
+		const timeoutId = setTimeout(() => {
+			if (isDirty && isValid) {
+				console.log('Auto-saving form data...', watchedValues);
+				handleSubmit(handleFormSubmit)();
+			}
+		}, 1000); // 1 second delay
+
+		return () => clearTimeout(timeoutId);
+	}, [watchedValues, isDirty, isValid, handleSubmit]);
+
+	// Reset save status when form becomes dirty
+	useEffect(() => {
+		if (isDirty && saveStatus === 'saved') {
+			setSaveStatus('idle');
+		}
+	}, [isDirty, saveStatus]);
 
 	return (
 		<FormSection title='Personal Information' icon={<User className='h-5 w-5' />} isRequired>
@@ -148,20 +179,42 @@ export function PersonalInfoSection({ data }: TProps) {
 				/>
 
 				<div className='flex justify-between items-center pt-4'>
-					<div className='text-sm text-muted-foreground'>
-						{isDirty ? 'Unsaved changes' : 'All changes saved'}
+					<div className='flex items-center gap-2 text-sm'>
+						{saveStatus === 'saving' && (
+							<>
+								<Save className='h-4 w-4 animate-spin text-blue-500' />
+								<span className='text-blue-500'>Saving...</span>
+							</>
+						)}
+						{saveStatus === 'saved' && (
+							<>
+								<Check className='h-4 w-4 text-green-500' />
+								<span className='text-green-500'>Saved successfully</span>
+							</>
+						)}
+						{saveStatus === 'error' && (
+							<span className='text-red-500'>Failed to save</span>
+						)}
+						{saveStatus === 'idle' && (
+							<span className='text-muted-foreground'>
+								{isDirty ? 'Unsaved changes' : 'All changes saved'}
+							</span>
+						)}
 					</div>
 					<div className='flex gap-2'>
 						<Button
 							type='button'
 							variant='outline'
 							onClick={handleAutoSave}
-							disabled={!isDirty || !isValid}
+							disabled={!isDirty || !isValid || saveStatus === 'saving'}
 						>
-							Save Changes
+							{saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
 						</Button>
-						<Button type='submit' disabled={!isDirty || !isValid}>
-							Save & Continue
+						<Button 
+							type='submit' 
+							disabled={!isDirty || !isValid || saveStatus === 'saving'}
+						>
+							{saveStatus === 'saving' ? 'Saving...' : 'Save & Continue'}
 						</Button>
 					</div>
 				</div>
