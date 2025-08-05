@@ -6,6 +6,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/c
 import { resumeDraftAtom, setResumeDraft } from '@/store/resume-store';
 import { TResumeSection } from '@/types/resume';
 import type { TResumeData } from '@/types/resume';
+import type { Mutable } from '@/store/resume-store';
 import { ProfessionalEditingArea } from '../features/resume-builder/editing/professional-editing-area';
 import { ProfessionalHeader } from '../features/resume-builder/layout/professional-header';
 import { ProfessionalPreview } from '../features/resume-builder/preview/professional-preview';
@@ -16,7 +17,7 @@ export function HomeView() {
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
 	const [isSplitMode, setIsSplitMode] = useState(true);
-const resumeData = useAtomValue(resumeDraftAtom) as TResumeData;
+const resumeData: Mutable<TResumeData> = useAtomValue(resumeDraftAtom);
 	
 function handleToggleSection(sectionId: string) {
     const sections = resumeData?.sections || [];
@@ -27,7 +28,7 @@ function handleToggleSection(sectionId: string) {
   }
 
 function handleReorderSections(sections: readonly TResumeSection[]) {
-    setResumeDraft({ sections });
+    setResumeDraft({ sections: sections.map(s => ({ ...s })) });
   }
 
 	function handleTogglePreview() {
@@ -101,7 +102,7 @@ function handleReorderSections(sections: readonly TResumeSection[]) {
 								className='min-w-[280px]'
 							>
 								<ProfessionalSidebar
-									sections={resumeData?.sections || []}
+									sections={(resumeData?.sections || []) as unknown as readonly TResumeSection[]}
 									onToggleSection={handleToggleSection}
 									onReorderSections={handleReorderSections}
 								/>
@@ -114,8 +115,8 @@ function handleReorderSections(sections: readonly TResumeSection[]) {
 						<>
 							<ResizablePanel defaultSize={editingSize} minSize={35}>
 								<ProfessionalEditingArea
-									sections={resumeData?.sections || []}
-									resumeData={resumeData}
+									sections={(resumeData?.sections || []) as unknown as readonly TResumeSection[]}
+									resumeData={resumeData as unknown as TResumeData}
 								/>
 							</ResizablePanel>
 							{isSplitMode && <ResizableHandle withHandle />}
@@ -124,7 +125,7 @@ function handleReorderSections(sections: readonly TResumeSection[]) {
 
 					{(isSplitMode || isPreviewMode || (!isEditMode && !isSplitMode)) && (
 						<ResizablePanel defaultSize={previewSize} minSize={25}>
-							<ProfessionalPreview resumeData={resumeData} />
+							<ProfessionalPreview resumeData={resumeData as unknown as TResumeData} />
 						</ResizablePanel>
 					)}
 				</ResizablePanelGroup>

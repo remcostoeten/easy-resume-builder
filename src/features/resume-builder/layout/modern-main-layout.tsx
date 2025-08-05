@@ -2,10 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useSnapshot } from 'valtio';
-import { resumeStore, resumeReducer } from '@/store/resume-store';
-import { TResumeSection } from '@/types/resume';
-import { convertStoreResumeData, convertStoreSections } from '@/utils/store-type-utils';
+import { useAtom } from 'jotai';
+import { resumeAtomWithMigration, toggleSection, reorderSections } from '@/store/resume-store';
+import { TResumeSection, TResumeData } from '@/types/resume';
 import { ModernEditingArea } from '../editing/modern-editing-area';
 import { PreviewArea } from '../preview/preview-area';
 import { ModernSectionsPanel } from '../sidebar/modern-sections-panel';
@@ -14,9 +13,8 @@ import { AnimatedBackground } from '@/shared/components/ui/animated-background';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
 
 export function ModernMainLayout() {
-	const storeSnapshot = useSnapshot(resumeStore).data;
-	const resumeData = convertStoreResumeData(storeSnapshot);
-	const sections = convertStoreSections(storeSnapshot.sections);
+	const [resumeData] = useAtom(resumeAtomWithMigration);
+	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 
@@ -27,11 +25,11 @@ export function ModernMainLayout() {
 	const progress = ((currentStepIndex + 1) / enabledSections.length) * 100;
 
 	function handleToggleSection(sectionId: string) {
-		resumeReducer({ type: 'TOGGLE_SECTION', sectionId });
+		toggleSection(sectionId);
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		resumeReducer({ type: 'REORDER_SECTIONS', sections });
+		reorderSections(sections);
 	}
 
 	function handlePreview() {
@@ -100,7 +98,7 @@ export function ModernMainLayout() {
 							>
 								<ModernEditingArea
 									sections={sections}
-									resumeData={resumeData}
+									resumeData={resumeData as unknown as TResumeData}
 									onStepChange={setCurrentStepIndex}
 								/>
 							</motion.div>
@@ -120,7 +118,7 @@ export function ModernMainLayout() {
 									delay: 0.2,
 								}}
 							>
-								<PreviewArea resumeData={resumeData} />
+								<PreviewArea resumeData={resumeData as unknown as TResumeData} />
 							</motion.div>
 						</ResizablePanel>
 					</ResizablePanelGroup>

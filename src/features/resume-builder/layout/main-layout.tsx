@@ -1,41 +1,51 @@
 'use client';
 
-import { useSnapshot } from 'valtio';
+import { useAtomValue } from 'jotai/react';
 import { EditingArea } from '@/features/resume-builder/editing/editing-area';
 import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
 import { SectionsPanel } from '@/features/resume-builder/sidebar/sections-panel';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/shared/components/ui';
-import { resumeStore, resumeReducer, initializeSections } from '@/store/resume-store';
-import { TResumeSection } from '@/types/resume';
-import { convertStoreResumeData, convertStoreSections } from '@/utils/store-type-utils';
+import { resumeAtomWithMigration, toggleSection, reorderSections } from '@/store/resume-store';
+import { TResumeSection, TResumeData } from '@/types/resume';
 import { useEffect } from 'react';
+import { StorageDebug } from '@/components/debug/storage-debug';
 // Import dev utils for debugging (only in development)
 if (process.env.NODE_ENV === 'development') {
 	import('@/utils/dev-utils');
 }
 
 export function MainLayout() {
-	const storeSnapshot = useSnapshot(resumeStore).data;
-	const resumeData = convertStoreResumeData(storeSnapshot);
-	const sections = convertStoreSections(storeSnapshot.sections);
+	const resumeData = useAtomValue(resumeAtomWithMigration);
+	const sections = resumeData.sections as unknown as readonly TResumeSection[];
+
+	// Debug logging
+	useEffect(() => {
+		console.log('MainLayout render - store data:', {
+			personalInfo: resumeData.personalInfo,
+			sectionsCount: resumeData.sections.length,
+			hasFirstName: !!resumeData.personalInfo.firstName,
+			hasEmail: !!resumeData.personalInfo.email
+		});
+	}, [resumeData]);
 
 	// Initialize sections if they're missing
 	useEffect(() => {
 		if (sections.length === 0) {
-			initializeSections();
+			console.log('Sections are empty, this should not happen with proper initialization');
 		}
 	}, [sections.length]);
 
 	function handleToggleSection(sectionId: string) {
-		resumeReducer({ type: 'TOGGLE_SECTION', sectionId });
+		toggleSection(sectionId);
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		resumeReducer({ type: 'REORDER_SECTIONS', sections });
+		reorderSections(sections);
 	}
 
 	return (
 		<div className='h-screen bg-background'>
+			{process.env.NODE_ENV === 'development' && <StorageDebug />}
 			<ResizablePanelGroup direction='horizontal' className='h-full'>
 				<ResizablePanel
 					defaultSize={20}
@@ -58,7 +68,7 @@ export function MainLayout() {
 
 				<ResizablePanel defaultSize={45} minSize={30} id='editing-area' order={2}>
 					<div className='h-full overflow-auto'>
-						<EditingArea sections={sections} resumeData={resumeData} />
+						<EditingArea sections={sections} resumeData={resumeData as unknown as TResumeData} />
 					</div>
 				</ResizablePanel>
 
@@ -66,7 +76,7 @@ export function MainLayout() {
 
 				<ResizablePanel defaultSize={35} minSize={25} id='preview-area' order={3}>
 					<div className='h-full bg-muted/30 border-l'>
-						<PreviewArea resumeData={resumeData} />
+						<PreviewArea resumeData={resumeData as unknown as TResumeData} />
 					</div>
 				</ResizablePanel>
 			</ResizablePanelGroup>

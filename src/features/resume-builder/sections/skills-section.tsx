@@ -11,7 +11,7 @@ import { EmptyState } from '@/shared/components/ui';
 import { TSkillCategory } from '@/types/resume';
 import { FormSection } from '../form/form-section';
 import { SkillsForm } from './skills-form';
-import { resumeReducer } from '@/store/resume-store';
+import { addSkillCategory, updateSkillCategory, removeSkillCategory } from '@/store/resume-store';
 
 type TProps = {
 	readonly data: readonly TSkillCategory[];
@@ -33,16 +33,9 @@ export function SkillsSection({ data }: TProps) {
 
 	function handleSave(skillCategory: TSkillCategory) {
 		if (editingCategory) {
-			resumeReducer({
-				type: 'UPDATE_SKILL_CATEGORY',
-				id: skillCategory.id,
-				data: skillCategory,
-			});
+			updateSkillCategory(skillCategory.id, skillCategory);
 		} else {
-			resumeReducer({
-				type: 'ADD_SKILL_CATEGORY',
-				data: skillCategory,
-			});
+			addSkillCategory(skillCategory);
 		}
 		setIsAddingNew(false);
 		setEditingCategory(null);
@@ -54,10 +47,7 @@ export function SkillsSection({ data }: TProps) {
 	}
 
 	function handleDelete(id: string) {
-		resumeReducer({
-			type: 'REMOVE_SKILL_CATEGORY',
-			id,
-		});
+		removeSkillCategory(id);
 		setEditingCategory(null);
 	}
 
