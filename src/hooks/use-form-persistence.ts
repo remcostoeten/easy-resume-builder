@@ -106,16 +106,10 @@ export function useFormPersistence({
 		setValue: (name: string, value: any) => void,
 		getValues: () => Record<string, any>
 	) => {
-		return (name: string, value: any, shouldSave?: boolean) => {
+		return (name: string, value: any) => {
 			setValue(name, value);
-			
-			// Only save if explicitly requested (blur)
-			if (shouldSave) {
-				saveField(name, value);
-				saveFormToPersistence(getValues());
-			}
 		};
-	}, [saveField, saveFormToPersistence]);
+	}, []);
 
 	/**
 	 * Create blur handler for save-on-blur behavior
@@ -125,11 +119,11 @@ export function useFormPersistence({
 		getValues: () => Record<string, any>
 	) => {
 		return (name: string, value: any) => {
-			// Always save on blur
+			// Only save the specific field, not the entire form
+			// This prevents lag when tabbing between fields
 			saveField(name, value);
-			saveFormToPersistence(getValues());
 		};
-	}, [saveField, saveFormToPersistence]);
+	}, [saveField]);
 	
 	/**
 	 * Load data on mount

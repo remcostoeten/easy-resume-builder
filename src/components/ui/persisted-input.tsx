@@ -66,7 +66,10 @@ export function PersistedInput({
 
 	function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
 		const newValue = e.target.value;
-		setValue(newValue, true); // Save on blur
+		// Only save if the value has actually changed
+		if (newValue !== value) {
+			setValue(newValue, true); // Save on blur
+		}
 	}
 	
 	if (isLoading) {
