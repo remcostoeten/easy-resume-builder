@@ -2,25 +2,18 @@
 
 import { useAtomValue } from 'jotai/react';
 import { useEffect } from 'react';
-import { StorageDebug } from '@/components/debug/storage-debug';
 import { EditingArea } from '@/features/resume-builder/editing/editing-area';
 import { PreviewArea } from '@/features/resume-builder/preview/preview-area';
 import { SectionsPanel } from '@/features/resume-builder/sidebar/sections-panel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
-import { reorderSections, resumeAtomWithMigration, toggleSection } from '@/store/resume-store';
+import { reorderSections, resumeAtom, toggleSection } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 
-// Import dev utils for debugging (only in development)
-if (process.env.NODE_ENV === 'development') {
-	import('@/utils/dev-utils');
-}
-
 export function MainLayout() {
-	const resumeData = useAtomValue(resumeAtomWithMigration);
+	const resumeData = useAtomValue(resumeAtom);
 	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 
-	// Debug logging
-	useEffect(() => {
+	useEffect(function() {
 		console.log('MainLayout render - store data:', {
 			personalInfo: resumeData.personalInfo,
 			sectionsCount: resumeData.sections.length,
@@ -29,8 +22,7 @@ export function MainLayout() {
 		});
 	}, [resumeData]);
 
-	// Initialize sections if they're missing
-	useEffect(() => {
+	useEffect(function() {
 		if (sections.length === 0) {
 			console.log('Sections are empty, this should not happen with proper initialization');
 		}
@@ -46,7 +38,6 @@ export function MainLayout() {
 
 	return (
 		<div className='h-screen bg-background'>
-			{process.env.NODE_ENV === 'development' && <StorageDebug />}
 			<ResizablePanelGroup direction='horizontal' className='h-full'>
 				<ResizablePanel
 					defaultSize={20}
@@ -80,7 +71,7 @@ export function MainLayout() {
 
 				<ResizablePanel defaultSize={35} minSize={25} id='preview-area' order={3}>
 					<div className='h-full bg-muted/30 border-l'>
-						<PreviewArea resumeData={resumeData as unknown as TResumeData} />
+						<PreviewArea />
 					</div>
 				</ResizablePanel>
 			</ResizablePanelGroup>

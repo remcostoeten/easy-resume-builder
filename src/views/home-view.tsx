@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
 import type { Mutable } from '@/store/resume-store';
-import { resumeDraftAtom, setResumeDraft } from '@/store/resume-store';
+import { resumeAtom, setResumeDraft } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 import { ProfessionalSidebar } from '../features/resume-builder/sidebar';
 import {
@@ -18,18 +18,18 @@ export function HomeView() {
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
 	const [isEditMode, setIsEditMode] = useState(true);
 	const [isSplitMode, setIsSplitMode] = useState(true);
-	const resumeData: Mutable<TResumeData> = useAtomValue(resumeDraftAtom);
+	const resumeData: Mutable<TResumeData> = useAtomValue(resumeAtom);
 
 	function handleToggleSection(sectionId: string) {
 		const sections = resumeData?.sections || [];
-		const updatedSections = sections.map((section) =>
-			section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section
-		);
+		const updatedSections = sections.map(function(section) {
+			return section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section;
+		});
 		setResumeDraft({ sections: updatedSections });
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		setResumeDraft({ sections: sections.map((s) => ({ ...s })) });
+		setResumeDraft({ sections: sections.map(function(s) { return { ...s }; }) });
 	}
 
 	function handleTogglePreview() {
@@ -44,8 +44,9 @@ export function HomeView() {
 	}
 
 	function handleToggleEdit() {
-		setIsEditMode(!isEditMode);
-		if (!isEditMode) {
+		const newEditMode = !isEditMode;
+		setIsEditMode(newEditMode);
+		if (newEditMode) {
 			setIsPreviewMode(false);
 			setIsSplitMode(true);
 		}
@@ -60,17 +61,11 @@ export function HomeView() {
 	}
 
 	function handlePreview() {
-		toast.error('Not implemented');
 		console.log('Preview mode:', !isPreviewMode);
 	}
 
 	function handleDownload() {
 		window.print();
-	}
-
-	function handleSettings() {
-		toast.error('Not implemented');
-		console.log('Open settings');
 	}
 
 	const sidebarSize = isPreviewMode ? 0 : 20;
@@ -82,7 +77,6 @@ export function HomeView() {
 			<ProfessionalHeader
 				onPreview={handlePreview}
 				onDownload={handleDownload}
-				onSettings={handleSettings}
 				onTogglePreview={handleTogglePreview}
 				onToggleEdit={handleToggleEdit}
 				onToggleSplit={handleToggleSplit}
@@ -131,9 +125,7 @@ export function HomeView() {
 
 					{(isSplitMode || isPreviewMode || (!isEditMode && !isSplitMode)) && (
 						<ResizablePanel defaultSize={previewSize} minSize={25}>
-							<ProfessionalPreview
-								resumeData={resumeData as unknown as TResumeData}
-							/>
+							<ProfessionalPreview />
 						</ResizablePanel>
 					)}
 				</ResizablePanelGroup>

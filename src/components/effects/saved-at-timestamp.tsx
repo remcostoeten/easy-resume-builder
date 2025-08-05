@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSaveStatus } from '@/components/providers/save-status-provider';
 import { AnimatedTimeAgo } from './animated-time-ago';
 
 type TProps = {
@@ -9,11 +8,11 @@ type TProps = {
 };
 
 export function SavedAtTimestamp({ className = '' }: TProps) {
-	const { lastSavedAt } = useSaveStatus();
+const lastSavedAt: Date | null = null;
 	const [timeSince, setTimeSince] = useState<number>(0);
 	const [previousTime, setPreviousTime] = useState<number>(0);
 
-	useEffect(() => {
+	useEffect(function() {
 		if (!lastSavedAt) return;
 
 		function updateTimeSince() {
@@ -31,7 +30,7 @@ export function SavedAtTimestamp({ className = '' }: TProps) {
 		updateTimeSince();
 		const interval = setInterval(updateTimeSince, 1000);
 
-		return () => clearInterval(interval);
+		return function() { return clearInterval(interval); };
 	}, [lastSavedAt, timeSince]);
 
 	function _formatTimeAgo(seconds: number) {

@@ -1,8 +1,9 @@
 'use client';
 
 import { Calendar, Code, ExternalLink, FolderOpen, Plus, Save, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
@@ -22,7 +23,9 @@ type TProject = {
 	technologies: string[];
 };
 
-export function ProfessionalProjects() {
+type TProps = {};
+
+export function ProfessionalProjects({}: TProps) {
 	const [isAddingNew, setIsAddingNew] = useState(false);
 	const [projects, setProjects] = useState<TProject[]>([]);
 	const [technologies, setTechnologies] = useState<string[]>([]);
@@ -36,6 +39,27 @@ export function ProfessionalProjects() {
 	} = useForm({
 		mode: 'onChange',
 	});
+
+	function setAllFormValues(loadedData: Record<string, any>) {
+		if (loadedData.projects) {
+			setProjects(loadedData.projects);
+		}
+		if (loadedData.technologies) {
+			setTechnologies(loadedData.technologies);
+		}
+		if (loadedData.techInput) {
+			setTechInput(loadedData.techInput);
+		}
+	}
+
+	const { loadFormData } = useFormPersistence({
+		formKey: 'projects-form',
+		onDataLoaded: setAllFormValues,
+	});
+
+	useEffect(() => {
+		loadFormData();
+	}, [loadFormData]);
 
 	function handleAddNew() {
 		setIsAddingNew(true);

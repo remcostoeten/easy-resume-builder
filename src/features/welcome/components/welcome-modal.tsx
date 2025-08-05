@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FEATURES, TIPS } from '../data';
+import { setStorageOnBlur } from '@/utils/storage';
 
 type TProps = {
 	isOpen: boolean;
@@ -7,93 +8,91 @@ type TProps = {
 	onGetStarted: () => void;
 };
 
-const FeatureCard = React.memo(({ feature }: { feature: (typeof FEATURES)[number] }) => (
-	<article className='border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-default rounded-lg'>
-		<div className='p-4 text-center h-full flex flex-col'>
-			<div
-				className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg hover:scale-110 hover:rotate-3 transition-transform duration-200 flex items-center justify-center text-white text-lg`}
-				role='img'
-				aria-label={feature.title}
-			>
-				{feature.icon}
+const FeatureCard = React.memo(function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
+	return (
+		<article className='border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-default rounded-lg'>
+			<div className='p-4 text-center h-full flex flex-col'>
+				<div
+					className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg hover:scale-110 hover:rotate-3 transition-transform duration-200 flex items-center justify-center text-white text-lg`}
+					role='img'
+					aria-label={feature.title}
+				>
+					{feature.icon}
+				</div>
+				<h4 className='font-semibold mb-1 text-sm text-foreground'>{feature.title}</h4>
+				<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
+					{feature.description}
+				</p>
 			</div>
-			<h4 className='font-semibold mb-1 text-sm text-foreground'>{feature.title}</h4>
-			<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
-				{feature.description}
-			</p>
-		</div>
-	</article>
-));
+		</article>
+	);
+});
 
 FeatureCard.displayName = 'FeatureCard';
 
-const TipItem = React.memo(({ tip }: { tip: string }) => (
-	<li className='flex items-start gap-2'>
-		<div className='w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0' />
-		<span className='text-xs text-muted-foreground leading-relaxed'>{tip}</span>
-	</li>
-));
+const TipItem = React.memo(function TipItem({ tip }: { tip: string }) {
+	return (
+		<li className='flex items-start gap-2'>
+			<div className='w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0' />
+			<span className='text-xs text-muted-foreground leading-relaxed'>{tip}</span>
+		</li>
+	);
+});
 
 TipItem.displayName = 'TipItem';
 
 export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
-	const handleKeyDown = useCallback(
-		(event: React.KeyboardEvent<HTMLDivElement>) => {
+function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
 			if (event.key === 'Escape') {
 				onClose();
 			}
-		},
-		[onClose]
-	);
+		}
 
-	const handleBackdropClick = useCallback(
-		(event: React.MouseEvent) => {
+function handleBackdropClick(event: React.MouseEvent) {
 			if (event.target === event.currentTarget) {
 				onClose();
 			}
-		},
-		[onClose]
-	);
+		}
 
-	const handleAuthAction = useCallback((action: 'register' | 'login') => {
+function handleModalBlur() {
+		// Mark as seen when modal loses focus (user clicks outside or tabs away)
+		setStorageOnBlur();
+	}
+
+function handleAuthAction(action: 'register' | 'login') {
 		try {
 			const url = `/${action}`;
 			window.open(url, '_blank', 'noopener,noreferrer');
 		} catch (error) {
 			console.error(`Failed to open ${action} page:`, error);
 		}
-	}, []);
+	}
 
-	const handleDocumentKeyDown = useCallback(
-		(event: KeyboardEvent) => {
+function handleDocumentKeyDown(event: KeyboardEvent) {
 			if (event.key === 'Escape') {
 				onClose();
 			}
-		},
-		[onClose]
-	);
+		}
 
-	useEffect(() => {
+	useEffect(function() {
 		if (isOpen) {
 			document.addEventListener('keydown', handleDocumentKeyDown);
 			document.body.style.overflow = 'hidden';
 
-			return () => {
+			return function() {
 				document.removeEventListener('keydown', handleDocumentKeyDown);
 				document.body.style.overflow = '';
 			};
 		}
 	}, [isOpen, handleDocumentKeyDown]);
 
-	const featureCards = useMemo(
-		() => FEATURES.map((feature) => <FeatureCard key={feature.id} feature={feature} />),
-		[]
-	);
+	const featureCards = useMemo(function() {
+		return FEATURES.map((feature) => <FeatureCard key={feature.id} feature={feature} />);
+	}, []);
 
-	const tipItems = useMemo(
-		() => TIPS.map((tip, index) => <TipItem key={`tip-${index}`} tip={tip} />),
-		[]
-	);
+	const tipItems = useMemo(function() {
+		return TIPS.map((tip, index) => <TipItem key={`tip-${index}`} tip={tip} />);
+	}, []);
 
 	if (!isOpen) return null;
 
@@ -107,7 +106,11 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 			aria-labelledby='modal-title'
 			aria-describedby='modal-description'
 		>
-			<div className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'>
+			<div 
+				className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
+				onBlur={handleModalBlur}
+				tabIndex={-1}
+			>
 				<div className='relative flex flex-col h-full'>
 					<header className='relative p-6 pb-4 text-center bg-gradient-to-r from-primary/20 via-primary/5 to-primary/30 rounded-t-lg'>
 						<div className='flex items-center justify-center mb-4'>
@@ -197,16 +200,16 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 											About Data Persistence
 										</h4>
 										<p className='text-xs text-amber-700 dark:text-amber-300 leading-relaxed mb-2'>
-											Start building immediately without an account! Data
-											saves locally in your browser. For access anywhere,
-											create a free account.
+											Start building immediately without an account!
+											Your data stays in memory during this session.
+											For persistent storage, create a free account.
 										</p>
 										<div className='flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400'>
-											<span role='img' aria-label='Clock'>
-												🕐
+											<span role='img' aria-label='Warning'>
+												⚠️
 											</span>
 											<span>
-												Local saves last until you clear browser data
+												Data is lost when you refresh or close the browser
 											</span>
 										</div>
 									</div>

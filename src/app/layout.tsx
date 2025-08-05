@@ -10,8 +10,16 @@ export { metadata };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang='en' className={cn(poppins.variable /* , lora.variable , nunito.variable */)}>
-			<body className='font-sans antialiased'>
+		<html
+			lang='en'
+			suppressHydrationWarning
+			className={cn(
+				'dark',
+				poppins.variable
+				// , lora.variable, nunito.variable
+			)}
+		>
+			<body className='font-sans antialiased bg-background text-foreground'>
 				<Providers>{children}</Providers>
 			</body>
 		</html>

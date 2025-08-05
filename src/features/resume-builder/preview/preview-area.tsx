@@ -3,19 +3,18 @@
 import { motion } from 'framer-motion';
 import { Download, Eye, Maximize2, Printer } from 'lucide-react';
 import { useState } from 'react';
+import { useAtomValue } from 'jotai/react';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
+import { resumeAtom } from '@/store/resume-store';
 import type { TResumeData } from '@/types/resume';
 import { ResumePreview } from './resume-preview';
 
-export type TPreviewAreaProps = {
-	readonly resumeData: TResumeData;
-};
-
-export function PreviewArea({ resumeData }: TPreviewAreaProps) {
+export function PreviewArea() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const resumeData = useAtomValue(resumeAtom) as unknown as TResumeData;
 
-	const enabledSections = resumeData.sections.filter((section) => section.isEnabled);
+	const enabledSections = resumeData.sections.filter(function(section) { return section.isEnabled; });
 
 	function handleToggleFullscreen() {
 		setIsFullscreen(!isFullscreen);
@@ -78,7 +77,7 @@ export function PreviewArea({ resumeData }: TPreviewAreaProps) {
 					}
 				>
 					<div className='max-w-[8.5in] mx-auto'>
-						<ResumePreview resumeData={resumeData} />
+						<ResumePreview />
 					</div>
 				</motion.div>
 			</div>

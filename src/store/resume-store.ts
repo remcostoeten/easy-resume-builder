@@ -1,6 +1,5 @@
 import { atom, getDefaultStore } from 'jotai';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
-import { getItem, setItem } from '@/core/storage';
 import type { TPersonalInfoForm } from '@/features/resume-schemas/resume-schemas';
 import type { TResumeData, TResumeSection, TSkillCategory, TWorkItem } from '@/types/resume';
 
@@ -62,85 +61,15 @@ function createEmptyResumeData(): Mutable<TResumeData> {
 	} as Mutable<TResumeData>;
 }
 
-// Storage key for localStorage
-const STORAGE_KEY = 'resume-builder-data';
-
-function convertDates(obj: any): any {
-	if (obj && typeof obj === 'object') {
-		if (obj.createdAt) obj.createdAt = new Date(obj.createdAt);
-		if (obj.updatedAt) obj.updatedAt = new Date(obj.updatedAt);
-		if (obj.lastModified) obj.lastModified = new Date(obj.lastModified);
-		if (obj.startDate) obj.startDate = new Date(obj.startDate);
-		if (obj.endDate) obj.endDate = new Date(obj.endDate);
-
-		Object.keys(obj).forEach((key) => {
-			if (Array.isArray(obj[key])) {
-				obj[key] = obj[key].map(convertDates);
-			} else if (obj[key] && typeof obj[key] === 'object') {
-				obj[key] = convertDates(obj[key]);
-			}
-		});
-	}
-	return obj;
-}
-
-function loadPersistedData(): Mutable<TResumeData> {
-	const stored = getItem<any>(STORAGE_KEY);
-	
-	if (stored) {
-		const converted = convertDates(stored);
-		
-		if (!converted.sections || converted.sections.length === 0) {
-			converted.sections = createDefaultSections();
-		}
-		
-		return converted;
-	}
-	
-	return createEmptyResumeData();
-}
-
-function saveToStorage(data: Mutable<TResumeData>): void {
-	setItem(STORAGE_KEY, data);
-}
-
 // ---------------------- Jotai store ----------------------
 
 // Main atom that holds the resume data
-export const resumeAtom = atom<Mutable<TResumeData>>(loadPersistedData());
-
-// Enhanced atom with automatic persistence and timestamp updates
-export const resumeAtomWithMigration = atom(
-	(get) => get(resumeAtom),
-	(
-		get,
-		set,
-		update:
-			| Partial<Mutable<TResumeData>>
-			| ((prev: Mutable<TResumeData>) => Mutable<TResumeData>)
-	) => {
-		const current = get(resumeAtom);
-		const next = typeof update === 'function' ? update(current) : { ...current, ...update };
-
-		// Update timestamps
-		const now = new Date();
-		next.updatedAt = now;
-		next.metadata = { ...next.metadata, lastModified: now };
-
-		set(resumeAtom, next);
-
-		// Save to localStorage
-		saveToStorage(next);
-	}
-);
-
-// Legacy draft atom for backward compatibility (now aliases to resumeAtom)
-export const resumeDraftAtom = resumeAtomWithMigration;
+export const resumeAtom = atom<Mutable<TResumeData>>(createEmptyResumeData());
 
 // Replace the current draft with a shallow-merged version of the given update
 export function setResumeDraft(update: Partial<Mutable<TResumeData>>): void {
 	const store = getDefaultStore();
-	store.set(resumeAtomWithMigration, update);
+	store.set(resumeAtom, (prev) => ({ ...prev, ...update }));
 }
 
 // Clear the entire store back to its initial empty state
@@ -154,178 +83,115 @@ export function clearStore(): void {
 // Update personal info using the new atom
 export function updatePersonalInfo(data: TPersonalInfoForm): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-	const now = new Date();
-
-	const updated = {
-		...current,
-		personalInfo: {
-			...current.personalInfo,
-			...data,
-			updatedAt: now,
-		},
-		updatedAt: now,
-		metadata: {
-			...current.metadata,
-			lastModified: now,
-		},
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	store.set(resumeAtom, (prev) => {
+		const now = new Date();
+		return {
+			...prev,
+			personalInfo: { ...prev.personalInfo, ...data, updatedAt: now },
+		};
+	});
 }
 
 // Toggle section enabled state using the new atom
 export function toggleSection(sectionId: string): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
+	store.set(resumeAtom, (current) => {
+		const updatedSections = current.sections.map((section) =>
+			section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section
+		);
 
-	const updatedSections = current.sections.map((section) =>
-		section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section
-	);
-
-	const updated = {
-		...current,
-		sections: updatedSections,
-		updatedAt: new Date(),
-	};
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+		return {
+			...current,
+			sections: updatedSections,
+		};
+	});
 }
 
 // Reorder sections using the new atom
 export function reorderSections(sections: readonly TResumeSection[]): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		sections: sections.map((s) => ({ ...s })),
-		updatedAt: new Date(),
-	};
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Add work experience using the new atom
 export function addWorkExperience(data: TWorkItem): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		workExperience: [...current.workExperience, data as any] as Mutable<TWorkItem>[],
-		updatedAt: new Date(),
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Update work experience using the new atom
 export function updateWorkExperience(id: string, data: TWorkItem): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		workExperience: current.workExperience.map((item) => (item.id === id ? data : item)) as any,
-		updatedAt: new Date(),
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Remove work experience using the new atom
 export function removeWorkExperience(id: string): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		workExperience: current.workExperience.filter((item) => item.id !== id),
-		updatedAt: new Date(),
-	};
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Add skill category using the new atom
 export function addSkillCategory(data: TSkillCategory): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		skills: [...current.skills, data] as Mutable<TSkillCategory>[],
-		updatedAt: new Date(),
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Update skill category using the new atom
 export function updateSkillCategory(id: string, data: TSkillCategory): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		skills: current.skills.map((category) =>
 			category.id === id ? data : category
 		) as Mutable<TSkillCategory>[],
-		updatedAt: new Date(),
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Remove skill category using the new atom
 export function removeSkillCategory(id: string): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	const updated = {
+	store.set(resumeAtom, (current) => ({
 		...current,
 		skills: current.skills.filter(
 			(category) => category.id !== id
 		) as Mutable<TSkillCategory>[],
-		updatedAt: new Date(),
-	} as Mutable<TResumeData>;
-
-	store.set(resumeAtom, updated);
-	saveToStorage(updated);
+	}));
 }
 
 // Reset the entire resume to empty state
 export function resetResume(): void {
 	const store = getDefaultStore();
-	const newData = createEmptyResumeData();
-	store.set(resumeAtom, newData);
-	saveToStorage(newData);
+	store.set(resumeAtom, createEmptyResumeData());
 }
 
 // Helper function to ensure sections are initialized
 export function initializeSections(): void {
 	const store = getDefaultStore();
-	const current = store.get(resumeAtom);
-
-	if (current.sections.length === 0) {
-		const updated = {
-			...current,
-			sections: createDefaultSections(),
-			updatedAt: new Date(),
-		};
-
-		store.set(resumeAtom, updated);
-		saveToStorage(updated);
-	}
+	store.set(resumeAtom, (current) => {
+		if (current.sections.length === 0) {
+			return {
+				...current,
+				sections: createDefaultSections(),
+			};
+		}
+		return current;
+	});
 }
 
 // Helper function to reset the entire store

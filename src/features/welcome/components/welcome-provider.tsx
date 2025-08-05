@@ -1,6 +1,7 @@
 import type React from 'react';
-import { useWelcomeModal } from '../hooks/use-welcome-modal';
+import { useState, useEffect } from 'react';
 import { WelcomeModal } from './welcome-modal';
+import { hasSeenWelcomeModal, setStorageOnClick } from '@/utils/storage';
 
 type TProps = {
 	children: React.ReactNode;
@@ -11,15 +12,23 @@ type TProps = {
  * Drop this into any app to add welcome modal functionality
  */
 export function WelcomeModalProvider({ children }: TProps) {
-	const { isVisible, markAsSeen } = useWelcomeModal();
+	const [isVisible, setIsVisible] = useState(false);
+
+	// Check if user has seen the welcome modal on mount
+	useEffect(() => {
+		const hasSeen = hasSeenWelcomeModal();
+		setIsVisible(!hasSeen);
+	}, []);
 
 	function handleGetStarted() {
-		markAsSeen();
+		setStorageOnClick(); // Mark as seen in localStorage
+		setIsVisible(false);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
 	function handleClose() {
-		markAsSeen();
+		setStorageOnClick(); // Mark as seen when closed
+		setIsVisible(false);
 	}
 
 	return (
