@@ -1,22 +1,13 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-	Building,
-	Calendar,
-	Github,
-	Globe,
-	Linkedin,
-	Mail,
-	MapPin,
-	Phone,
-} from 'lucide-react';
+import { Building, Calendar, Github, Globe, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import type { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from 'react';
 import React from 'react';
 import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
-import type { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
-import { TResumeData } from '@/types/resume';
-import { formatDateRange } from '@/utils/date-utils';
+import type { TResumeData } from '@/types/resume';
+import { formatDateRange } from '@/shared/utilities/date-utils';
 
 export type TResumePreviewProps = {
 	readonly resumeData: TResumeData;
@@ -24,24 +15,22 @@ export type TResumePreviewProps = {
 
 export function ResumePreview({ resumeData }: TResumePreviewProps) {
 	const { personalInfo, workExperience, skills, sections } = resumeData;
-const enabledSections = React.useMemo(
-	function computeEnabledSections() {
-		return sections
-			.filter(function byEnabled(section) {
-				return section.isEnabled;
-			})
-			.sort(function byOrder(a, b) {
-				return a.order - b.order;
-			});
-	},
-	[sections],
-);
+	const enabledSections = React.useMemo(
+		function computeEnabledSections() {
+			return sections
+				.filter(function byEnabled(section) {
+					return section.isEnabled;
+				})
+				.sort(function byOrder(a, b) {
+					return a.order - b.order;
+				});
+		},
+		[sections]
+	);
 
-const hasPersonalInfo = Boolean(
-	personalInfo.firstName ||
-	personalInfo.lastName ||
-	personalInfo.email,
-);
+	const hasPersonalInfo = Boolean(
+		personalInfo.firstName || personalInfo.lastName || personalInfo.email
+	);
 
 	function renderSkillProficiency(skill: any) {
 		if (!skill.proficiency?.showLevel) return null;
@@ -147,127 +136,202 @@ const hasPersonalInfo = Boolean(
 			<div className='space-y-6'>
 				<AnimatePresence>
 					{enabledSections
-						.filter((section: { type: string; }) => section.type !== 'personal-info')
-						.map((section: { id: Key | null | undefined; title: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; type: string; }, index: number) => (
-							<motion.section
-								key={section.id}
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: -20 }}
-								transition={{ delay: index * 0.1 }}
-								className='space-y-4'
-							>
-								<h2 className='text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2'>
-									{section.title}
-								</h2>
+						.filter((section: { type: string }) => section.type !== 'personal-info')
+						.map(
+							(
+								section: {
+									id: Key | null | undefined;
+									title:
+										| string
+										| number
+										| bigint
+										| boolean
+										| ReactElement<unknown, string | JSXElementConstructor<any>>
+										| Iterable<ReactNode>
+										| ReactPortal
+										| Promise<
+												| string
+												| number
+												| bigint
+												| boolean
+												| ReactPortal
+												| ReactElement<
+														unknown,
+														string | JSXElementConstructor<any>
+												  >
+												| Iterable<ReactNode>
+												| null
+												| undefined
+										  >
+										| null
+										| undefined;
+									type: string;
+								},
+								index: number
+							) => (
+								<motion.section
+									key={section.id}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -20 }}
+									transition={{ delay: index * 0.1 }}
+									className='space-y-4'
+								>
+									<h2 className='text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2'>
+										{section.title}
+									</h2>
 
-								<div className='space-y-4'>
-									{section.type === 'work-experience' &&
-										(workExperience.length === 0 ? (
-											<p className='text-gray-500 italic'>
-												No work experience added yet.
-											</p>
-										) : (
-											workExperience.map((item) => (
-												<div key={item.id} className='space-y-2'>
-													<div className='flex items-start justify-between'>
-														<div>
-															<h3 className='font-semibold text-gray-900'>
-																{item.position}
-															</h3>
-															<div className='flex items-center gap-2 text-gray-700'>
-																<Building className='h-4 w-4' />
-																<span>{item.company}</span>
-															</div>
-														</div>
-														<div className='text-right text-sm text-gray-600'>
-															<div className='flex items-center gap-1'>
-																<Calendar className='h-3 w-3' />
-																<span>
-																	{formatDateRange(
-																		item.dateRange
-																	)}
-																</span>
-															</div>
-															<div className='flex items-center gap-1 mt-1'>
-																<MapPin className='h-3 w-3' />
-																<span>{item.location}</span>
-															</div>
-														</div>
-													</div>
-													<p className='text-gray-600 text-sm leading-relaxed'>
-														{item.description}
-													</p>
-													{item.achievements.length > 0 && (
-														<ul className='text-sm text-gray-600 space-y-1 ml-4'>
-															{item.achievements.map(
-																(achievement: string, idx: number) => (
-																	<li
-																		key={idx}
-																		className='flex items-start gap-2'
-																	>
-																		<span className='text-gray-400 mt-1.5 text-xs'>
-																			•
-																		</span>
-																		<span>{achievement}</span>
-																	</li>
-																)
-															)}
-														</ul>
-													)}
-												</div>
-											))
-										))}
-
-									{section.type === 'skills' &&
-										(skills.length === 0 ? (
-											<p className='text-gray-500 italic'>
-												No skills added yet.
-											</p>
-										) : (
-											<div className='space-y-4'>
-												{skills.map((category) => (
-													<div key={category.id} className='space-y-2'>
-														{category.showGroupLabel && (
-															<h3 className='font-medium text-gray-800'>
-																{category.name}
-															</h3>
-														)}
-														<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-															{category.skills.map((skill: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
-																<div
-																	key={skill.id}
-																	className='flex items-center justify-between'
-																>
-																	<span className='text-sm text-gray-700'>
-																		{skill.name}
-																	</span>
-																	{renderSkillProficiency(skill)}
+									<div className='space-y-4'>
+										{section.type === 'work-experience' &&
+											(workExperience.length === 0 ? (
+												<p className='text-gray-500 italic'>
+													No work experience added yet.
+												</p>
+											) : (
+												workExperience.map((item) => (
+													<div key={item.id} className='space-y-2'>
+														<div className='flex items-start justify-between'>
+															<div>
+																<h3 className='font-semibold text-gray-900'>
+																	{item.position}
+																</h3>
+																<div className='flex items-center gap-2 text-gray-700'>
+																	<Building className='h-4 w-4' />
+																	<span>{item.company}</span>
 																</div>
-															))}
+															</div>
+															<div className='text-right text-sm text-gray-600'>
+																<div className='flex items-center gap-1'>
+																	<Calendar className='h-3 w-3' />
+																	<span>
+																		{formatDateRange(
+																			item.dateRange
+																		)}
+																	</span>
+																</div>
+																<div className='flex items-center gap-1 mt-1'>
+																	<MapPin className='h-3 w-3' />
+																	<span>{item.location}</span>
+																</div>
+															</div>
 														</div>
+														<p className='text-gray-600 text-sm leading-relaxed'>
+															{item.description}
+														</p>
+														{item.achievements.length > 0 && (
+															<ul className='text-sm text-gray-600 space-y-1 ml-4'>
+																{item.achievements.map(
+																	(
+																		achievement: string,
+																		idx: number
+																	) => (
+																		<li
+																			key={idx}
+																			className='flex items-start gap-2'
+																		>
+																			<span className='text-gray-400 mt-1.5 text-xs'>
+																				•
+																			</span>
+																			<span>
+																				{achievement}
+																			</span>
+																		</li>
+																	)
+																)}
+															</ul>
+														)}
 													</div>
-												))}
-											</div>
-										))}
+												))
+											))}
 
-									{section.type === 'education' &&
-										resumeData.education.length === 0 && (
+										{section.type === 'skills' &&
+											(skills.length === 0 ? (
+												<p className='text-gray-500 italic'>
+													No skills added yet.
+												</p>
+											) : (
+												<div className='space-y-4'>
+													{skills.map((category) => (
+														<div
+															key={category.id}
+															className='space-y-2'
+														>
+															{category.showGroupLabel && (
+																<h3 className='font-medium text-gray-800'>
+																	{category.name}
+																</h3>
+															)}
+															<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+																{category.skills.map(
+																	(skill: {
+																		id: Key | null | undefined;
+																		name:
+																			| string
+																			| number
+																			| bigint
+																			| boolean
+																			| ReactElement<
+																					unknown,
+																					| string
+																					| JSXElementConstructor<any>
+																			  >
+																			| Iterable<ReactNode>
+																			| ReactPortal
+																			| Promise<
+																					| string
+																					| number
+																					| bigint
+																					| boolean
+																					| ReactPortal
+																					| ReactElement<
+																							unknown,
+																							| string
+																							| JSXElementConstructor<any>
+																					  >
+																					| Iterable<ReactNode>
+																					| null
+																					| undefined
+																			  >
+																			| null
+																			| undefined;
+																	}) => (
+																		<div
+																			key={skill.id}
+																			className='flex items-center justify-between'
+																		>
+																			<span className='text-sm text-gray-700'>
+																				{skill.name}
+																			</span>
+																			{renderSkillProficiency(
+																				skill
+																			)}
+																		</div>
+																	)
+																)}
+															</div>
+														</div>
+													))}
+												</div>
+											))}
+
+										{section.type === 'education' &&
+											resumeData.education.length === 0 && (
+												<p className='text-gray-500 italic'>
+													No education added yet.
+												</p>
+											)}
+
+										{(section.type === 'projects' ||
+											section.type === 'certifications' ||
+											section.type === 'languages') && (
 											<p className='text-gray-500 italic'>
-												No education added yet.
+												This section is coming soon.
 											</p>
 										)}
-
-									{(section.type === 'projects' ||
-										section.type === 'certifications' ||
-										section.type === 'languages') && (
-										<p className='text-gray-500 italic'>
-											This section is coming soon.
-										</p>
-									)}
-								</div>
-							</motion.section>
-						))}
+									</div>
+								</motion.section>
+							)
+						)}
 				</AnimatePresence>
 			</div>
 

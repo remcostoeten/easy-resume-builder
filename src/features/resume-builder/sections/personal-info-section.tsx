@@ -1,23 +1,23 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from 'lucide-react';
+import { Check, Save, User } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
-import { Check, Save } from 'lucide-react';
+import { updatePersonalInfo } from '@/store/resume-store';
+import type { TPersonalInfo } from '@/types/resume';
+import { personalInfoSchema, type TPersonalInfoForm } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
 import { FormSection } from '../form/form-section';
-import { updatePersonalInfo } from '@/store/resume-store';
-import { TPersonalInfo } from '@/types/resume';
-import { TPersonalInfoForm, personalInfoSchema } from '../../resume-schemas';
 
 type TProps = {
+	readonly className?: string;
 	readonly data: TPersonalInfo;
 };
 
-export function PersonalInfoSection({ data }: TProps) {
+export function PersonalInfoSection({ className, data }: TProps) {
 	const {
 		register,
 		handleSubmit,
@@ -42,41 +42,36 @@ export function PersonalInfoSection({ data }: TProps) {
 	const watchedValues = watch();
 	const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-	function handleFormSubmit(formData: TPersonalInfoForm) {
+	const handleFormSubmit = useCallback((formData: TPersonalInfoForm) => {
 		setSaveStatus('saving');
 		try {
 			updatePersonalInfo(formData);
 			setSaveStatus('saved');
-			// Reset to idle after 2 seconds
 			setTimeout(() => setSaveStatus('idle'), 2000);
 		} catch (error) {
 			console.error('Failed to save form data:', error);
 			setSaveStatus('error');
 			setTimeout(() => setSaveStatus('idle'), 3000);
 		}
-	}
+	}, []);
 
 	function handleAutoSave() {
 		if (isDirty && isValid) {
 			handleSubmit(handleFormSubmit)();
 		}
 	}
-
-	// Auto-save when form values change (debounced)
 	useEffect(() => {
 		if (!isDirty || !isValid) return;
 
 		const timeoutId = setTimeout(() => {
 			if (isDirty && isValid) {
 				console.log('Auto-saving form data...', watchedValues);
-				handleSubmit(handleFormSubmit)();
 			}
-		}, 1000); // 1 second delay
+		}, 1000);
 
 		return () => clearTimeout(timeoutId);
-	}, [watchedValues, isDirty, isValid, handleSubmit]);
+	}, [watchedValues, isDirty, isValid]);
 
-	// Reset save status when form becomes dirty
 	useEffect(() => {
 		if (isDirty && saveStatus === 'saved') {
 			setSaveStatus('idle');
@@ -85,7 +80,10 @@ export function PersonalInfoSection({ data }: TProps) {
 
 	return (
 		<FormSection title='Personal Information' icon={<User className='h-5 w-5' />} isRequired>
-			<form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
+			<form
+				onSubmit={handleSubmit(handleFormSubmit)}
+				className={`space-y-6 ${className || ''}`}
+			>
 				<FormGrid columns={2}>
 					<FormField
 						label='First Name'
@@ -210,8 +208,8 @@ export function PersonalInfoSection({ data }: TProps) {
 						>
 							{saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
 						</Button>
-						<Button 
-							type='submit' 
+						<Button
+							type='submit'
 							disabled={!isDirty || !isValid || saveStatus === 'saving'}
 						>
 							{saveStatus === 'saving' ? 'Saving...' : 'Save & Continue'}

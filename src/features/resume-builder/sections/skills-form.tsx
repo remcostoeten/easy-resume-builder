@@ -19,10 +19,10 @@ import {
 } from '@/shared/components/ui/select';
 import { Slider } from '@/shared/components/ui/slider';
 import { Switch } from '@/shared/components/ui/switch';
+import type { TSkill, TSkillCategory } from '@/types/resume';
+import { createEntity } from '@/shared/utilities/entity';
+import { skillCategorySchema, type TSkillCategoryForm } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
-import { TSkillCategory, TSkill } from '@/types/resume';
-import { createEntity } from '@/utils/entity';
-import { TSkillCategoryForm, skillCategorySchema } from '../../resume-schemas';
 
 export type TSkillsFormProps = {
 	readonly skillCategory?: TSkillCategory;
@@ -49,11 +49,11 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 		watch,
 	} = useForm<TSkillCategoryForm>({
 		resolver: zodResolver(skillCategorySchema),
-	defaultValues: skillCategory
+		defaultValues: skillCategory
 			? {
 					name: skillCategory.name,
 					showGroupLabel: skillCategory.showGroupLabel,
-					skills: skillCategory.skills.map(skill => ({ ...skill })),
+					skills: skillCategory.skills.map((skill) => ({ ...skill })),
 				}
 			: {
 					name: '',

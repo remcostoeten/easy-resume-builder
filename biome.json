@@ -1,43 +1,46 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"complexity": {
-				"noUselessFragments": "warn"
-			},
-			"style": {
-				"useConst": "warn",
-				"useTemplate": "warn",
-				"noNonNullAssertion": "off"
-			},
-			"suspicious": {
-				"noArrayIndexKey": "off",
-				"noExplicitAny": "off",
-				"noDocumentCookie": "off",
-				"noDuplicateJsxProps": "error",
-				"noExtraNonNullAssertion": "warn"
-			},
-			"a11y": {
-				"noSvgWithoutTitle": "off",
-				"useAriaPropsSupportedByRole": "off"
-			}
-		}
-	},
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": true,
-		"indentStyle": "tab",
-		"indentWidth": 4,
-		"lineWidth": 100
-	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "single",
-			"trailingCommas": "es5",
-			"jsxQuoteStyle": "single",
-			"arrowParentheses": "always"
-		}
-	}
+    "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+    "files": {
+        "includes": ["src/**/*.{ts,tsx}"]
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "complexity": {
+                "noUselessFragments": "warn"
+            },
+            "style": {
+                "useConst": "warn",
+                "useTemplate": "warn",
+                "noNonNullAssertion": "off"
+            },
+            "suspicious": {
+                "noArrayIndexKey": "off",
+                "noExplicitAny": "off",
+                "noDocumentCookie": "off",
+                "noDuplicateJsxProps": "error",
+                "noExtraNonNullAssertion": "warn"
+            },
+            "a11y": {
+                "noSvgWithoutTitle": "off",
+                "useAriaPropsSupportedByRole": "off"
+            }
+        }
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": true,
+        "indentStyle": "tab",
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "trailingCommas": "es5",
+            "jsxQuoteStyle": "single",
+            "arrowParentheses": "always"
+        }
+    }
 }

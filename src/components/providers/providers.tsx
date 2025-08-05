@@ -1,11 +1,12 @@
 'use client';
 
-import type React from 'react';
 import { Provider as JotaiProvider } from 'jotai/react';
-import { ThemeProvider } from './theme-provider';
-import { WelcomeModalProvider } from '../../features/welcome/components/welcome-provider';
-import { SaveStatusProvider } from './save-status-provider';
+import type React from 'react';
 import { Toaster } from 'sonner';
+import { WelcomeModalProvider } from '../../features/welcome/components/welcome-provider';
+
+import { SaveStatusProvider } from './save-status-provider';
+import { ThemeProvider } from './theme-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
