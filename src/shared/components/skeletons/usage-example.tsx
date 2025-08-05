@@ -2,11 +2,15 @@
 
 'use client';
 
-import { SectionSkeleton } from './section-skeleton';
 import { PersonalInfoSkeleton, WorkExperienceSkeleton } from './index';
+import { SectionSkeleton } from './section-skeleton';
 
 // Example 1: Enhanced SectionRenderer with loading states
-export function EnhancedSectionRenderer({ section, resumeData, isLoading }: {
+export function EnhancedSectionRenderer({
+	section,
+
+	isLoading,
+}: {
 	readonly section: any;
 	readonly resumeData: any;
 	readonly isLoading?: boolean;
@@ -21,7 +25,9 @@ export function EnhancedSectionRenderer({ section, resumeData, isLoading }: {
 }
 
 // Example 2: Individual section with loading state
-export function PersonalInfoWithSkeleton({ data, isLoading }: {
+export function PersonalInfoWithSkeleton({
+	isLoading,
+}: {
 	readonly data: any;
 	readonly isLoading?: boolean;
 }) {
@@ -34,7 +40,10 @@ export function PersonalInfoWithSkeleton({ data, isLoading }: {
 }
 
 // Example 3: Work experience with dynamic card count
-export function WorkExperienceWithSkeleton({ data, isLoading }: {
+export function WorkExperienceWithSkeleton({
+	data,
+	isLoading,
+}: {
 	readonly data: any[];
 	readonly isLoading?: boolean;
 }) {
@@ -49,11 +58,11 @@ export function WorkExperienceWithSkeleton({ data, isLoading }: {
 }
 
 // Example 4: Usage in a loading wrapper
-export function LoadingWrapper({ 
-	children, 
-	isLoading, 
-	sectionType, 
-	fallback 
+export function LoadingWrapper({
+	children,
+	isLoading,
+	sectionType,
+	fallback,
 }: {
 	readonly children: React.ReactNode;
 	readonly isLoading: boolean;

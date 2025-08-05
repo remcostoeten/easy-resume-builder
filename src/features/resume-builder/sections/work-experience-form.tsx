@@ -18,11 +18,11 @@ import {
 } from '@/shared/components/ui/select';
 import { Switch } from '@/shared/components/ui/switch';
 import { Textarea } from '@/shared/components/ui/textarea';
+import type { TWorkItem } from '@/types/resume';
+import { createEntity } from '@/shared/utilities/entity';
+import { type TWorkItemForm, workItemSchema } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
-import { TWorkItem } from '@/types/resume';
-import { createEntity } from '@/utils/entity';
-import { TWorkItemForm, workItemSchema } from '../../resume-schemas';
 
 export type TWorkExperienceFormProps = {
 	readonly workItem?: TWorkItem;
@@ -37,7 +37,9 @@ export function WorkExperienceForm({
 	onCancel,
 	onDelete,
 }: TWorkExperienceFormProps) {
-	const [achievements, setAchievements] = useState<string[]>(workItem?.achievements ? [...workItem.achievements] : ['']);
+	const [achievements, setAchievements] = useState<string[]>(
+		workItem?.achievements ? [...workItem.achievements] : ['']
+	);
 	const [isCurrentPosition, setIsCurrentPosition] = useState(
 		workItem?.dateRange.isCurrentPosition || false
 	);
@@ -48,12 +50,12 @@ export function WorkExperienceForm({
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors, isValid: _isValid },
 		setValue,
-		watch,
+		watch: _watch,
 	} = useForm<TWorkItemForm>({
 		resolver: zodResolver(workItemSchema),
-	defaultValues: workItem
+		defaultValues: workItem
 			? {
 					company: workItem.company,
 					position: workItem.position,

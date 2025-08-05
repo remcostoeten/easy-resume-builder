@@ -2,12 +2,17 @@
 
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/shared/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/components/ui/tooltip';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { Button } from '@/shared/components/ui/button';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/shared/components/ui/tooltip';
 import { cn } from '@/shared/utilities';
-import { TResumeSection } from '@/types/resume';
+import type { TResumeSection } from '@/types/resume';
 
 type TProps = {
 	readonly sections: readonly TResumeSection[];
@@ -15,59 +20,73 @@ type TProps = {
 	readonly onSectionChange: (sectionId: string) => void;
 };
 
+const SCROLL_AMOUNT = 200;
+const KEYBOARD_HINT_DURATION = 3000;
+
 export function SectionTabs({ sections, activeSection, onSectionChange }: TProps) {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(false);
 	const [showKeyboardHint, setShowKeyboardHint] = useState(false);
 
+	// Memoize enabled sections to prevent unnecessary recalculations
 	const enabledSections = sections
 		.filter((section) => section.isEnabled)
 		.sort((a, b) => a.order - b.order);
+
 	const currentIndex = enabledSections.findIndex((section) => section.id === activeSection);
 
-	function checkScrollState() {
+	// Optimize scroll state checking with useCallback
+	const checkScrollState = useCallback(() => {
 		if (!scrollContainerRef.current) return;
 
 		const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-		setCanScrollLeft(scrollLeft > 0);
-		setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
-	}
+		const newCanScrollLeft = scrollLeft > 0;
+		const newCanScrollRight = scrollLeft < scrollWidth - clientWidth - 1;
 
-	function scrollToLeft() {
-		if (!scrollContainerRef.current) return;
-		scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-	}
+		// Only update state if values changed to prevent unnecessary re-renders
+		setCanScrollLeft((prev) => (prev !== newCanScrollLeft ? newCanScrollLeft : prev));
+		setCanScrollRight((prev) => (prev !== newCanScrollRight ? newCanScrollRight : prev));
+	}, []);
 
-	function scrollToRight() {
-		if (!scrollContainerRef.current) return;
-		scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
-	}
+	// Optimize scroll functions with useCallback
+	const scrollToLeft = useCallback(() => {
+		scrollContainerRef.current?.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+	}, []);
 
-	function goToPreviousSection() {
+	const scrollToRight = useCallback(() => {
+		scrollContainerRef.current?.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+	}, []);
+
+	const goToPreviousSection = useCallback(() => {
 		if (currentIndex > 0) {
 			onSectionChange(enabledSections[currentIndex - 1].id);
 		}
-	}
+	}, [currentIndex, enabledSections, onSectionChange]);
 
-	function goToNextSection() {
+	const goToNextSection = useCallback(() => {
 		if (currentIndex < enabledSections.length - 1) {
 			onSectionChange(enabledSections[currentIndex + 1].id);
 		}
-	}
+	}, [currentIndex, enabledSections, onSectionChange]);
 
-	useEffect(() => {
-		function handleKeyDown(event: KeyboardEvent) {
+	// Optimize keyboard handler with useCallback and debouncing
+	const handleKeyDown = useCallback(
+		(event: KeyboardEvent) => {
+			// Skip if user is typing in form elements
 			if (
 				event.target instanceof HTMLInputElement ||
-				event.target instanceof HTMLTextAreaElement
+				event.target instanceof HTMLTextAreaElement ||
+				event.target instanceof HTMLSelectElement ||
+				(event.target as HTMLElement)?.contentEditable === 'true'
 			) {
 				return;
 			}
 
+			// Show keyboard hint for arrow keys
 			if (!showKeyboardHint && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
 				setShowKeyboardHint(true);
-				setTimeout(() => setShowKeyboardHint(false), 3000);
+				setTimeout(() => setShowKeyboardHint(false), KEYBOARD_HINT_DURATION);
 			}
 
 			switch (event.key) {
@@ -80,60 +99,85 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 					goToNextSection();
 					break;
 				default: {
-					const num = Number.parseInt(event.key);
-					if (num >= 1 && num <= enabledSections.length) {
+					const num = Number.parseInt(event.key, 10);
+					if (num >= 1 && num <= enabledSections.length && !Number.isNaN(num)) {
 						event.preventDefault();
 						onSectionChange(enabledSections[num - 1].id);
 					}
 					break;
 				}
 			}
-		}
+		},
+		[enabledSections, onSectionChange, showKeyboardHint, goToNextSection, goToPreviousSection]
+	);
 
-		window.addEventListener('keydown', handleKeyDown);
+	// Keyboard event listener
+	useEffect(() => {
+		window.addEventListener('keydown', handleKeyDown, { passive: false });
 		return () => window.removeEventListener('keydown', handleKeyDown);
-	}, [enabledSections, onSectionChange, showKeyboardHint, goToNextSection, goToPreviousSection]);
+	}, [handleKeyDown]);
 
+	// Scroll state observer
 	useEffect(() => {
 		checkScrollState();
 		const container = scrollContainerRef.current;
 		if (container) {
-			container.addEventListener('scroll', checkScrollState);
+			// Use passive listener for scroll events
+			container.addEventListener('scroll', checkScrollState, { passive: true });
 			return () => container.removeEventListener('scroll', checkScrollState);
 		}
 	}, [checkScrollState]);
 
+	// Auto-scroll to active tab
 	useEffect(() => {
 		if (!scrollContainerRef.current) return;
 
 		const activeTab = scrollContainerRef.current.querySelector(
 			`[data-section-id="${activeSection}"]`
-		);
+		) as HTMLElement;
+
 		if (activeTab) {
-			activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+			// Use requestAnimationFrame for smoother scrolling
+			requestAnimationFrame(() => {
+				activeTab.scrollIntoView({
+					behavior: 'smooth',
+					block: 'nearest',
+					inline: 'center',
+				});
+			});
 		}
 	}, [activeSection]);
 
 	return (
-		<div className='border-b border-border bg-card relative'>
+		<nav
+			className='border-b border-border bg-card relative'
+			aria-label='Resume sections navigation'
+		>
 			<div className='flex items-center'>
+				{/* Left scroll button */}
 				<div className='flex-shrink-0'>
 					<Button
 						variant='ghost'
 						size='sm'
 						onClick={scrollToLeft}
 						disabled={!canScrollLeft}
+						aria-label='Scroll tabs left'
 						className={cn(
 							'h-12 px-2 rounded-none border-r border-border transition-opacity',
 							canScrollLeft ? 'opacity-100' : 'opacity-30'
 						)}
 					>
-						<ChevronLeft className='h-4 w-4' />
+						<ChevronLeft className='h-4 w-4' aria-hidden='true' />
 					</Button>
 				</div>
 
-				<div ref={scrollContainerRef} className='flex-1 overflow-x-auto scrollbar-hidden'>
-					<div className='flex min-w-max'>
+				{/* Scrollable tabs container */}
+				<div
+					ref={scrollContainerRef}
+					className='flex-1 overflow-x-auto scrollbar-hidden'
+					role='none'
+				>
+					<div className='flex min-w-max' role='none'>
 						{enabledSections.map((section, index) => {
 							const config = SECTION_CONFIGS[section.type];
 							const IconComponent = config.icon;
@@ -144,19 +188,32 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 									<Tooltip>
 										<TooltipTrigger asChild>
 											<button
+												type='button'
+												id={`tab-${section.id}`}
 												data-section-id={section.id}
 												onClick={() => onSectionChange(section.id)}
+												role='tab'
+												aria-selected={isActive}
+												aria-controls={`tabpanel-${section.id}`}
+												tabIndex={isActive ? 0 : -1}
 												className={cn(
 													'relative flex items-center gap-2 px-6 py-3 text-sm font-medium whitespace-nowrap transition-all duration-200',
 													'hover:text-foreground hover:bg-accent/50 border-b-2 border-transparent min-h-[48px]',
+													'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
 													isActive
 														? 'text-foreground bg-background border-b-primary'
 														: 'text-muted-foreground'
 												)}
 											>
-												<IconComponent className='h-4 w-4 flex-shrink-0' />
+												<IconComponent
+													className='h-4 w-4 flex-shrink-0'
+													aria-hidden='true'
+												/>
 												<span>{section.title}</span>
-												<span className='text-xs opacity-60 ml-1'>
+												<span
+													className='text-xs opacity-60 ml-1'
+													aria-label={`Keyboard shortcut: ${index + 1}`}
+												>
 													{index + 1}
 												</span>
 
@@ -169,6 +226,7 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 															stiffness: 500,
 															damping: 30,
 														}}
+														aria-hidden='true'
 													/>
 												)}
 											</button>
@@ -188,18 +246,20 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 					</div>
 				</div>
 
+				{/* Right scroll button */}
 				<div className='flex-shrink-0'>
 					<Button
 						variant='ghost'
 						size='sm'
 						onClick={scrollToRight}
 						disabled={!canScrollRight}
+						aria-label='Scroll tabs right'
 						className={cn(
 							'h-12 px-2 rounded-none border-l border-border transition-opacity',
 							canScrollRight ? 'opacity-100' : 'opacity-30'
 						)}
 					>
-						<ChevronRight className='h-4 w-4' />
+						<ChevronRight className='h-4 w-4' aria-hidden='true' />
 					</Button>
 				</div>
 
@@ -213,9 +273,10 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 									size='sm'
 									onClick={goToPreviousSection}
 									disabled={currentIndex === 0}
+									aria-label='Go to previous section'
 									className='h-8 w-8 p-0'
 								>
-									<ChevronLeft className='h-3 w-3' />
+									<ChevronLeft className='h-3 w-3' aria-hidden='true' />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side='bottom' className='text-xs'>
@@ -224,7 +285,11 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 						</Tooltip>
 					</TooltipProvider>
 
-					<div className='text-xs text-muted-foreground px-2'>
+					<div
+						className='text-xs text-muted-foreground px-2'
+						aria-live='polite'
+						aria-label={`Section ${currentIndex + 1} of ${enabledSections.length}`}
+					>
 						{currentIndex + 1}/{enabledSections.length}
 					</div>
 
@@ -236,9 +301,10 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 									size='sm'
 									onClick={goToNextSection}
 									disabled={currentIndex === enabledSections.length - 1}
+									aria-label='Go to next section'
 									className='h-8 w-8 p-0'
 								>
-									<ChevronRight className='h-3 w-3' />
+									<ChevronRight className='h-3 w-3' aria-hidden='true' />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side='bottom' className='text-xs'>
@@ -256,9 +322,10 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 								<Button
 									variant='ghost'
 									size='sm'
+									aria-label='View keyboard shortcuts'
 									className='h-8 w-8 p-0 opacity-60 hover:opacity-100'
 								>
-									<Keyboard className='h-3 w-3' />
+									<Keyboard className='h-3 w-3' aria-hidden='true' />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side='bottom' className='text-xs max-w-xs'>
@@ -281,6 +348,8 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 					animate={{ opacity: 1, y: 0 }}
 					exit={{ opacity: 0, y: -10 }}
 					className='absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50'
+					role='alert'
+					aria-live='polite'
 				>
 					<div className='bg-popover text-popover-foreground px-3 py-2 rounded-md shadow-lg border text-xs'>
 						💡 Use ← → arrow keys or number keys (1-{enabledSections.length}) to
@@ -288,6 +357,6 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 					</div>
 				</motion.div>
 			)}
-		</div>
+		</nav>
 	);
 }

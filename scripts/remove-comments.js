@@ -196,10 +196,21 @@ if (dryRunFlagIndex !== -1) {
 	isDryRunMode = true;
 }
 
+function extractFilePaths(args, startIndex) {
+	const files = [];
+	for (let i = startIndex + 1; i < args.length; i++) {
+		if (args[i].startsWith('--')) {
+			break;
+		}
+		files.push(args[i]);
+	}
+	return files;
+}
+
 if (revertFlagIndex !== -1) {
 	isRevertMode = true;
 	if (filesFlagIndex !== -1) {
-		filesToProcess = args.slice(filesFlagIndex + 1);
+		filesToProcess = extractFilePaths(args, filesFlagIndex);
 		if (filesToProcess.length === 0) {
 			console.error(
 				`${Colors.FgRed}Error:${Colors.Reset} --files flag requires at least one file path when used with --revert.`
@@ -209,7 +220,7 @@ if (revertFlagIndex !== -1) {
 		}
 	}
 } else if (filesFlagIndex !== -1) {
-	filesToProcess = args.slice(filesFlagIndex + 1);
+	filesToProcess = extractFilePaths(args, filesFlagIndex);
 	if (filesToProcess.length === 0) {
 		console.error(
 			`${Colors.FgRed}Error:${Colors.Reset} --files flag requires at least one file path.`

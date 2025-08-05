@@ -3,12 +3,16 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Briefcase, Calendar, Edit, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { Card, CardContent, EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, EmptyState } from '@/shared/components/ui';
-import { addWorkExperience, updateWorkExperience, removeWorkExperience } from '@/store/resume-store';
-import { TWorkItem } from '@/types/resume';
-import { formatDateRange } from '@/utils/date-utils';
+import {
+	addWorkExperience,
+	removeWorkExperience,
+	updateWorkExperience,
+} from '@/store/resume-store';
+import type { TWorkItem } from '@/types/resume';
+import { formatDateRange } from '@/shared/utilities/date-utils';
 import { FormSection } from '../form/form-section';
 import { WorkExperienceForm } from './work-experience-form';
 
