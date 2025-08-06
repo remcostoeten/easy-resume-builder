@@ -7,5 +7,5 @@
 // Better Auth schemas for migrations
 export * from '@/features/auth/server/better-auth-schema';
 
-// TODO: Import actual schemas when they are created
-// import * as resumeSchemas from '@/features/resume-schemas';
+// Resume schemas
+export * from '@/features/resume/server/schemas';
