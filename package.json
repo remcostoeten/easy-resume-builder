@@ -4,6 +4,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"preinstall": "node scripts/check-react-version.mjs",
 		"build": "next build",
 		"build:analyze": "next build && node scripts/analyze-bundle.mjs",
 		"dev": "next dev",
@@ -11,7 +12,10 @@
 		"lint:fix": "biome check --write src",
 		"format": "biome format --write src",
 		"start": "next start",
-		"analyze": "node scripts/analyze-bundle.mjs"
+		"analyze": "node scripts/analyze-bundle.mjs",
+		"auth:generate": "better-auth generate",
+		"auth:migrate": "better-auth migrate",
+		"db:migrate": "drizzle-kit migrate"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "latest",
@@ -19,6 +23,7 @@
 		"@dnd-kit/utilities": "latest",
 		"@emotion/is-prop-valid": "latest",
 		"@hookform/resolvers": "latest",
+		"@neondatabase/serverless": "^1.0.1",
 		"@number-flow/react": "^0.5.10",
 		"@radix-ui/react-accordion": "1.2.2",
 		"@radix-ui/react-alert-dialog": "1.1.4",
@@ -36,6 +41,7 @@
 		"@types/multer": "^2.0.0",
 		"@types/pako": "^2.0.3",
 		"autoprefixer": "^10.4.20",
+		"better-auth": "^1.3.4",
 		"better-sqlite3": "^12.2.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -54,36 +60,48 @@
 		"lz-string": "^1.5.0",
 		"multer": "^2.0.2",
 		"nanoid": "latest",
-		"next": "15.2.4",
+		"next": "^15.4.5",
 		"next-themes": "^0.4.6",
 		"pako": "^2.1.0",
 		"pdf-parse": "^1.1.1",
-		"react": "^19",
+		"react": "18.2.0",
 		"react-day-picker": "9.8.0",
-		"react-dom": "^19",
+		"react-dom": "18.2.0",
 		"react-hook-form": "latest",
 		"react-resizable-panels": "latest",
 		"recharts": "2.15.4",
 		"sonner": "^2.0.7",
+		"swr": "^2.3.4",
 		"tailwind-merge": "^2.5.5",
 		"tailwindcss-animate": "^1.0.7",
 		"vaul": "^0.9.9",
 		"web-vitals": "^5.1.0",
 		"zod": "3.25.67"
 	},
+	"overrides": {
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
 	"devDependencies": {
+		"@better-auth/cli": "^1.3.4",
 		"@biomejs/biome": "^2.1.3",
 		"@tailwindcss/postcss": "^4.1.9",
+		"@testing-library/jest-dom": "^6.6.4",
+		"@testing-library/react": "^16.3.0",
 		"@types/lz-string": "^1.5.0",
 		"@types/node": "^22",
 		"@types/pdf-parse": "^1.1.5",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@vitejs/plugin-react": "^4.7.0",
+		"@vitest/ui": "^3.2.4",
 		"drizzle-kit": "^0.31.4",
+		"jsdom": "^26.1.0",
 		"postcss": "^8.5",
 		"tailwindcss": "^4.1.9",
 		"ts-morph": "^26.0.0",
 		"tw-animate-css": "1.3.3",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^3.2.4"
 	}
 }

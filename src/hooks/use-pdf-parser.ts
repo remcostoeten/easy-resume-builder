@@ -1,7 +1,7 @@
 'use client';
 
 import { useSetAtom } from 'jotai/react';
-import { resumeAtom, type Mutable } from '@/store/resume-store';
+import { type Mutable, resumeAtom } from '@/store/resume-store';
 import type { TEducationItem, TSkill, TWorkItem } from '@/types/resume';
 
 type TExtractedData = {
@@ -59,45 +59,51 @@ export function usePdfParser() {
 			if (extractedData.workExperience.length > 0) {
 				updatedData.workExperience = [
 					...updatedData.workExperience,
-					...extractedData.workExperience.map((exp) => ({
-						id: exp.id,
-						createdAt: new Date(),
-						updatedAt: new Date(),
-						company: exp.company,
-						position: exp.position,
-						location: '',
-						dateRange: {
-							startDate: new Date(exp.startDate),
-							endDate: exp.isCurrent ? undefined : new Date(exp.endDate),
-							isCurrentPosition: exp.isCurrent,
-							dateFormat: 'month-year' as const,
-						},
-						description: exp.description,
-					achievements: [],
-					}) as Mutable<TWorkItem>),
+					...extractedData.workExperience.map(
+						(exp) =>
+							({
+								id: exp.id,
+								createdAt: new Date(),
+								updatedAt: new Date(),
+								company: exp.company,
+								position: exp.position,
+								location: '',
+								dateRange: {
+									startDate: new Date(exp.startDate),
+									endDate: exp.isCurrent ? undefined : new Date(exp.endDate),
+									isCurrentPosition: exp.isCurrent,
+									dateFormat: 'month-year' as const,
+								},
+								description: exp.description,
+								achievements: [],
+							}) as Mutable<TWorkItem>
+					),
 				];
 			}
 
 			if (extractedData.education.length > 0) {
 				updatedData.education = [
 					...updatedData.education,
-					...extractedData.education.map((edu) => ({
-						id: edu.id,
-						createdAt: new Date(),
-						updatedAt: new Date(),
-						institution: edu.institution,
-						degree: edu.degree,
-						field: edu.field,
-						location: '',
-						dateRange: {
-							startDate: new Date(edu.startDate),
-							endDate: new Date(edu.endDate),
-							isCurrentPosition: false,
-							dateFormat: 'month-year' as const,
-						},
-						gpa: edu.gpa,
-					achievements: [],
-					}) as Mutable<TEducationItem>),
+					...extractedData.education.map(
+						(edu) =>
+							({
+								id: edu.id,
+								createdAt: new Date(),
+								updatedAt: new Date(),
+								institution: edu.institution,
+								degree: edu.degree,
+								field: edu.field,
+								location: '',
+								dateRange: {
+									startDate: new Date(edu.startDate),
+									endDate: new Date(edu.endDate),
+									isCurrentPosition: false,
+									dateFormat: 'month-year' as const,
+								},
+								gpa: edu.gpa,
+								achievements: [],
+							}) as Mutable<TEducationItem>
+					),
 				];
 			}
 
@@ -108,17 +114,27 @@ export function usePdfParser() {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					name: 'Technical Skills',
-					skills: extractedData.skills.map((skill) => ({
-						id: skill.id,
-						createdAt: new Date(),
-						updatedAt: new Date(),
-						name: skill.name,
-						proficiency: {
-							level: skill.level === 'beginner' ? 2 : skill.level === 'intermediate' ? 3 : skill.level === 'advanced' ? 4 : 5,
-							showLevel: true,
-							displayType: 'bar' as const,
-						},
-					}) as Mutable<TSkill>),
+					skills: extractedData.skills.map(
+						(skill) =>
+							({
+								id: skill.id,
+								createdAt: new Date(),
+								updatedAt: new Date(),
+								name: skill.name,
+								proficiency: {
+									level:
+										skill.level === 'beginner'
+											? 2
+											: skill.level === 'intermediate'
+												? 3
+												: skill.level === 'advanced'
+													? 4
+													: 5,
+									showLevel: true,
+									displayType: 'bar' as const,
+								},
+							}) as Mutable<TSkill>
+					),
 					showGroupLabel: true,
 				};
 				updatedData.skills = [...updatedData.skills, skillsCategory];

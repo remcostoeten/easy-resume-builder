@@ -4,5 +4,7 @@
  * @NOTE Schemas are NEVER directly defined here, only imported.
  */
 
+export * from '@/features/auth/server/schemas';
+
 // TODO: Import actual schemas when they are created
 // import * as resumeSchemas from '@/features/resume-schemas';

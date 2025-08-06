@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle2, FileText, Upload, X } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
@@ -37,14 +38,14 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		setDragActive(false);
 
 		const files = e.dataTransfer.files;
-		if (files && files[0]) {
+		if (files?.[0]) {
 			handleFile(files[0]);
 		}
 	}
 
 	function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
 		const files = e.target.files;
-		if (files && files[0]) {
+		if (files?.[0]) {
 			handleFile(files[0]);
 		}
 	}
@@ -53,18 +54,27 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		if (file.type !== 'application/pdf') {
 			setError('Please select a PDF file');
 			setUploadStatus('error');
+			toast.error('Invalid file type', {
+				description: 'Please select a PDF file.',
+			});
 			return;
 		}
 
 		if (file.size > 10 * 1024 * 1024) {
 			setError('File size must be less than 10MB');
 			setUploadStatus('error');
+			toast.error('File too large', {
+				description: 'File size must be less than 10MB.',
+			});
 			return;
 		}
 
 		setSelectedFile(file);
 		setError('');
 		setUploadStatus('idle');
+		toast.success('File selected', {
+			description: `${file.name} is ready to upload.`,
+		});
 	}
 
 	async function handleUpload() {
@@ -92,6 +102,10 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 				setUploadStatus('success');
 				setExtractedData(result.data);
 				onDataExtracted(result.data);
+				toast.success('Resume data extracted!', {
+					description:
+						'Your form has been automatically filled. You can now review and edit the information.',
+				});
 			} else {
 				throw new Error('Failed to extract data from PDF');
 			}
@@ -100,6 +114,9 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 			setError(errorMessage);
 			setUploadStatus('error');
 			onError?.(errorMessage);
+			toast.error('Failed to parse PDF', {
+				description: errorMessage,
+			});
 		}
 	}
 
