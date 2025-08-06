@@ -8,24 +8,24 @@ import type { Mutable } from '@/store/resume-store';
 import { resumeAtom, setResumeDraft } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 
-const ProfessionalSidebar = lazy(() =>
-	import('../features/resume-builder/sidebar').then((m) => ({ default: m.ProfessionalSidebar }))
-);
-const ProfessionalEditingArea = lazy(() =>
-	import('../features/resume-builder/themes/professional').then((m) => ({
+const ProfessionalSidebar = lazy(function() {
+	return import('../features/resume-builder/themes/professional/professional-sidebar').then(function(m) { return { default: m.ProfessionalSidebar }; });
+});
+const ProfessionalEditingArea = lazy(function() {
+	return import('../features/resume-builder/themes/professional/professional-editing-area').then(function(m) { return {
 		default: m.ProfessionalEditingArea,
-	}))
-);
-const ProfessionalHeader = lazy(() =>
-	import('../features/resume-builder/themes/professional').then((m) => ({
+	}; });
+});
+const ProfessionalHeader = lazy(function() {
+	return import('../features/resume-builder/themes/professional/professional-header').then(function(m) { return {
 		default: m.ProfessionalHeader,
-	}))
-);
-const ProfessionalPreview = lazy(() =>
-	import('../features/resume-builder/themes/professional').then((m) => ({
+	}; });
+});
+const ProfessionalPreview = lazy(function() {
+	return import('../features/resume-builder/themes/professional/professional-preview').then(function(m) { return {
 		default: m.ProfessionalPreview,
-	}))
-);
+	}; });
+});
 
 export function HomeView() {
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -35,14 +35,14 @@ export function HomeView() {
 
 	function handleToggleSection(sectionId: string) {
 		const sections = resumeData?.sections || [];
-		const updatedSections = sections.map((section) =>
-			section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section
-		);
+	const updatedSections = sections.map(function(section) {
+		return section.id === sectionId ? { ...section, isEnabled: !section.isEnabled } : section;
+	});
 		setResumeDraft({ sections: updatedSections });
 	}
 
 	function handleReorderSections(sections: readonly TResumeSection[]) {
-		setResumeDraft({ sections: sections.map((s) => ({ ...s })) });
+	setResumeDraft({ sections: sections.map(function(s) { return { ...s }; }) });
 	}
 
 	function handleTogglePreview() {

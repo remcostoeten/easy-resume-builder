@@ -4,7 +4,7 @@ import type { UseInViewOptions } from 'framer-motion';
 
 type MarginType = UseInViewOptions['margin'];
 
-interface BlurFadeProps {
+type TProps = {
 	children: React.ReactNode;
 	className?: string;
 	variant?: {
@@ -19,6 +19,6 @@ interface BlurFadeProps {
 	blur?: string;
 }
 
-export function BlurFade({ children, className }: BlurFadeProps) {
+export function BlurFade({ children, className }: TProps) {
 	return <div className={className}>{children}</div>;
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { cn } from '@/shared/utilities/cn';
 
-type AutoSaveIndicatorProps = {
+type TProps = {
 	className?: string;
 	showIcon?: boolean;
 	variant?: 'full' | 'compact';
@@ -15,50 +15,52 @@ export function AutoSaveIndicator({
 	className = '',
 	showIcon = true,
 	variant = 'full',
-}: AutoSaveIndicatorProps) {
+}: TProps) {
 	const [secondsSinceLastSave, setSecondsSinceLastSave] = useState(0);
 	const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
 
-	// Update the timer every second
-	useEffect(() => {
+	function updateTimer() {
+		const now = new Date();
+		const diffInSeconds = Math.floor((now.getTime() - lastSaveTime!.getTime()) / 1000);
+		setSecondsSinceLastSave(diffInSeconds);
+
+		if (diffInSeconds > 3) {
+			setShowSavedMessage(false);
+		}
+	}
+
+	useEffect(function setupTimer() {
 		if (!lastSaveTime) return;
 
-		const interval = setInterval(() => {
-			const now = new Date();
-			const diffInSeconds = Math.floor((now.getTime() - lastSaveTime.getTime()) / 1000);
-			setSecondsSinceLastSave(diffInSeconds);
+		const interval = setInterval(updateTimer, 1000);
 
-			// Hide "Saved" message after 3 seconds
-			if (diffInSeconds > 3) {
-				setShowSavedMessage(false);
-			}
-		}, 1000);
+		function cleanup() {
+			clearInterval(interval);
+		}
 
-		return () => clearInterval(interval);
+		return cleanup;
 	}, [lastSaveTime]);
 
-	// Listen for localStorage changes to update the save time
-	useEffect(() => {
-		const handleStorageChange = () => {
-			setLastSaveTime(new Date());
-			setSecondsSinceLastSave(0);
-			setShowSavedMessage(true);
-		};
+	function handleStorageChange() {
+		setLastSaveTime(new Date());
+		setSecondsSinceLastSave(0);
+		setShowSavedMessage(true);
+	}
 
-		// Listen for storage events (cross-tab)
+	useEffect(function setupStorageListeners() {
 		window.addEventListener('storage', handleStorageChange);
-
-		// Custom event for same-tab localStorage updates
 		window.addEventListener('localStorageUpdate', handleStorageChange);
 
-		return () => {
+		function cleanup() {
 			window.removeEventListener('storage', handleStorageChange);
 			window.removeEventListener('localStorageUpdate', handleStorageChange);
-		};
+		}
+
+		return cleanup;
 	}, []);
 
-	const getTimeDisplay = (seconds: number) => {
+	function getTimeDisplay(seconds: number) {
 		if (seconds < 60) {
 			return { value: seconds, unit: 's', label: 'seconds' };
 		}
@@ -71,8 +73,8 @@ export function AutoSaveIndicator({
 			return { value: hours, unit: 'h', label: hours === 1 ? 'hour' : 'hours' };
 		}
 		const days = Math.floor(seconds / 86400);
-		return { value: days, unit: 'd', label: days === 1 ? 'day' : 'days' };
-	};
+	return { value: days, unit: 'd', label: days === 1 ? 'day' : 'days' };
+	}
 
 	const { value, unit } = getTimeDisplay(secondsSinceLastSave);
 
@@ -93,7 +95,6 @@ export function AutoSaveIndicator({
 		);
 	}
 
-	// If no save has occurred yet, show initial state
 	if (!lastSaveTime) {
 		if (variant === 'compact') {
 			return (

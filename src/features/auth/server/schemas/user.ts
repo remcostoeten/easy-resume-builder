@@ -1,13 +1,13 @@
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	email: text('email').unique().notNull(),
-	passwordHash: text('password_hash'),
-	name: text('name'),
+	id: text('id').primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	emailVerified: boolean('email_verified').$defaultFn(() => false).notNull(),
 	image: text('image'),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at').defaultNow().notNull(),
+	createdAt: timestamp('created_at', { mode: 'date' }).$defaultFn(() => new Date()).notNull(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).$defaultFn(() => new Date()).notNull(),
 });
 
 export type TUser = typeof user.$inferSelect;

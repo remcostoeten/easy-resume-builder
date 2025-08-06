@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { signUpEmail } from '@/features/auth/server/mutations/sign-up-email';
+import { authClient } from '@/features/auth/client/auth-client';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
@@ -54,13 +54,13 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 		setIsLoading(true);
 
 		try {
-			const result = await signUpEmail({
+			const result = await authClient.signUp.email({
 				name: values.name,
 				email: values.email,
 				password: values.password,
 			});
 
-			if (result.success) {
+			if (result.data) {
 				toast.success('Account created successfully!', {
 					description: 'Welcome! Redirecting to dashboard...',
 				});
@@ -76,9 +76,10 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 						result.error?.message || 'Please check your information and try again.',
 				});
 			}
-		} catch (_error) {
-			toast.error('An unexpected error occurred', {
-				description: 'Please try again later.',
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+			toast.error('Failed to create account', {
+				description: errorMessage,
 			});
 		} finally {
 			setIsLoading(false);

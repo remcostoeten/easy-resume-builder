@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
+import { getBaseUrl } from '@/shared/utilities/get-base-url';
 
 type TProps = {
 	onDataExtracted: (data: any) => void;
@@ -87,7 +88,10 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 			const formData = new FormData();
 			formData.append('pdf', selectedFile);
 
-			const response = await fetch('/api/parse-pdf', {
+			const baseUrl = getBaseUrl();
+			const apiUrl = baseUrl ? `${baseUrl}/api/parse-pdf` : '/api/parse-pdf';
+
+			const response = await fetch(apiUrl, {
 				method: 'POST',
 				body: formData,
 			});

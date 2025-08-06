@@ -5,15 +5,15 @@ function preloadComponent(importFn: () => Promise<any>) {
 
 	// Use requestIdleCallback for non-critical preloading
 	if ('requestIdleCallback' in window) {
-		requestIdleCallback(() => {
-			importFn().catch(() => {
+		requestIdleCallback(function() {
+			importFn().catch(function() {
 				// Silently handle preload failures
 			});
 		});
 	} else {
 		// Fallback for browsers without requestIdleCallback
-		setTimeout(() => {
-			importFn().catch(() => {
+		setTimeout(function() {
+			importFn().catch(function() {
 				// Silently handle preload failures
 			});
 		}, 100);
@@ -35,7 +35,7 @@ function preloadCriticalResources() {
 	// Preload critical fonts
 	const fonts = ['/fonts/inter-var.woff2', '/fonts/geist-sans.woff2'];
 
-	fonts.forEach((font) => {
+	fonts.forEach(function(font) {
 		const link = document.createElement('link');
 		link.rel = 'preload';
 		link.as = 'font';
@@ -51,15 +51,15 @@ function preloadModulesOnIdle() {
 
 	const modules = [
 		// Preload heavy components when idle
-		() => import('framer-motion'),
-		() => import('recharts'),
+		function() { return import('framer-motion'); },
+		function() { return import('recharts'); },
 	];
 
 	if ('requestIdleCallback' in window) {
 		requestIdleCallback(
-			() => {
-				modules.forEach((moduleImport) => {
-					moduleImport().catch(() => {
+			function() {
+				modules.forEach(function(moduleImport) {
+					moduleImport().catch(function() {
 						// Silently handle preload failures
 					});
 				});
@@ -74,10 +74,10 @@ function preloadOnHover(element: HTMLElement, importFn: () => Promise<any>) {
 
 	let preloaded = false;
 
-	const preloadFn = () => {
+	const preloadFn = function() {
 		if (!preloaded) {
 			preloaded = true;
-			importFn().catch(() => {
+			importFn().catch(function() {
 				// Silently handle preload failures
 			});
 		}
@@ -90,8 +90,8 @@ function preloadOnHover(element: HTMLElement, importFn: () => Promise<any>) {
 function schedulePreload(importFn: () => Promise<any>, delay = 2000) {
 	if (typeof window === 'undefined') return;
 
-	setTimeout(() => {
-		importFn().catch(() => {
+	setTimeout(function() {
+		importFn().catch(function() {
 			// Silently handle preload failures
 		});
 	}, delay);

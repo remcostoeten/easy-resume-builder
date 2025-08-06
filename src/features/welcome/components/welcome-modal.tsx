@@ -59,7 +59,6 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 	}
 
 	function handleModalBlur() {
-		// Mark as seen when modal loses focus (user clicks outside or tabs away)
 		setStorageOnBlur();
 	}
 
@@ -73,7 +72,7 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 	}
 
 	const handleDocumentKeyDown = useCallback(
-		(event: KeyboardEvent) => {
+		function handleKeyDown(event: KeyboardEvent) {
 			if (event.key === 'Escape') {
 				onClose();
 			}
@@ -81,25 +80,35 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 		[onClose]
 	);
 
-	useEffect(() => {
+	useEffect(function setupModalEffects() {
 		if (isOpen) {
 			document.addEventListener('keydown', handleDocumentKeyDown);
 			document.body.style.overflow = 'hidden';
 
-			return () => {
+			function cleanup() {
 				document.removeEventListener('keydown', handleDocumentKeyDown);
 				document.body.style.overflow = '';
-			};
+			}
+
+			return cleanup;
 		}
 	}, [isOpen, handleDocumentKeyDown]);
 
 	const featureCards = useMemo(
-		() => FEATURES.map((feature) => <FeatureCard key={feature.id} feature={feature} />),
+		function renderFeatureCards() {
+			return FEATURES.map(function mapFeature(feature) {
+				return <FeatureCard key={feature.id} feature={feature} />;
+			});
+		},
 		[]
 	);
 
 	const tipItems = useMemo(
-		() => TIPS.map((tip, index) => <TipItem key={`tip-${index}`} tip={tip} />),
+		function renderTipItems() {
+			return TIPS.map(function mapTip(tip, index) {
+				return <TipItem key={`tip-${index}`} tip={tip} />;
+			});
+		},
 		[]
 	);
 
@@ -253,7 +262,9 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 							<button
 								type='button'
 								className='gap-2 border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-muted/50 px-4 py-2 text-sm hover:scale-105 transition-transform duration-200 rounded-lg inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-								onClick={() => handleAuthAction('register')}
+							onClick={function handleRegisterClick() {
+								return handleAuthAction('register');
+							}}
 								aria-label='Create a new account'
 							>
 								<span role='img' aria-hidden='true'>
@@ -265,7 +276,9 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 							<button
 								type='button'
 								className='gap-2 border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-muted/50 px-4 py-2 text-sm hover:scale-105 transition-transform duration-200 rounded-lg inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-								onClick={() => handleAuthAction('login')}
+							onClick={function handleLoginClick() {
+								return handleAuthAction('login');
+							}}
 								aria-label='Sign in to your account'
 							>
 								<span role='img' aria-hidden='true'>

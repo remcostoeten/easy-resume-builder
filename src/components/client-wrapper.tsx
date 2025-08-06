@@ -14,8 +14,8 @@ function createDefaultSections(): Mutable<TResumeSection>[] {
 	const now = new Date();
 
 	return Object.values(SECTION_CONFIGS)
-		.sort((a, b) => a.defaultOrder - b.defaultOrder)
-		.map((config) => ({
+		.sort(function(a, b) { return a.defaultOrder - b.defaultOrder; })
+		.map(function(config) { return {
 			id: `section-${config.type}`,
 			createdAt: now,
 			updatedAt: now,
@@ -27,7 +27,7 @@ function createDefaultSections(): Mutable<TResumeSection>[] {
 				config.type === 'skills',
 			order: config.defaultOrder,
 			isRequired: config.isRequired,
-		})) as Mutable<TResumeSection>[];
+		}; }) as Mutable<TResumeSection>[];
 }
 
 function createEmptyResumeData(): Mutable<TResumeData> {
@@ -59,23 +59,19 @@ function createEmptyResumeData(): Mutable<TResumeData> {
 	} as Mutable<TResumeData>;
 }
 
-type TClientWrapperProps = {
+type TProps = {
 	children: React.ReactNode;
 };
 
-export function ClientWrapper({ children }: TClientWrapperProps) {
-	useEffect(() => {
+export function ClientWrapper({ children }: TProps) {
+	useEffect(function() {
 		const store = getDefaultStore();
 		store.set(resumeAtom, createEmptyResumeData());
 
-		// Preload critical resources and modules
 		preloadCriticalResources();
 		preloadModulesOnIdle();
-
-		// Start web vitals tracking
 		trackWebVitals();
 
-		// Log performance metrics in development
 		if (process.env.NODE_ENV === 'development') {
 			setTimeout(logBundleSize, 1000);
 		}

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { signInEmail } from '@/features/auth/server/mutations/sign-in-email';
+import { authClient } from '@/features/auth/client/auth-client';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
@@ -46,13 +46,13 @@ export function SignInForm({ onSuccess, className }: TProps) {
 		setIsLoading(true);
 
 		try {
-			const result = await signInEmail({
+			const result = await authClient.signIn.email({
 				email: values.email,
 				password: values.password,
-				rememberMe: values.rememberMe,
+				rememberMe: values.rememberMe ?? true,
 			});
 
-			if (result.success) {
+			if (result.data) {
 				toast.success('Successfully signed in!', {
 					description: 'Welcome back. Redirecting to dashboard...',
 				});
@@ -68,9 +68,10 @@ export function SignInForm({ onSuccess, className }: TProps) {
 						result.error?.message || 'Please check your credentials and try again.',
 				});
 			}
-		} catch (_error) {
-			toast.error('An unexpected error occurred', {
-				description: 'Please try again later.',
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+			toast.error('Sign in failed', {
+				description: errorMessage,
 			});
 		} finally {
 			setIsLoading(false);

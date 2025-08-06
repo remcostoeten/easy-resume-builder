@@ -5,16 +5,21 @@ import { useEffect, useState } from 'react';
 function useMediaQuery(query: string): boolean {
 	const [matches, setMatches] = useState(false);
 
-	useEffect(() => {
+	function handleChange(event: MediaQueryListEvent) {
+		setMatches(event.matches);
+	}
+
+	useEffect(function setupMediaQuery() {
 		const mediaQuery = window.matchMedia(query);
 		setMatches(mediaQuery.matches);
 
-		function handleChange(event: MediaQueryListEvent) {
-			setMatches(event.matches);
-		}
-
 		mediaQuery.addEventListener('change', handleChange);
-		return () => mediaQuery.removeEventListener('change', handleChange);
+		
+		function cleanup() {
+			mediaQuery.removeEventListener('change', handleChange);
+		}
+		
+		return cleanup;
 	}, [query]);
 
 	return matches;

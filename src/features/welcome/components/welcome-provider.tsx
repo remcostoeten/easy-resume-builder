@@ -2,23 +2,22 @@ import type React from 'react';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { hasSeenWelcomeModal, setStorageOnClick } from '@/utils/storage';
 
-const WelcomeModal = lazy(() =>
-	import('./welcome-modal').then((m) => ({ default: m.WelcomeModal }))
-);
+function importWelcomeModal() {
+	return import('./welcome-modal').then(function handleImport(m) {
+		return { default: m.WelcomeModal };
+	});
+}
+
+const WelcomeModal = lazy(importWelcomeModal);
 
 type TProps = {
 	children: React.ReactNode;
 };
 
-/**
- * Wrapper component that automatically handles welcome modal state
- * Drop this into any app to add welcome modal functionality
- */
 export function WelcomeModalProvider({ children }: TProps) {
 	const [isVisible, setIsVisible] = useState(false);
 
-	// Check if user has seen the welcome modal on mount
-	useEffect(() => {
+	useEffect(function checkWelcomeModalStatus() {
 		const hasSeen = hasSeenWelcomeModal();
 		setIsVisible(!hasSeen);
 	}, []);

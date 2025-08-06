@@ -1,19 +1,29 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/server/db';
-import { validateEnv } from '@/shared/utilities/env';
-
-const env = validateEnv();
+import { env } from '@/server/env';
+import { user, session, account, verification } from './better-auth-schema';
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: 'pg',
+		schema: {
+			user,
+			session,
+			account,
+			verification,
+		},
 	}),
+	trustedOrigins: [
+		'http://localhost:3000',
+		'http://localhost:3001'
+	],
 	emailAndPassword: {
 		enabled: true,
 		autoSignIn: true,
 	},
 	socialProviders: {
+		// ToDoo: add linkedin, facebook, microsoft, tiktok
 		google: {
 			clientId: env.GOOGLE_CLIENT_ID,
 			clientSecret: env.GOOGLE_CLIENT_SECRET,

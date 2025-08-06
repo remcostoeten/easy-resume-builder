@@ -6,13 +6,17 @@ import { useEffect, useState } from 'react';
 export function AnimatedBackground() {
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-	useEffect(() => {
-		function handleMouseMove(e: MouseEvent) {
-			setMousePosition({ x: e.clientX, y: e.clientY });
-		}
+	function handleMouseMove(e: MouseEvent) {
+		setMousePosition({ x: e.clientX, y: e.clientY });
+	}
 
+	function cleanup() {
+		window.removeEventListener('mousemove', handleMouseMove);
+	}
+
+	useEffect(function setupMouseTracking() {
 		window.addEventListener('mousemove', handleMouseMove);
-		return () => window.removeEventListener('mousemove', handleMouseMove);
+		return cleanup;
 	}, []);
 
 	return (

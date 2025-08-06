@@ -4,7 +4,8 @@
  * @NOTE Schemas are NEVER directly defined here, only imported.
  */
 
-export * from '@/features/auth/server/schemas';
+// Better Auth schemas for migrations
+export * from '@/features/auth/server/better-auth-schema';
 
 // TODO: Import actual schemas when they are created
 // import * as resumeSchemas from '@/features/resume-schemas';

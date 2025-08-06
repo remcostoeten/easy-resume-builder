@@ -41,6 +41,45 @@ The following overrides are in place to prevent accidental upgrades:
 }
 ```
 
+## Environment Variables
+
+Copy the example environment file and configure your variables:
+
+```bash
+cp .env.example .env.local
+```
+
+### Required Environment Variables
+
+- `DATABASE_URL`: Database connection string
+- `BA_SECRET`: Basic auth secret
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
+- `GITHUB_CLIENT_ID`: GitHub OAuth client ID
+- `GITHUB_CLIENT_SECRET`: GitHub OAuth client secret
+- `DOMAIN`: Your domain URL (defaults to http://localhost:3000 for local development)
+
+### Optional Environment Variables
+
+- `NEXT_PUBLIC_API_URL`: API base URL for server-side rendering (optional for local development)
+
+#### Production Deployment: NEXT_PUBLIC_API_URL
+
+For production deployments, set `NEXT_PUBLIC_API_URL` to your production domain:
+
+```bash
+# Example for production
+NEXT_PUBLIC_API_URL=https://yourdomain.com
+```
+
+This environment variable is used for server-side API calls during build time and server-side rendering. For local development, the application automatically uses the current origin, so this variable is not required.
+
+**Deployment platforms:**
+- **Vercel**: Add to Environment Variables in project settings
+- **Netlify**: Add to Site settings > Environment variables
+- **Docker**: Include in your Dockerfile or docker-compose.yml
+- **Other platforms**: Set via your platform's environment variable configuration
+
 ## Getting Started
 
 First, run the development server:

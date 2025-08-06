@@ -4,50 +4,16 @@ import type React from 'react';
 import { usePersistedInput } from '@/hooks/use-persisted-input';
 
 export type TPersistedInputProps = {
-	/**
-	 * Form key to group related fields
-	 */
 	formKey: string;
-
-	/**
-	 * Field name within the form
-	 */
 	fieldName: string;
-
-	/**
-	 * Input placeholder text
-	 */
 	placeholder?: string;
-
-	/**
-	 * Default value if nothing is stored
-	 */
 	defaultValue?: string;
-
-	/**
-	 * Input type
-	 */
 	type?: 'text' | 'email' | 'tel' | 'url' | 'password';
-
-	/**
-	 * Whether to save immediately on change
-	 */
 	saveImmediately?: boolean;
-
-	/**
-	 * Additional CSS classes
-	 */
 	className?: string;
-
-	/**
-	 * HTML id attribute for label association
-	 */
 	id?: string;
 };
 
-/**
- * Input component with automatic localStorage persistence
- */
 export function PersistedInput({
 	formKey,
 	fieldName,
@@ -67,14 +33,13 @@ export function PersistedInput({
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const newValue = e.target.value;
-		setValue(newValue, false); // Don't save immediately, just update state
+		setValue(newValue, false);
 	}
 
 	function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
 		const newValue = e.target.value;
-		// Only save if the value has actually changed
 		if (newValue !== value) {
-			setValue(newValue, true); // Save on blur
+			setValue(newValue, true);
 		}
 	}
 

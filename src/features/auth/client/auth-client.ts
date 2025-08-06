@@ -1,5 +1,11 @@
-import { createAuthClient } from 'better-auth/client';
+import { createAuthClient as createBetterAuthClient } from 'better-auth/client';
+import { getBaseUrl } from '@/shared/utilities/get-base-url';
 
-export const authClient = createAuthClient({
-	baseURL: process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000',
-});
+function createAuthClient() {
+	const baseUrl = getBaseUrl() || process.env.NEXT_PUBLIC_DOMAIN || 'http://localhost:3000';
+	return createBetterAuthClient({
+		baseURL: baseUrl,
+	});
+}
+
+export const authClient = createAuthClient();

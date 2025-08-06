@@ -25,6 +25,7 @@ import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import { Button } from '@/shared/components/ui/button';
 import { Switch } from '@/shared/components/ui/switch';
 import { cn } from '@/shared/utilities';
+import { ClientOnly } from '@/shared/components/client-only';
 import type { TResumeSection } from '@/types/resume';
 
 type TProps = {
@@ -98,6 +99,58 @@ function SortableSectionItem({
 	);
 }
 
+function StaticSectionItem({
+	section,
+	onToggle,
+}: {
+	readonly section: TResumeSection;
+	readonly onToggle: (sectionId: string) => void;
+}) {
+	const config = SECTION_CONFIGS[section.type];
+	const IconComponent = config.icon;
+
+	function handleToggle() {
+		if (!section.isRequired) {
+			onToggle(section.id);
+		}
+	}
+
+	return (
+		<div>
+			<div
+				className={cn(
+					'flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors',
+					!section.isEnabled && 'opacity-50'
+				)}
+			>
+				<div className='p-1 rounded transition-colors'>
+					<GripVertical className='h-4 w-4 text-muted-foreground' />
+				</div>
+
+				<div className='flex items-center gap-2 flex-1 min-w-0'>
+					<IconComponent className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+					<div className='flex-1 min-w-0'>
+						<div className='flex items-center gap-2'>
+							<span className='text-sm font-medium truncate'>{section.title}</span>
+							{section.isRequired && (
+								<span className='text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded'>
+									Required
+								</span>
+							)}
+						</div>
+					</div>
+				</div>
+
+				<Switch
+					checked={section.isEnabled}
+					onCheckedChange={handleToggle}
+					disabled={section.isRequired}
+				/>
+			</div>
+		</div>
+	);
+}
+
 export function ProfessionalSidebar({ sections, onToggleSection, onReorderSections }: TProps) {
 	const [_activeId, setActiveId] = useState<string | null>(null);
 
@@ -144,28 +197,42 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 			</div>
 
 			<div className='p-4 space-y-2'>
-				<DndContext
-					sensors={sensors}
-					collisionDetection={closestCenter}
-					onDragStart={handleDragStart}
-					onDragEnd={handleDragEnd}
-				>
-					<SortableContext
-						items={sortedSections.map((s) => s.id)}
-						strategy={verticalListSortingStrategy}
-					>
-						<AnimatePresence>
+				<ClientOnly
+					fallback={
+						<div className='space-y-2'>
 							{sortedSections.map((section) => (
-								<div key={section.id}>
-									<SortableSectionItem
-										section={section}
-										onToggle={onToggleSection}
-									/>
-								</div>
+								<StaticSectionItem
+									key={section.id}
+									section={section}
+									onToggle={onToggleSection}
+								/>
 							))}
-						</AnimatePresence>
-					</SortableContext>
-				</DndContext>
+						</div>
+					}
+				>
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						onDragStart={handleDragStart}
+						onDragEnd={handleDragEnd}
+					>
+						<SortableContext
+							items={sortedSections.map((s) => s.id)}
+							strategy={verticalListSortingStrategy}
+						>
+							<AnimatePresence>
+								{sortedSections.map((section) => (
+									<div key={section.id}>
+										<SortableSectionItem
+											section={section}
+											onToggle={onToggleSection}
+										/>
+									</div>
+								))}
+							</AnimatePresence>
+						</SortableContext>
+					</DndContext>
+				</ClientOnly>
 
 				<div className='pt-4 border-t'>
 					<Button variant='outline' className='w-full justify-start bg-transparent'>

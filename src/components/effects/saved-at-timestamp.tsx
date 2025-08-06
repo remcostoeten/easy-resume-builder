@@ -12,25 +12,29 @@ export function SavedAtTimestamp({ className = '' }: TProps) {
 	const [timeSince, setTimeSince] = useState<number>(0);
 	const [previousTime, setPreviousTime] = useState<number>(0);
 
-	useEffect(() => {
+	function updateTimeSince() {
 		if (!lastSavedAt) return;
+		const now = new Date();
+		const diffMs = now.getTime() - lastSavedAt.getTime();
+		const diffSeconds = Math.floor(diffMs / 1000);
 
-		function updateTimeSince() {
-			if (!lastSavedAt) return;
-			const now = new Date();
-			const diffMs = now.getTime() - lastSavedAt.getTime();
-			const diffSeconds = Math.floor(diffMs / 1000);
-
-			if (diffSeconds !== timeSince) {
-				setPreviousTime(timeSince);
-				setTimeSince(diffSeconds);
-			}
+		if (diffSeconds !== timeSince) {
+			setPreviousTime(timeSince);
+			setTimeSince(diffSeconds);
 		}
+	}
+
+	useEffect(function setupTimestamp() {
+		if (!lastSavedAt) return;
 
 		updateTimeSince();
 		const interval = setInterval(updateTimeSince, 1000);
 
-		return () => clearInterval(interval);
+		function cleanup() {
+			clearInterval(interval);
+		}
+
+		return cleanup;
 	}, [timeSince]);
 
 	function _formatTimeAgo(seconds: number) {

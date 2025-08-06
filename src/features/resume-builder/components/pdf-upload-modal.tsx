@@ -20,7 +20,7 @@ export function PdfUploadModal() {
 
 	function onDataExtracted(data: any) {
 		handleExtractedData(data);
-		setTimeout(() => {
+		setTimeout(function closeModal() {
 			setOpen(false);
 		}, 2000);
 	}

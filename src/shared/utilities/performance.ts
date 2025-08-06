@@ -14,7 +14,7 @@ function measureAsyncPerformance<T>(name: string, fn: () => Promise<T>): Promise
 	if (typeof window === 'undefined') return fn();
 
 	const start = performance.now();
-	return fn().finally(() => {
+	return fn().finally(function() {
 		const end = performance.now();
 		console.log(`⚡ ${name}: ${(end - start).toFixed(2)}ms`);
 	});
@@ -28,11 +28,11 @@ function markComponentLoad(componentName: string) {
 }
 
 function measureComponentRender(componentName: string) {
-	if (typeof window === 'undefined') return () => {};
+	if (typeof window === 'undefined') return function() {};
 
 	const start = performance.now();
 
-	return () => {
+	return function() {
 		const end = performance.now();
 		console.log(`🎨 ${componentName} render: ${(end - start).toFixed(2)}ms`);
 	};
