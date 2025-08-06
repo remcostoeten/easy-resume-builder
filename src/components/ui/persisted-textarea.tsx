@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import type React from 'react';
 import { usePersistedInput } from '@/hooks/use-persisted-input';
 
 export type TPersistedTextareaProps = {
@@ -8,27 +8,27 @@ export type TPersistedTextareaProps = {
 	 * Form key to group related fields
 	 */
 	formKey: string;
-	
+
 	/**
 	 * Field name within the form
 	 */
 	fieldName: string;
-	
+
 	/**
 	 * Textarea placeholder text
 	 */
 	placeholder?: string;
-	
+
 	/**
 	 * Default value if nothing is stored
 	 */
 	defaultValue?: string;
-	
+
 	/**
 	 * Whether to save immediately on change
 	 */
 	saveImmediately?: boolean;
-	
+
 	/**
 	 * Additional CSS classes
 	 */
@@ -58,7 +58,7 @@ export function PersistedTextarea({
 		defaultValue,
 		saveImmediately,
 	});
-	
+
 	function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 		const newValue = e.target.value;
 		setValue(newValue, false); // Don't save immediately, just update state
@@ -68,13 +68,11 @@ export function PersistedTextarea({
 		const newValue = e.target.value;
 		setValue(newValue, true); // Save on blur
 	}
-	
+
 	if (isLoading) {
-		return (
-			<div className={`animate-pulse bg-gray-200 h-24 rounded ${className}`} />
-		);
+		return <div className={`animate-pulse bg-gray-200 h-24 rounded ${className}`} />;
 	}
-	
+
 	return (
 		<textarea
 			value={value}

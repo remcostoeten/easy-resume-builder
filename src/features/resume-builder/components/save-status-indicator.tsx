@@ -7,7 +7,7 @@ import { useState } from 'react';
 type TSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 export function SaveStatusIndicator() {
-	const [status, setStatus] = useState<TSaveStatus>('idle');
+	const [status, _setStatus] = useState<TSaveStatus>('idle');
 
 	function getStatusText(status: string) {
 		switch (status) {
@@ -43,7 +43,7 @@ export function SaveStatusIndicator() {
 		<div className='flex flex-col gap-3'>
 			<div className='flex items-center gap-2'>
 				<AnimatePresence mode='wait'>
-				{status === 'saved' ? (
+					{status === 'saved' ? (
 						<motion.div
 							key={`saved-${Date.now()}`}
 							initial={{ opacity: 0, y: 6, filter: 'blur(6px)' }}

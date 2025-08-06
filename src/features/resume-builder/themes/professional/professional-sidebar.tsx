@@ -18,7 +18,7 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
@@ -155,10 +155,8 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 						strategy={verticalListSortingStrategy}
 					>
 						<AnimatePresence>
-						{sortedSections.map((section) => (
-								<div
-									key={section.id}
-								>
+							{sortedSections.map((section) => (
+								<div key={section.id}>
 									<SortableSectionItem
 										section={section}
 										onToggle={onToggleSection}

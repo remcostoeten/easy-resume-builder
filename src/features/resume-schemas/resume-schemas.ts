@@ -24,21 +24,32 @@ export const personalInfoSchema = z.object({
 		.optional()
 		.refine(
 			(val) =>
-				!val || val === '' || z.string().url().safeParse(val).success || val.includes('linkedin.com'),
+				!val ||
+				val === '' ||
+				z.string().url().safeParse(val).success ||
+				val.includes('linkedin.com'),
 			{ message: 'Invalid LinkedIn URL format' }
 		),
 	github: z
 		.string()
 		.optional()
 		.refine(
-			(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('github.com'),
+			(val) =>
+				!val ||
+				val === '' ||
+				z.string().url().safeParse(val).success ||
+				val.includes('github.com'),
 			{ message: 'Invalid GitHub URL format' }
 		),
 	twitter: z
 		.string()
 		.optional()
 		.refine(
-			(val) => !val || val === '' || z.string().url().safeParse(val).success || val.includes('twitter.com'),
+			(val) =>
+				!val ||
+				val === '' ||
+				z.string().url().safeParse(val).success ||
+				val.includes('twitter.com'),
 			{ message: 'Invalid Twitter URL format' }
 		),
 	summary: z.string().optional(),

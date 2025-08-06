@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
@@ -101,7 +101,11 @@ export function EditingArea({ sections, resumeData, isLoading }: TEditingAreaPro
 					<AnimatePresence mode='wait'>
 						<div key={currentSection?.id}>
 							{currentSection && (
-								<SectionRenderer section={currentSection} resumeData={resumeData} isLoading={isLoading} />
+								<SectionRenderer
+									section={currentSection}
+									resumeData={resumeData}
+									isLoading={isLoading}
+								/>
 							)}
 						</div>
 					</AnimatePresence>

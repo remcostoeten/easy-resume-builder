@@ -1,15 +1,14 @@
 'use client';
 
-import { User, Save, Check } from 'lucide-react';
+import { Check, Save, User } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/shared/components/ui/button';
-import { updatePersonalInfo } from '@/store/resume-store';
-import { PersistedInput } from '@/components/ui/persisted-input';
-import { getFormData } from '@/utils/storage';
-import type { TPersonalInfo } from '@/types/resume';
-import { FormSection } from '../form/form-section';
 import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
+import { PersistedInput } from '@/components/ui/persisted-input';
 import { PersonalInfoSkeleton } from '@/shared/components/skeletons';
+import { updatePersonalInfo } from '@/store/resume-store';
+import type { TPersonalInfo } from '@/types/resume';
+import { getFormData } from '@/utils/storage';
+import { FormSection } from '../form/form-section';
 
 type TProps = {
 	readonly className?: string;
@@ -18,11 +17,11 @@ type TProps = {
 };
 
 export function PersonalInfoSection({ className, data, isLoading }: TProps) {
+	const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
 	if (isLoading) {
 		return <PersonalInfoSkeleton />;
 	}
-
-	const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
 	async function handleFormSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -30,7 +29,9 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 
 		try {
 			// Simulate async operation
-			await new Promise(function(resolve) { setTimeout(resolve, 1000); });
+			await new Promise((resolve) => {
+				setTimeout(resolve, 1000);
+			});
 
 			// Get the latest data from localStorage
 			const latestData = getFormData('personal-info') || {};
@@ -39,42 +40,47 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 			setSaveStatus('saved');
 
 			// Reset to idle after 2 seconds
-			setTimeout(function() { setSaveStatus('idle'); }, 2000);
-		} catch (error) {
+			setTimeout(() => {
+				setSaveStatus('idle');
+			}, 2000);
+		} catch (_error) {
 			setSaveStatus('error');
-			setTimeout(function() { setSaveStatus('idle'); }, 3000);
+			setTimeout(() => {
+				setSaveStatus('idle');
+			}, 3000);
 		}
 	}
 
 	return (
-		<FormSection
-			title='Personal Information'
-			icon={<User className='h-5 w-5' />}
-			isRequired
-		>
-			<form
-				onSubmit={handleFormSubmit}
-				className={`space-y-6 ${className || ''}`}
-			>
+		<FormSection title='Personal Information' icon={<User className='h-5 w-5' />} isRequired>
+			<form onSubmit={handleFormSubmit} className={`space-y-6 ${className || ''}`}>
 				{/* First Row - First Name & Last Name */}
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='firstName'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							First Name <span className='text-red-500'>*</span>
 						</label>
 						<PersistedInput
+							id='firstName'
 							formKey='personal-info'
 							fieldName='firstName'
 							placeholder='John'
 							defaultValue={data.firstName}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='lastName'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Last Name <span className='text-red-500'>*</span>
 						</label>
 						<PersistedInput
+							id='lastName'
 							formKey='personal-info'
 							fieldName='lastName'
 							placeholder='Doe'
@@ -86,10 +92,14 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				{/* Second Row - Email & Phone */}
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='email'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Email <span className='text-red-500'>*</span>
 						</label>
 						<PersistedInput
+							id='email'
 							formKey='personal-info'
 							fieldName='email'
 							type='email'
@@ -97,12 +107,16 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 							defaultValue={data.email}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='phone'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Phone <span className='text-red-500'>*</span>
 						</label>
 						<PersistedInput
+							id='phone'
 							formKey='personal-info'
 							fieldName='phone'
 							type='tel'
@@ -115,22 +129,30 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				{/* Third Row - Location & Job Title */}
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='location'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Location <span className='text-red-500'>*</span>
 						</label>
 						<PersistedInput
+							id='location'
 							formKey='personal-info'
 							fieldName='location'
 							placeholder='New York, NY'
 							defaultValue={data.location}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='jobTitle'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Job Title
 						</label>
 						<PersistedInput
+							id='jobTitle'
 							formKey='personal-info'
 							fieldName='jobTitle'
 							placeholder='Software Engineer'
@@ -142,10 +164,14 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				{/* Fourth Row - Website, Portfolio, LinkedIn */}
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='website'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Website
 						</label>
 						<PersistedInput
+							id='website'
 							formKey='personal-info'
 							fieldName='website'
 							type='url'
@@ -153,12 +179,16 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 							defaultValue={data.website || ''}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='portfolio'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Portfolio
 						</label>
 						<PersistedInput
+							id='portfolio'
 							formKey='personal-info'
 							fieldName='portfolio'
 							type='url'
@@ -166,12 +196,16 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 							defaultValue={data.portfolio || ''}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='linkedin'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							LinkedIn
 						</label>
 						<PersistedInput
+							id='linkedin'
 							formKey='personal-info'
 							fieldName='linkedin'
 							type='url'
@@ -180,14 +214,18 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 						/>
 					</div>
 				</div>
-				
+
 				{/* Fifth Row - GitHub, Twitter */}
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='github'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							GitHub
 						</label>
 						<PersistedInput
+							id='github'
 							formKey='personal-info'
 							fieldName='github'
 							type='url'
@@ -195,12 +233,16 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 							defaultValue={data.github || ''}
 						/>
 					</div>
-					
+
 					<div>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>
+						<label
+							htmlFor='twitter'
+							className='block text-sm font-medium text-gray-700 mb-1'
+						>
 							Twitter
 						</label>
 						<PersistedInput
+							id='twitter'
 							formKey='personal-info'
 							fieldName='twitter'
 							type='url'
@@ -212,10 +254,14 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 
 				{/* Fifth Row - Professional Summary */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-1'>
+					<label
+						htmlFor='summary'
+						className='block text-sm font-medium text-gray-700 mb-1'
+					>
 						Professional Summary
 					</label>
 					<PersistedInput
+						id='summary'
 						formKey='personal-info'
 						fieldName='summary'
 						placeholder='Brief overview of your professional background and key achievements...'
@@ -241,11 +287,8 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 						{saveStatus === 'error' && (
 							<span className='text-red-500'>Failed to save</span>
 						)}
-						{saveStatus === 'idle' && (
-							<AutoSaveIndicator showIcon={false} />
-						)}
+						{saveStatus === 'idle' && <AutoSaveIndicator showIcon={false} />}
 					</div>
-					
 				</div>
 			</form>
 		</FormSection>

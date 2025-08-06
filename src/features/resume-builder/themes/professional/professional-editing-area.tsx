@@ -1,16 +1,30 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import { EmptyState } from '@/shared/components/ui';
+import { LoadingSkeleton } from '@/shared/components/ui/loading-skeleton';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 import { SectionTabs } from '../../navigation/section-tabs';
-import { EducationSection } from '../../sections/education-section';
-import { SkillsSection } from '../../sections/skills-section';
-import { ProfessionalPersonalInfo } from './professional-personal-info';
-import { ProfessionalProjects } from './professional-projects';
-import { ProfessionalWorkExperience } from './professional-work-experience';
+
+const EducationSection = lazy(() =>
+	import('../../sections/education-section').then((m) => ({ default: m.EducationSection }))
+);
+const SkillsSection = lazy(() =>
+	import('../../sections/skills-section').then((m) => ({ default: m.SkillsSection }))
+);
+const ProfessionalPersonalInfo = lazy(() =>
+	import('./professional-personal-info').then((m) => ({ default: m.ProfessionalPersonalInfo }))
+);
+const ProfessionalProjects = lazy(() =>
+	import('./professional-projects').then((m) => ({ default: m.ProfessionalProjects }))
+);
+const ProfessionalWorkExperience = lazy(() =>
+	import('./professional-work-experience').then((m) => ({
+		default: m.ProfessionalWorkExperience,
+	}))
+);
 
 export type TProfessionalEditingAreaProps = {
 	readonly sections: readonly TResumeSection[];
@@ -41,19 +55,79 @@ export function ProfessionalEditingArea({ sections, resumeData }: TProfessionalE
 
 		switch (currentSection.type) {
 			case 'personal-info':
-				return <ProfessionalPersonalInfo data={resumeData.personalInfo} />;
+				return (
+					<Suspense
+						fallback={
+							<LoadingSkeleton
+								variant='form'
+								lines={4}
+								className='max-w-4xl mx-auto'
+							/>
+						}
+					>
+						<ProfessionalPersonalInfo data={resumeData.personalInfo} />
+					</Suspense>
+				);
 
 			case 'work-experience':
-				return <ProfessionalWorkExperience data={resumeData.workExperience} />;
+				return (
+					<Suspense
+						fallback={
+							<LoadingSkeleton
+								variant='card'
+								lines={2}
+								className='max-w-4xl mx-auto'
+							/>
+						}
+					>
+						<ProfessionalWorkExperience data={resumeData.workExperience} />
+					</Suspense>
+				);
 
 			case 'projects':
-				return <ProfessionalProjects />;
+				return (
+					<Suspense
+						fallback={
+							<LoadingSkeleton
+								variant='card'
+								lines={2}
+								className='max-w-4xl mx-auto'
+							/>
+						}
+					>
+						<ProfessionalProjects />
+					</Suspense>
+				);
 
 			case 'education':
-				return <EducationSection data={resumeData.education} />;
+				return (
+					<Suspense
+						fallback={
+							<LoadingSkeleton
+								variant='card'
+								lines={2}
+								className='max-w-4xl mx-auto'
+							/>
+						}
+					>
+						<EducationSection data={resumeData.education} />
+					</Suspense>
+				);
 
 			case 'skills':
-				return <SkillsSection data={resumeData.skills} />;
+				return (
+					<Suspense
+						fallback={
+							<LoadingSkeleton
+								variant='form'
+								lines={3}
+								className='max-w-4xl mx-auto'
+							/>
+						}
+					>
+						<SkillsSection data={resumeData.skills} />
+					</Suspense>
+				);
 
 			case 'certifications':
 			case 'languages':
@@ -114,10 +188,7 @@ export function ProfessionalEditingArea({ sections, resumeData }: TProfessionalE
 
 			<div className='flex-1 overflow-auto bg-background'>
 				<AnimatePresence mode='wait'>
-					<div
-						key={activeSection}
-						className='min-h-full'
-					>
+					<div key={activeSection} className='min-h-full'>
 						{renderSectionContent()}
 					</div>
 				</AnimatePresence>

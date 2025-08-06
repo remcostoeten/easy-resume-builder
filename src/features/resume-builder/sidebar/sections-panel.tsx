@@ -18,9 +18,10 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import { useState } from 'react';
+import { PdfUploadModal } from '@/features/resume-builder/components/pdf-upload-modal';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import type { TResumeSection } from '@/types/resume';
@@ -126,10 +127,8 @@ export function SectionsPanel({
 						strategy={verticalListSortingStrategy}
 					>
 						<AnimatePresence mode='popLayout'>
-						{sortedSections.map((section) => (
-								<div
-									key={section.id}
-								>
+							{sortedSections.map((section) => (
+								<div key={section.id}>
 									<SortableSectionItem
 										section={section}
 										onToggle={onToggleSection}
@@ -140,20 +139,24 @@ export function SectionsPanel({
 					</SortableContext>
 				</DndContext>
 
-				<div className='mt-4 p-3 rounded-lg bg-muted/50 border-dashed border-2'>
-					<p className='text-xs text-muted-foreground text-center mb-2'>
-						Drag sections to reorder • Toggle switches to show/hide
-					</p>
-					{onToggleLoading && (
-						<Button
-							size='sm'
-							variant='outline'
-							onClick={() => onToggleLoading(true)}
-							className='w-full text-xs'
-						>
-							Demo: Show Skeleton
-						</Button>
-					)}
+				<div className='mt-4 space-y-3'>
+					<PdfUploadModal />
+
+					<div className='p-3 rounded-lg bg-muted/50 border-dashed border-2'>
+						<p className='text-xs text-muted-foreground text-center mb-2'>
+							Drag sections to reorder • Toggle switches to show/hide
+						</p>
+						{onToggleLoading && (
+							<Button
+								size='sm'
+								variant='outline'
+								onClick={() => onToggleLoading(true)}
+								className='w-full text-xs'
+							>
+								Demo: Show Skeleton
+							</Button>
+						)}
+					</div>
 				</div>
 			</CardContent>
 		</Card>

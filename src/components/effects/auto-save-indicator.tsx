@@ -1,8 +1,7 @@
 'use client';
 
+import { Check, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import NumberFlow from '@number-flow/react';
-import { Save, Check } from 'lucide-react';
 
 import { cn } from '@/shared/utilities/cn';
 
@@ -12,10 +11,10 @@ type AutoSaveIndicatorProps = {
 	variant?: 'full' | 'compact';
 };
 
-export function AutoSaveIndicator({ 
-	className = '', 
-	showIcon = true, 
-	variant = 'full' 
+export function AutoSaveIndicator({
+	className = '',
+	showIcon = true,
+	variant = 'full',
 }: AutoSaveIndicatorProps) {
 	const [secondsSinceLastSave, setSecondsSinceLastSave] = useState(0);
 	const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
@@ -29,7 +28,7 @@ export function AutoSaveIndicator({
 			const now = new Date();
 			const diffInSeconds = Math.floor((now.getTime() - lastSaveTime.getTime()) / 1000);
 			setSecondsSinceLastSave(diffInSeconds);
-			
+
 			// Hide "Saved" message after 3 seconds
 			if (diffInSeconds > 3) {
 				setShowSavedMessage(false);
@@ -75,7 +74,7 @@ export function AutoSaveIndicator({
 		return { value: days, unit: 'd', label: days === 1 ? 'day' : 'days' };
 	};
 
-	const { value, unit, label } = getTimeDisplay(secondsSinceLastSave);
+	const { value, unit } = getTimeDisplay(secondsSinceLastSave);
 
 	if (showSavedMessage) {
 		if (variant === 'compact') {
@@ -105,7 +104,9 @@ export function AutoSaveIndicator({
 			);
 		}
 		return (
-			<span className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}>
+			<span
+				className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}
+			>
 				{showIcon && <Save className='h-4 w-4' />}
 				<span>Ready to save</span>
 			</span>
@@ -116,7 +117,7 @@ export function AutoSaveIndicator({
 		return (
 			<span className={cn('flex items-center gap-1 text-muted-foreground', className)}>
 				{showIcon && <Save className='h-3 w-3' />}
-					<span className='font-mono text-xs'>{value}</span>
+				<span className='font-mono text-xs'>{value}</span>
 				<span className='text-xs'>{unit} ago</span>
 			</span>
 		);

@@ -1,13 +1,12 @@
 'use client';
 
-import { Download, Edit, Eye, EyeOff, Moon, RotateCcw, Save, Split, Sun, Trash2 } from 'lucide-react';
+import { Download, Edit, Eye, EyeOff, Moon, RotateCcw, Split, Sun, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { SaveButton } from '@/features/resume-builder/components/save-button';
+import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { clearAllFormData } from '@/utils/storage/form-storage';
 import { resetStore, setResumeDraft } from '@/store/resume-store';
-import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
+import { clearAllFormData } from '@/utils/storage/form-storage';
 
 type TProps = {
 	readonly onPreview: () => void;
@@ -62,7 +61,9 @@ export function ProfessionalHeader({
 			// First click - show confirmation
 			setShowRestartConfirm(true);
 			// Auto-hide confirmation after 3 seconds
-			setTimeout(function() { setShowRestartConfirm(false); }, 3000);
+			setTimeout(() => {
+				setShowRestartConfirm(false);
+			}, 3000);
 		}
 	}
 
@@ -260,10 +261,16 @@ export function ProfessionalHeader({
 							variant={showRestartConfirm ? 'destructive' : 'ghost'}
 							size='sm'
 							className={`text-xs ${
-								showRestartConfirm ? 'bg-destructive text-destructive-foreground' : ''
+								showRestartConfirm
+									? 'bg-destructive text-destructive-foreground'
+									: ''
 							}`}
 							onClick={handleRestart}
-							title={showRestartConfirm ? 'Click again to confirm' : 'Clear all resume data'}
+							title={
+								showRestartConfirm
+									? 'Click again to confirm'
+									: 'Clear all resume data'
+							}
 						>
 							{showRestartConfirm ? (
 								<>

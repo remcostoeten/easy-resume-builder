@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import type React from 'react';
 import { usePersistedInput } from '@/hooks/use-persisted-input';
 
 export type TPersistedInputProps = {
@@ -8,36 +8,41 @@ export type TPersistedInputProps = {
 	 * Form key to group related fields
 	 */
 	formKey: string;
-	
+
 	/**
 	 * Field name within the form
 	 */
 	fieldName: string;
-	
+
 	/**
 	 * Input placeholder text
 	 */
 	placeholder?: string;
-	
+
 	/**
 	 * Default value if nothing is stored
 	 */
 	defaultValue?: string;
-	
+
 	/**
 	 * Input type
 	 */
 	type?: 'text' | 'email' | 'tel' | 'url' | 'password';
-	
+
 	/**
 	 * Whether to save immediately on change
 	 */
 	saveImmediately?: boolean;
-	
+
 	/**
 	 * Additional CSS classes
 	 */
 	className?: string;
+
+	/**
+	 * HTML id attribute for label association
+	 */
+	id?: string;
 };
 
 /**
@@ -51,6 +56,7 @@ export function PersistedInput({
 	type = 'text',
 	saveImmediately = false,
 	className = '',
+	id,
 }: TPersistedInputProps) {
 	const { value, setValue, isLoading } = usePersistedInput({
 		formKey,
@@ -58,7 +64,7 @@ export function PersistedInput({
 		defaultValue,
 		saveImmediately,
 	});
-	
+
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const newValue = e.target.value;
 		setValue(newValue, false); // Don't save immediately, just update state
@@ -71,26 +77,25 @@ export function PersistedInput({
 			setValue(newValue, true); // Save on blur
 		}
 	}
-	
+
 	if (isLoading) {
-		return (
-			<div className={`animate-pulse bg-gray-200 h-10 rounded ${className}`} />
-		);
+		return <div className={`animate-pulse bg-gray-200 h-10 rounded ${className}`} />;
 	}
-	
-		return (
-			<input
-				type={type}
-				value={value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				placeholder={placeholder}
-				className={`
+
+	return (
+		<input
+			id={id}
+			type={type}
+			value={value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			placeholder={placeholder}
+			className={`
 					w-full px-3 py-2 border border-gray-300 rounded-md
 					focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
 					transition-colors duration-200
 					${className}
 				`.trim()}
-			/>
-		);
+		/>
+	);
 }

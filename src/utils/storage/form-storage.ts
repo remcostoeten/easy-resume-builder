@@ -1,4 +1,4 @@
-import { getStorageObject, setStorageObject, removeStorageItem } from './storage-helpers';
+import { getStorageObject, removeStorageItem, setStorageObject } from './storage-helpers';
 
 /**
  * Storage keys for form data
@@ -20,14 +20,16 @@ export function saveFormData(formKey: string, data: Record<string, any>): boolea
 		data,
 		timestamp: new Date().toISOString(),
 	});
-	
+
 	// Dispatch custom event for auto-save indicator
 	if (success && typeof window !== 'undefined') {
-		window.dispatchEvent(new CustomEvent('localStorageUpdate', {
-			detail: { key: storageKey, action: 'save' }
-		}));
+		window.dispatchEvent(
+			new CustomEvent('localStorageUpdate', {
+				detail: { key: storageKey, action: 'save' },
+			})
+		);
 	}
-	
+
 	return success;
 }
 
@@ -72,7 +74,7 @@ export function getFormField<T = any>(formKey: string, fieldName: string): T | n
  * Clear all form data
  */
 export function clearAllFormData(): void {
-	Object.values(FORM_STORAGE_KEYS).forEach(key => {
+	Object.values(FORM_STORAGE_KEYS).forEach((key) => {
 		if (typeof window !== 'undefined') {
 			// Remove all keys that start with the form data prefix
 			const keysToRemove: string[] = [];
@@ -82,7 +84,7 @@ export function clearAllFormData(): void {
 					keysToRemove.push(storageKey);
 				}
 			}
-			keysToRemove.forEach(key => localStorage.removeItem(key));
+			keysToRemove.forEach((key) => localStorage.removeItem(key));
 		}
 	});
 }
@@ -92,10 +94,10 @@ export function clearAllFormData(): void {
  */
 export function getExistingFormKeys(): string[] {
 	if (typeof window === 'undefined') return [];
-	
+
 	const formKeys: string[] = [];
 	const prefix = FORM_STORAGE_KEYS.RESUME_FORM_DATA;
-	
+
 	for (let i = 0; i < localStorage.length; i++) {
 		const key = localStorage.key(i);
 		if (key?.startsWith(`${prefix}-`)) {
@@ -103,6 +105,6 @@ export function getExistingFormKeys(): string[] {
 			formKeys.push(formKey);
 		}
 	}
-	
+
 	return formKeys;
 }

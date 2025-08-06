@@ -1,4 +1,4 @@
-import { getStorageBoolean, setStorageBoolean, removeStorageItem } from './storage-helpers';
+import { getStorageBoolean, removeStorageItem, setStorageBoolean } from './storage-helpers';
 
 /**
  * Storage key for welcome modal seen status

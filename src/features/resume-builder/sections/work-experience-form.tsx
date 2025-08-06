@@ -2,17 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-	Building,
-	Calendar,
-	Plus,
-	Save,
-	Trash2,
-	X,
-} from 'lucide-react';
+import { Building, Calendar, Plus, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
-import { removeFormData } from '@/utils/storage/form-storage';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { Input } from '@/shared/components/ui/input';
@@ -26,9 +18,10 @@ import {
 } from '@/shared/components/ui/select';
 import { Switch } from '@/shared/components/ui/switch';
 import { Textarea } from '@/shared/components/ui/textarea';
-import { createEntity } from '@/shared/utilities/entity';
 import { useSmartForm } from '@/shared/utilities/';
+import { createEntity } from '@/shared/utilities/entity';
 import type { TWorkItem } from '@/types/resume';
+import { removeFormData } from '@/utils/storage/form-storage';
 import { type TWorkItemForm, workItemSchema } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
 import { FormGrid } from '../form/form-grid';
@@ -64,7 +57,6 @@ export function WorkExperienceForm({
 		reset,
 		formState: { errors },
 		handleFormSubmit,
-		saveStatus,
 	} = useSmartForm<TWorkItemForm>(
 		{
 			resolver: zodResolver(workItemSchema),
@@ -96,7 +88,7 @@ export function WorkExperienceForm({
 				? {
 						...workItem,
 						...formData,
-					achievements: achievements.filter(function(a) { return a.trim() !== ''; }),
+						achievements: achievements.filter((a) => a.trim() !== ''),
 						dateRange: {
 							...formData.dateRange,
 							isCurrentPosition,
@@ -106,7 +98,7 @@ export function WorkExperienceForm({
 					}
 				: createEntity<TWorkItem>({
 						...formData,
-						achievements: achievements.filter(function(a) { return a.trim() !== ''; }),
+						achievements: achievements.filter((a) => a.trim() !== ''),
 						dateRange: {
 							...formData.dateRange,
 							isCurrentPosition,
@@ -119,7 +111,7 @@ export function WorkExperienceForm({
 	);
 
 	function setAllFormValues(loadedData: Record<string, any>) {
-		Object.entries(loadedData).forEach(function([key, value]) {
+		Object.entries(loadedData).forEach(([key, value]) => {
 			setValue(key as keyof TWorkItemForm, value);
 		});
 		if (loadedData.achievements) {
@@ -142,14 +134,14 @@ export function WorkExperienceForm({
 		setValue(name as keyof TWorkItemForm, value);
 	}
 
-	const enhancedSetValue = createChangeHandler(setValueWrapper, getValues);
+	const _enhancedSetValue = createChangeHandler(setValueWrapper, getValues);
 
-	useEffect(function() {
+	useEffect(() => {
 		loadFormData();
 	}, [loadFormData]);
 
 	// Keep RHF values in sync
-	useEffect(function() {
+	useEffect(() => {
 		setValue('dateRange.isCurrentPosition', isCurrentPosition);
 		setValue('dateRange.dateFormat', dateFormat);
 	}, [isCurrentPosition, dateFormat, setValue]);
@@ -164,50 +156,47 @@ export function WorkExperienceForm({
 					</CardTitle>
 					<div className='flex items-center gap-3'>
 						<Button
-								variant='ghost'
-								size='sm'
-								onClick={() => {
-									removeFormData('work-experience');
-									reset({
-										company: '',
-										position: '',
-										location: '',
-										description: '',
-										achievements: [],
-										dateRange: {
-											startDate: new Date(),
-											endDate: undefined,
-											isCurrentPosition: false,
-											dateFormat: 'month-year',
-										},
-									});
-									console.log('🗑️ Work experience section cleared');
-								}}
-								title='Clear all form data'
-								className='text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-3 py-2 h-8'
-							>
-								<Trash2 className='h-3.5 w-3.5 mr-1.5' />
-								<span className='text-xs font-medium'>Clear Section</span>
-							</Button>
-						
+							variant='ghost'
+							size='sm'
+							onClick={() => {
+								removeFormData('work-experience');
+								reset({
+									company: '',
+									position: '',
+									location: '',
+									description: '',
+									achievements: [],
+									dateRange: {
+										startDate: new Date(),
+										endDate: undefined,
+										isCurrentPosition: false,
+										dateFormat: 'month-year',
+									},
+								});
+								console.log('🗑️ Work experience section cleared');
+							}}
+							title='Clear all form data'
+							className='text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors px-3 py-2 h-8'
+						>
+							<Trash2 className='h-3.5 w-3.5 mr-1.5' />
+							<span className='text-xs font-medium'>Clear Section</span>
+						</Button>
+
 						<div className='h-4 w-px bg-border' />
 						{workItem && onDelete && (
 							<Button
 								variant='destructive'
 								size='sm'
-								onClick={function() { onDelete(workItem.id); }}
+								onClick={() => {
+									onDelete(workItem.id);
+								}}
 								className='gap-2'
 							>
 								<Trash2 className='h-4 w-4' />
 								Delete
 							</Button>
 						)}
-						<Button
-							variant='ghost'
-							size='sm'
-							onClick={onCancel}
-							className='gap-2'
-						>
+						<Button variant='ghost' size='sm' onClick={onCancel} className='gap-2'>
 							<X className='h-4 w-4' />
 							Cancel
 						</Button>
@@ -259,12 +248,12 @@ export function WorkExperienceForm({
 								<Switch
 									id='current-position'
 									checked={isCurrentPosition}
-								onCheckedChange={function(checked) {
-									setIsCurrentPosition(checked);
-									if (checked) {
-										setValue('dateRange.endDate', undefined);
-									}
-								}}
+									onCheckedChange={(checked) => {
+										setIsCurrentPosition(checked);
+										if (checked) {
+											setValue('dateRange.endDate', undefined);
+										}
+									}}
 								/>
 								<Label
 									htmlFor='current-position'
@@ -282,9 +271,9 @@ export function WorkExperienceForm({
 								</Label>
 								<Select
 									value={dateFormat}
-								onValueChange={function(value: 'year' | 'month-year' | 'full-date') {
-									setDateFormat(value);
-								}}
+									onValueChange={(value: 'year' | 'month-year' | 'full-date') => {
+										setDateFormat(value);
+									}}
 								>
 									<SelectTrigger>
 										<SelectValue />
@@ -305,13 +294,13 @@ export function WorkExperienceForm({
 											dateFormat === 'month-year' ? '2023-01' : '2023'
 										}
 										{...register('dateRange.startDate', {
-									setValueAs: function(value) {
-										if (!value) return new Date();
-										if (dateFormat === 'month-year') {
-											return new Date(`${value}-01`);
-										}
-										return new Date(`${value}-01-01`);
-									},
+											setValueAs: (value) => {
+												if (!value) return new Date();
+												if (dateFormat === 'month-year') {
+													return new Date(`${value}-01`);
+												}
+												return new Date(`${value}-01-01`);
+											},
 										})}
 									/>
 								</div>
@@ -325,13 +314,13 @@ export function WorkExperienceForm({
 												dateFormat === 'month-year' ? '2024-01' : '2024'
 											}
 											{...register('dateRange.endDate', {
-											setValueAs: function(value) {
-												if (!value) return undefined;
-												if (dateFormat === 'month-year') {
-													return new Date(`${value}-01`);
-												}
-												return new Date(`${value}-01-01`);
-											},
+												setValueAs: (value) => {
+													if (!value) return undefined;
+													if (dateFormat === 'month-year') {
+														return new Date(`${value}-01`);
+													}
+													return new Date(`${value}-01-01`);
+												},
 											})}
 										/>
 									</div>
@@ -359,7 +348,9 @@ export function WorkExperienceForm({
 								type='button'
 								variant='outline'
 								size='sm'
-								onClick={function() { setAchievements([...achievements, '']); }}
+								onClick={() => {
+									setAchievements([...achievements, '']);
+								}}
 								className='gap-2 bg-transparent'
 							>
 								<Plus className='h-4 w-4' />
@@ -381,7 +372,9 @@ export function WorkExperienceForm({
 										value={achievement}
 										onChange={(e) =>
 											setAchievements((prev) =>
-												prev.map((item, i) => (i === index ? e.target.value : item))
+												prev.map((item, i) =>
+													i === index ? e.target.value : item
+												)
 											)
 										}
 										className='flex-1'
@@ -391,7 +384,9 @@ export function WorkExperienceForm({
 										variant='ghost'
 										size='sm'
 										onClick={() =>
-											setAchievements(achievements.filter((_, i) => i !== index))
+											setAchievements(
+												achievements.filter((_, i) => i !== index)
+											)
 										}
 										className='text-muted-foreground hover:text-destructive'
 									>

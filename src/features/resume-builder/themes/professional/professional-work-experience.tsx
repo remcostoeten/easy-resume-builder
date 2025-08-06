@@ -1,19 +1,19 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Briefcase, Building, Calendar, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
+import { formatDateRange } from '@/shared/utilities/date-utils';
 import {
 	addWorkExperience,
 	removeWorkExperience,
 	updateWorkExperience,
 } from '@/store/resume-store';
 import type { TWorkItem } from '@/types/resume';
-import { formatDateRange } from '@/shared/utilities/date-utils';
 import { WorkExperienceForm } from '../../sections/work-experience-form';
 
 export type TProfessionalWorkExperienceProps = {
@@ -95,10 +95,8 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 			{!isFormVisible && (
 				<div className='space-y-4'>
 					<AnimatePresence>
-						{data.map((item, index) => (
-							<div
-								key={item.id}
-							>
+						{data.map((item, _index) => (
+							<div key={item.id}>
 								<Card
 									className='hover:shadow-sm transition-shadow cursor-pointer'
 									onClick={() => handleEdit(item)}

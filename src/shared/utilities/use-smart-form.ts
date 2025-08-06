@@ -1,6 +1,6 @@
 // src/shared/utilities/useSmartForm.ts
-import { useState, useCallback } from 'react';
-import { useForm, UseFormProps, FieldValues } from 'react-hook-form';
+import { useCallback, useState } from 'react';
+import { type FieldValues, type UseFormProps, useForm } from 'react-hook-form';
 
 export type TSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 

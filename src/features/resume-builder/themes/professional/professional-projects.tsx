@@ -1,7 +1,7 @@
 'use client';
 
 import { Calendar, Code, ExternalLink, FolderOpen, Plus, Save, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { EmptyState } from '@/shared/components/ui';
@@ -23,9 +23,9 @@ type TProject = {
 	technologies: string[];
 };
 
-type TProps = {};
+type TProps = Record<string, never>;
 
-export function ProfessionalProjects({}: TProps) {
+export function ProfessionalProjects(_props: TProps) {
 	const [isAddingNew, setIsAddingNew] = useState(false);
 	const [projects, setProjects] = useState<TProject[]>([]);
 	const [technologies, setTechnologies] = useState<string[]>([]);
