@@ -44,7 +44,7 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError }: TPr
 	function handleSubmit(data: TUpdateProfile) {
 		startTransition(async () => {
 			try {
-				const updatedUser = await updateUserProfile(userId, data);
+				const _updatedUser = await updateUserProfile(userId, data);
 
 				toast.success('Profile updated', {
 					description: 'Your profile has been successfully updated.',

@@ -1,11 +1,49 @@
 'use server';
 
-import { count, desc, eq } from 'drizzle-orm';
+import { count, desc, eq, sql } from 'drizzle-orm';
+import { unstable_cache } from 'next/cache';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
 import { resumeTable } from '@/features/resume/server/schemas';
 import { db } from '@/server/db';
 import type { TQuickStats } from '../types';
+
+// Cache stats for 2 minutes since they're frequently accessed
+const getCachedQuickStats = unstable_cache(
+	async (userId: string): Promise<TQuickStats> => {
+		// Combine queries to reduce database round trips
+		const [statsResult] = await db
+			.select({
+				totalResumes: count(),
+				lastModified: sql<Date | null>`MAX(${resumeTable.lastModified})`,
+				completedResumes: sql<number>`COUNT(CASE 
+					WHEN ${resumeTable.personalInfo} IS NOT NULL 
+						AND ${resumeTable.workExperience} IS NOT NULL 
+						AND ${resumeTable.education} IS NOT NULL 
+						AND ${resumeTable.skills} IS NOT NULL 
+					THEN 1 
+					ELSE NULL 
+				END)`,
+			})
+			.from(resumeTable)
+			.where(eq(resumeTable.userId, userId));
+
+		const totalResumes = statsResult?.totalResumes || 0;
+		const profileCompletionPercentage =
+			totalResumes > 0 ? (statsResult?.completedResumes || 0) / totalResumes : 0;
+
+		return {
+			totalResumes,
+			lastEditedDate: statsResult?.lastModified || null,
+			profileCompletionPercentage,
+		};
+	},
+	['quick-stats'],
+	{
+		revalidate: 120, // 2 minutes
+		tags: ['stats', 'dashboard'],
+	}
+);
 
 export async function getQuickStats(): Promise<TQuickStats> {
 	const session = await auth.api.getSession({
@@ -16,71 +54,5 @@ export async function getQuickStats(): Promise<TQuickStats> {
 		throw new Error('Unauthorized');
 	}
 
-	const userId = session.user.id;
-
-	const totalResumesResult = await db
-		.select({ count: count() })
-		.from(resumeTable)
-		.where(eq(resumeTable.userId, userId));
-
-	const totalResumes = totalResumesResult[0]?.count || 0;
-
-	const lastEditedResume = await db
-		.select({ lastModified: resumeTable.lastModified })
-		.from(resumeTable)
-		.where(eq(resumeTable.userId, userId))
-		.orderBy(desc(resumeTable.lastModified))
-		.limit(1);
-
-	const lastEditedDate = lastEditedResume[0]?.lastModified || null;
-
-	const profileCompletionPercentage = await calculateProfileCompletion(userId);
-
-	return {
-		totalResumes,
-		lastEditedDate,
-		profileCompletionPercentage,
-	};
-}
-
-async function calculateProfileCompletion(userId: string): Promise<number> {
-	const userResumes = await db
-		.select({
-			personalInfo: resumeTable.personalInfo,
-			workExperience: resumeTable.workExperience,
-			education: resumeTable.education,
-			skills: resumeTable.skills,
-		})
-		.from(resumeTable)
-		.where(eq(resumeTable.userId, userId));
-
-	if (userResumes.length === 0) {
-		return 0;
-	}
-
-	const resume = userResumes[0];
-	let completedSections = 0;
-	const totalSections = 4;
-
-	if (resume.personalInfo && Object.keys(resume.personalInfo as object).length > 0) {
-		completedSections++;
-	}
-
-	if (
-		resume.workExperience &&
-		Array.isArray(resume.workExperience) &&
-		resume.workExperience.length > 0
-	) {
-		completedSections++;
-	}
-
-	if (resume.education && Array.isArray(resume.education) && resume.education.length > 0) {
-		completedSections++;
-	}
-
-	if (resume.skills && Array.isArray(resume.skills) && resume.skills.length > 0) {
-		completedSections++;
-	}
-
-	return (completedSections / totalSections);
+	return getCachedQuickStats(session.user.id);
 }

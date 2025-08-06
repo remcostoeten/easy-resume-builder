@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { WelcomeModalProvider } from '../welcome-provider';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as welcomeStorage from '@/utils/storage/welcome-storage';
+import { WelcomeModalProvider } from '../welcome-provider';
 
 vi.mock('@/utils/storage/welcome-storage', () => ({
 	hasSeenWelcomeModal: vi.fn(),
@@ -12,9 +12,9 @@ vi.mock('@/utils/storage/welcome-storage', () => ({
 function TestComponent() {
 	return (
 		<div>
-			<button data-testid="existing-button">Existing Button</button>
+			<button data-testid='existing-button'>Existing Button</button>
 			<WelcomeModalProvider>
-				<div data-testid="child-content">Child Content</div>
+				<div data-testid='child-content'>Child Content</div>
 			</WelcomeModalProvider>
 		</div>
 	);
@@ -36,7 +36,7 @@ function mockStorage() {
 
 describe('WelcomeModalProvider', () => {
 	let user: ReturnType<typeof userEvent.setup>;
-	let mockActiveElement: HTMLElement;
+	let _mockActiveElement: HTMLElement;
 
 	beforeEach(() => {
 		user = userEvent.setup();
@@ -141,9 +141,12 @@ describe('WelcomeModalProvider', () => {
 				expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 			});
 
-			await waitFor(() => {
-				expect(existingButton).toHaveFocus();
-			}, { timeout: 100 });
+			await waitFor(
+				() => {
+					expect(existingButton).toHaveFocus();
+				},
+				{ timeout: 100 }
+			);
 		});
 
 		it('should restore focus after get-started is clicked', async () => {
@@ -165,9 +168,12 @@ describe('WelcomeModalProvider', () => {
 				expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 			});
 
-			await waitFor(() => {
-				expect(existingButton).toHaveFocus();
-			}, { timeout: 100 });
+			await waitFor(
+				() => {
+					expect(existingButton).toHaveFocus();
+				},
+				{ timeout: 100 }
+			);
 		});
 
 		it('should scroll to top when get-started is clicked', async () => {
@@ -301,9 +307,12 @@ describe('WelcomeModalProvider', () => {
 				expect(welcomeStorage.setStorageOnClick).toHaveBeenCalledTimes(1);
 			});
 
-			await waitFor(() => {
-				expect(existingButton).toHaveFocus();
-			}, { timeout: 100 });
+			await waitFor(
+				() => {
+					expect(existingButton).toHaveFocus();
+				},
+				{ timeout: 100 }
+			);
 		});
 	});
 });

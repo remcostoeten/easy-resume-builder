@@ -40,12 +40,14 @@ const contentVariants = {
 	},
 };
 
-function AlertDialog({ open, children, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
+function AlertDialog({
+	open,
+	children,
+	...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
 	return (
 		<AlertDialogPrimitive.Root data-slot='alert-dialog' open={open} {...props}>
-			<AnimatePresence mode="wait">
-				{open && children}
-			</AnimatePresence>
+			<AnimatePresence mode='wait'>{open && children}</AnimatePresence>
 		</AlertDialogPrimitive.Root>
 	);
 }
@@ -70,9 +72,9 @@ function AlertDialogOverlay({
 				data-slot='alert-dialog-overlay'
 				className={cn('fixed inset-0 z-50', className)}
 				variants={overlayVariants}
-				initial="initial"
-				animate="animate"
-				exit="exit"
+				initial='initial'
+				animate='animate'
+				exit='exit'
 				transition={{ duration: 0.2, ease: 'easeOut' }}
 			/>
 		</AlertDialogPrimitive.Overlay>
@@ -99,9 +101,9 @@ function AlertDialogContent({
 						className
 					)}
 					variants={contentVariants}
-					initial="initial"
-					animate="animate"
-					exit="exit"
+					initial='initial'
+					animate='animate'
+					exit='exit'
 					transition={{ duration: 0.2, ease: 'easeOut' }}
 				/>
 			</AlertDialogPrimitive.Content>
@@ -162,10 +164,10 @@ function AlertDialogAction({
 	...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
 	return (
-		<AlertDialogPrimitive.Action 
-			className={cn(buttonVariants(), className)} 
+		<AlertDialogPrimitive.Action
+			className={cn(buttonVariants(), className)}
 			aria-label={props['aria-label'] || 'Confirm action'}
-			{...props} 
+			{...props}
 		/>
 	);
 }

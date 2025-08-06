@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { FocusScope } from '@radix-ui/react-focus-scope';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
 import { FEATURES, TIPS } from '../data';
 
@@ -17,23 +17,25 @@ const FeatureCard = React.memo(function FeatureCard({
 }: {
 	feature: (typeof FEATURES)[number];
 }) {
-		return (
-			<article className='border border-border/50 bg-card/50 backdrop-blur-sm cursor-default rounded-lg'>
-				<div className='p-4 text-center h-full flex flex-col'>
-					<div
-						className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg flex items-center justify-center text-white text-lg`}
-						role='img'
-						aria-label={feature.title}
-					>
-						{feature.icon}
-					</div>
-					<h4 className='font-semibold mb-1 text-sm text-foreground'>{feature.title}</h4>
-					<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
-						{feature.description}
-					</p>
+	return (
+		<article className='border border-border/50 bg-card/50 backdrop-blur-sm cursor-default rounded-lg'>
+			<div className='p-4 text-center h-full flex flex-col'>
+				<div
+					className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg flex items-center justify-center text-white text-lg`}
+					role='img'
+					aria-label={feature.title}
+				>
+					{feature.icon}
 				</div>
-			</article>
-		);
+				<h4 className='font-semibold mb-1 animate-pulse text-sm text-foreground'>
+					{feature.title}
+				</h4>
+				<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
+					{feature.description}
+				</p>
+			</div>
+		</article>
+	);
 });
 
 FeatureCard.displayName = 'FeatureCard';
@@ -49,7 +51,13 @@ const TipItem = React.memo(function TipItem({ tip }: { tip: string }) {
 
 TipItem.displayName = 'TipItem';
 
-export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, onGetStartedExitComplete }: TProps) {
+export function WelcomeModal({
+	isOpen,
+	onClose,
+	onGetStarted,
+	onExitComplete,
+	onGetStartedExitComplete,
+}: TProps) {
 	const firstButtonRef = useRef<HTMLButtonElement>(null);
 	const exitReasonRef = useRef<'close' | 'get-started'>('close');
 
@@ -117,12 +125,16 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 		}
 
 		if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-			const registerButton = document.querySelector('[aria-label="Create a new account"]') as HTMLButtonElement;
-			const loginButton = document.querySelector('[aria-label="Sign in to your account"]') as HTMLButtonElement;
-			
+			const registerButton = document.querySelector(
+				'[aria-label="Create a new account"]'
+			) as HTMLButtonElement;
+			const loginButton = document.querySelector(
+				'[aria-label="Sign in to your account"]'
+			) as HTMLButtonElement;
+
 			if (registerButton && loginButton) {
 				const currentFocus = document.activeElement;
-				
+
 				if (event.key === 'ArrowRight') {
 					if (currentFocus === registerButton) {
 						loginButton.focus();
@@ -136,7 +148,7 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 						loginButton.focus();
 					}
 				}
-				
+
 				event.stopPropagation();
 			}
 		}
@@ -164,7 +176,7 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 				return cleanup;
 			}
 		},
-		[isOpen, onClose]
+		[isOpen, handleDocumentKeyDown]
 	);
 
 	const featureCards = useMemo(function renderFeatureCards() {
@@ -180,7 +192,7 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 	}, []);
 
 	return (
-		<AnimatePresence mode="wait" onExitComplete={handleAnimationExitComplete}>
+		<AnimatePresence mode='wait' onExitComplete={handleAnimationExitComplete}>
 			{isOpen && (
 				<motion.div
 					className='fixed inset-0 z-50 flex items-center justify-center p-4'
@@ -192,7 +204,11 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 					aria-describedby='modal-description'
 					aria-live='polite'
 					initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-					animate={{ opacity: 1, backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+					animate={{
+						opacity: 1,
+						backdropFilter: 'blur(4px)',
+						backgroundColor: 'rgba(0, 0, 0, 0.5)',
+					}}
 					exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
 					transition={{ duration: 0.2, ease: 'easeOut' }}
 				>
@@ -206,189 +222,231 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, on
 						exit={{ opacity: 0, scale: 0.9, y: 30 }}
 						transition={{ duration: 0.2, ease: 'easeOut' }}
 					>
-	<FocusScope
+						<FocusScope
 							loop
 							trapped
 							onMountAutoFocus={handleMountAutoFocus}
 							onKeyDown={handleFocusScopeKeyDown}
 						>
-				<div className='relative flex flex-col h-full'>
-					<header className='relative p-6 pb-4 text-center border-b border-border/50'>
-						<div className='flex items-center justify-center mb-4'>
-							<div className='w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center'>
-								<span className='text-2xl' role='img' aria-label='Resume document'>📄</span>
-							</div>
-						</div>
+							<div className='relative flex flex-col h-full'>
+								<header className='relative p-6 pb-4 text-center border-b border-border/50'>
+									<div className='flex items-center justify-center mb-4'>
+										<div className='w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center'>
+											<span
+												className='text-2xl'
+												role='img'
+												aria-label='Resume document'
+											>
+												📄
+											</span>
+										</div>
+									</div>
 
-						<div>
-							<h1
-								id='modal-title'
-								className='text-2xl font-bold mb-2 text-foreground'
-							>
-								Welcome to Resume Builder
-							</h1>
-							<p
-								id='modal-description'
-								className='text-base text-muted-foreground max-w-xl mx-auto'
-							>
-								Create professional, ATS-optimized resumes in minutes
-							</p>
-						</div>
-					</header>
-
-					<main className='flex-1 overflow-y-auto p-6'>
-						<div className='max-w-4xl mx-auto'>
-							<div className='grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6'>
-								{featureCards}
-							</div>
-							
-							<div className='bg-muted/30 rounded-xl p-4 mb-4'>
-								<h3 className='font-semibold text-foreground mb-3'>
-									Quick Tips
-								</h3>
-								<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-									{tipItems}
-								</div>
-							</div>
-
-							<div className='bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/20'>
-								<div className='text-center mb-3'>
-									<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
-										<span className='text-lg'>⭐</span>
-									</div>
-									<h3 className='font-semibold text-foreground mb-1'>Unlock Premium Features</h3>
-									<p className='text-xs text-muted-foreground mb-3'>
-										Get the most out of Resume Builder with a free account
-									</p>
-								</div>
-								
-								<div className='grid grid-cols-2 gap-3 mb-2'>
-									<div className='flex items-center gap-2'>
-										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
-											<span className='text-green-500 text-xs'>✓</span>
-										</div>
-										<span className='text-xs text-muted-foreground'>Cloud Storage</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
-											<span className='text-green-500 text-xs'>✓</span>
-										</div>
-										<span className='text-xs text-muted-foreground'>Multiple Resumes</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
-											<span className='text-green-500 text-xs'>✓</span>
-										</div>
-										<span className='text-xs text-muted-foreground'>Share Links</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
-											<span className='text-green-500 text-xs'>✓</span>
-										</div>
-										<span className='text-xs text-muted-foreground'>AI Assistance</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</main>
-
-					<footer className='bg-muted/20 border-t border-border/50'>
-						<div className='p-6'>
-							<div className='max-w-2xl mx-auto'>
-								<div className='text-center mb-4'>
-									<h3 className='font-semibold text-foreground mb-1'>Ready to get started?</h3>
-									<p className='text-sm text-muted-foreground'>Choose how you'd like to begin</p>
-								</div>
-								
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4'>
-									<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
-										<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
-											<span className='text-primary text-base'>⚡</span>
-										</div>
-										<h4 className='font-medium text-foreground mb-1 text-sm'>Start Building</h4>
-										<p className='text-xs text-muted-foreground mb-3'>Jump right in instantly</p>
-										<button
-											ref={firstButtonRef}
-											type='button'
-											onClick={handleGetStartedClick}
-											className='w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-											aria-describedby='get-started-description'
+									<div>
+										<h1
+											id='modal-title'
+											className='text-2xl font-bold mb-2 text-foreground'
 										>
-											Start Now
-										</button>
+											Welcome to Resume Builder
+										</h1>
+										<p
+											id='modal-description'
+											className='text-base text-muted-foreground max-w-xl mx-auto'
+										>
+											Create professional, ATS-optimized resumes in minutes
+										</p>
 									</div>
-									
-									<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
-										<div className='w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-2'>
-											<span className='text-secondary text-base'>👤</span>
+								</header>
+
+								<main className='flex-1 overflow-y-auto p-6'>
+									<div className='max-w-4xl mx-auto'>
+										<div className='grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6'>
+											{featureCards}
 										</div>
-										<h4 className='font-medium text-foreground mb-1 text-sm'>Create Account</h4>
-										<p className='text-xs text-muted-foreground mb-3'>Unlock premium features</p>
-										<div className='flex gap-2'>
-											<button
-												type='button'
-												className='flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2'
-												onClick={handleRegisterClick}
-												aria-label='Create a new account'
-											>
-												Register
-											</button>
-											<button
-												type='button'
-												className='flex-1 border border-border hover:bg-muted px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-												onClick={handleLoginClick}
-												aria-label='Sign in to your account'
-											>
-												Sign In
-											</button>
+
+										<div className='bg-muted/30 rounded-xl p-4 mb-4'>
+											<h3 className='font-semibold text-foreground mb-3'>
+												Quick Tips
+											</h3>
+											<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+												{tipItems}
+											</div>
 										</div>
+
+										<div className='bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/20'>
+											<div className='text-center mb-3'>
+												<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
+													<span className='text-lg'>⭐</span>
+												</div>
+												<h3 className='font-semibold text-foreground mb-1'>
+													Unlock Premium Features
+												</h3>
+												<p className='text-xs text-muted-foreground mb-3'>
+													Get the most out of Resume Builder with a free
+													account
+												</p>
+											</div>
+
+											<div className='grid grid-cols-2 gap-3 mb-2'>
+												<div className='flex items-center gap-2'>
+													<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+														<span className='text-green-500 text-xs'>
+															✓
+														</span>
+													</div>
+													<span className='text-xs text-muted-foreground'>
+														Cloud Storage
+													</span>
+												</div>
+												<div className='flex items-center gap-2'>
+													<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+														<span className='text-green-500 text-xs'>
+															✓
+														</span>
+													</div>
+													<span className='text-xs text-muted-foreground'>
+														Multiple Resumes
+													</span>
+												</div>
+												<div className='flex items-center gap-2'>
+													<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+														<span className='text-green-500 text-xs'>
+															✓
+														</span>
+													</div>
+													<span className='text-xs text-muted-foreground'>
+														Share Links
+													</span>
+												</div>
+												<div className='flex items-center gap-2'>
+													<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+														<span className='text-green-500 text-xs'>
+															✓
+														</span>
+													</div>
+													<span className='text-xs text-muted-foreground'>
+														AI Assistance
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</main>
+
+								<footer className='bg-muted/20 border-t border-border/50'>
+									<div className='p-6'>
+										<div className='max-w-2xl mx-auto'>
+											<div className='text-center mb-4'>
+												<h3 className='font-semibold text-foreground mb-1'>
+													Ready to get started?
+												</h3>
+												<p className='text-sm text-muted-foreground'>
+													Choose how you'd like to begin
+												</p>
+											</div>
+
+											<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4'>
+												<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
+													<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
+														<span className='text-primary text-base'>
+															⚡
+														</span>
+													</div>
+													<h4 className='font-medium text-foreground mb-1 text-sm'>
+														Start Building
+													</h4>
+													<p className='text-xs text-muted-foreground mb-3'>
+														Jump right in instantly
+													</p>
+													<button
+														ref={firstButtonRef}
+														type='button'
+														onClick={handleGetStartedClick}
+														className='w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+														aria-describedby='get-started-description'
+													>
+														Start Now
+													</button>
+												</div>
+
+												<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
+													<div className='w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-2'>
+														<span className='text-secondary text-base'>
+															👤
+														</span>
+													</div>
+													<h4 className='font-medium text-foreground mb-1 text-sm'>
+														Create Account
+													</h4>
+													<p className='text-xs text-muted-foreground mb-3'>
+														Unlock premium features
+													</p>
+													<div className='flex gap-2'>
+														<button
+															type='button'
+															className='flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2'
+															onClick={handleRegisterClick}
+															aria-label='Create a new account'
+														>
+															Register
+														</button>
+														<button
+															type='button'
+															className='flex-1 border border-border hover:bg-muted px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+															onClick={handleLoginClick}
+															aria-label='Sign in to your account'
+														>
+															Sign In
+														</button>
+													</div>
+												</div>
+											</div>
+
+											<div className='text-center pt-3 border-t border-border/30'>
+												<p className='text-xs text-muted-foreground flex items-center justify-center gap-2'>
+													<span className='w-1.5 h-1.5 rounded-full bg-green-500'></span>
+													Free to use • No credit card required
+												</p>
+											</div>
+
+											<span id='get-started-description' className='sr-only'>
+												Begin creating your resume immediately without
+												registration
+											</span>
+										</div>
+									</div>
+								</footer>
+
+								<div
+									className='absolute top-4 left-4 opacity-20 pointer-events-none'
+									aria-hidden='true'
+								>
+									<div className=''>
+										<span className='text-primary text-lg'>✨</span>
 									</div>
 								</div>
-								
-								<div className='text-center pt-3 border-t border-border/30'>
-									<p className='text-xs text-muted-foreground flex items-center justify-center gap-2'>
-										<span className='w-1.5 h-1.5 rounded-full bg-green-500'></span>
-										Free to use • No credit card required
-									</p>
+								<div
+									className='absolute bottom-4 left-4 opacity-20 pointer-events-none'
+									aria-hidden='true'
+								>
+									<div className=''>
+										<span className='text-secondary text-base'>⭐</span>
+									</div>
 								</div>
-								
-								<span id='get-started-description' className='sr-only'>
-									Begin creating your resume immediately without registration
-								</span>
+
+								<button
+									type='button'
+									onClick={handleCloseClick}
+									className='absolute top-4 right-12 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+									aria-label='Close welcome modal'
+								>
+									<span aria-hidden='true'>✕</span>
+								</button>
 							</div>
-						</div>
-					</footer>
-
-					<div
-						className='absolute top-4 right-4 opacity-20 pointer-events-none'
-						aria-hidden='true'
-					>
-						<div className=''>
-							<span className='text-primary text-lg'>✨</span>
-						</div>
-					</div>
-					<div
-						className='absolute bottom-4 left-4 opacity-20 pointer-events-none'
-						aria-hidden='true'
-					>
-						<div className=''>
-							<span className='text-secondary text-base'>⭐</span>
-						</div>
-					</div>
-
-					<button
-						type='button'
-						onClick={handleCloseClick}
-						className='absolute top-4 right-12 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-						aria-label='Close welcome modal'
-					>
-						<span aria-hidden='true'>✕</span>
-					</button>
-				</div>
 						</FocusScope>
-						</motion.div>
 					</motion.div>
-				)}
-			</AnimatePresence>
+				</motion.div>
+			)}
+		</AnimatePresence>
 	);
 }

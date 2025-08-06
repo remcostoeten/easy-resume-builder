@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import type { TExtractedResumeData } from '../../../utils/text-extraction';
 import {
-	extractPersonalInfo,
-	extractWorkExperience,
 	extractEducation,
+	extractPersonalInfo,
 	extractSkills,
+	extractWorkExperience,
 } from '../../../utils/text-extraction';
 
 export async function POST(request: NextRequest) {

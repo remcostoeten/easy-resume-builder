@@ -1,4 +1,4 @@
-import { boolean, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { entityBase } from '@/server/db/helpers/entity-schema.helper';
 
 export const resumeTable = pgTable('resume', {

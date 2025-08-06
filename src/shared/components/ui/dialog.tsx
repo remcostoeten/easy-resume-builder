@@ -12,9 +12,7 @@ import { cn } from 'utilities';
 function Dialog({ open, children, ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
 	return (
 		<DialogPrimitive.Root data-slot='dialog' open={open} {...props}>
-			<AnimatePresence mode="wait">
-				{open && children}
-			</AnimatePresence>
+			<AnimatePresence mode='wait'>{open && children}</AnimatePresence>
 		</DialogPrimitive.Root>
 	);
 }
@@ -41,7 +39,11 @@ function DialogOverlay({
 				data-slot='dialog-overlay'
 				className={cn('fixed inset-0 z-50', className)}
 				initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-				animate={{ opacity: 1, backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+				animate={{
+					opacity: 1,
+					backdropFilter: 'blur(4px)',
+					backgroundColor: 'rgba(0, 0, 0, 0.5)',
+				}}
 				exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
 				transition={{ duration: 0.2, ease: 'easeOut' }}
 			/>
@@ -62,7 +64,7 @@ function DialogContent({
 	function handleMountAutoFocus(event: Event) {
 		previousActiveElementRef.current = document.activeElement;
 		event.preventDefault();
-		
+
 		const target = event.currentTarget as HTMLElement;
 		const closeButton = target?.querySelector('[data-slot="dialog-close"]') as HTMLElement;
 		if (closeButton) {

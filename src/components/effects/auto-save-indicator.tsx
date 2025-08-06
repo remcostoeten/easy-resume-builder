@@ -1,7 +1,7 @@
 'use client';
 
 import { Check, Save } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { cn } from '@/shared/utilities/cn';
 
@@ -16,7 +16,7 @@ export function AutoSaveIndicator({ className = '', showIcon = true, variant = '
 	const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
 
-	function updateTimer() {
+	const updateTimer = useCallback(() => {
 		const now = new Date();
 		const diffInSeconds = Math.floor((now.getTime() - lastSaveTime!.getTime()) / 1000);
 		setSecondsSinceLastSave(diffInSeconds);
@@ -24,7 +24,7 @@ export function AutoSaveIndicator({ className = '', showIcon = true, variant = '
 		if (diffInSeconds > 3) {
 			setShowSavedMessage(false);
 		}
-	}
+	}, [lastSaveTime]);
 
 	useEffect(
 		function setupTimer() {
@@ -38,26 +38,29 @@ export function AutoSaveIndicator({ className = '', showIcon = true, variant = '
 
 			return cleanup;
 		},
-		[lastSaveTime]
+		[lastSaveTime, updateTimer]
 	);
 
-	function handleStorageChange() {
+	const handleStorageChange = useCallback(() => {
 		setLastSaveTime(new Date());
 		setSecondsSinceLastSave(0);
 		setShowSavedMessage(true);
-	}
-
-	useEffect(function setupStorageListeners() {
-		window.addEventListener('storage', handleStorageChange);
-		window.addEventListener('localStorageUpdate', handleStorageChange);
-
-		function cleanup() {
-			window.removeEventListener('storage', handleStorageChange);
-			window.removeEventListener('localStorageUpdate', handleStorageChange);
-		}
-
-		return cleanup;
 	}, []);
+
+	useEffect(
+		function setupStorageListeners() {
+			window.addEventListener('storage', handleStorageChange);
+			window.addEventListener('localStorageUpdate', handleStorageChange);
+
+			function cleanup() {
+				window.removeEventListener('storage', handleStorageChange);
+				window.removeEventListener('localStorageUpdate', handleStorageChange);
+			}
+
+			return cleanup;
+		},
+		[handleStorageChange]
+	);
 
 	function getTimeDisplay(seconds: number) {
 		if (seconds < 60) {

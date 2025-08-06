@@ -82,10 +82,13 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 	}
 
 	return (
-		<div className='space-y-6'>
+		<section className='space-y-6' aria-labelledby='resume-list-heading'>
 			<div className='flex justify-between items-center mb-4'>
-				<h2 className='text-xl font-semibold'>Resume List (<AnimatedActivityCount count={resumes.length} />)</h2>
+				<h2 id='resume-list-heading' className='text-xl font-semibold'>
+					Resume List (<AnimatedActivityCount count={resumes.length} />)
+				</h2>
 				<button
+					type='button'
 					onClick={handleCreateResume}
 					disabled={isPending}
 					className='px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50'
@@ -97,13 +100,24 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 			<div className='bg-card rounded-lg border overflow-hidden'>
 				<div className='overflow-x-auto'>
 					<table className='w-full'>
+						<caption className='sr-only'>A list of your resumes</caption>
 						<thead className='bg-muted/50 border-b'>
 							<tr>
-								<th className='text-left p-4 font-medium'>Name</th>
-								<th className='text-left p-4 font-medium'>Template</th>
-								<th className='text-left p-4 font-medium'>Last Modified</th>
-								<th className='text-left p-4 font-medium'>Status</th>
-								<th className='text-right p-4 font-medium'>Actions</th>
+								<th scope='col' className='text-left p-4 font-medium'>
+									Name
+								</th>
+								<th scope='col' className='text-left p-4 font-medium'>
+									Template
+								</th>
+								<th scope='col' className='text-left p-4 font-medium'>
+									Last Modified
+								</th>
+								<th scope='col' className='text-left p-4 font-medium'>
+									Status
+								</th>
+								<th scope='col' className='text-right p-4 font-medium'>
+									Actions
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -137,6 +151,7 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 									<td className='p-4'>
 										<div className='flex justify-end space-x-2'>
 											<button
+												type='button'
 												onClick={() => handleEditResume(resume.id)}
 												disabled={isPending}
 												className='text-sm text-primary hover:underline disabled:opacity-50'
@@ -144,6 +159,7 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 												Edit
 											</button>
 											<button
+												type='button'
 												onClick={() => handleDeleteResume(resume.id)}
 												disabled={isPending}
 												className='text-sm text-destructive hover:underline disabled:opacity-50'
@@ -158,6 +174,6 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 					</table>
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }

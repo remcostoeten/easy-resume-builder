@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, Home, Settings, User } from 'lucide-react';
+import { Home as DashboardIcon, FileText, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -27,7 +27,7 @@ function getMenuDefinitions(): TMenuDefinition[] {
 	return [
 		{
 			label: 'Dashboard',
-			icon: Home,
+			icon: DashboardIcon,
 			href: '/dashboard',
 		},
 		{

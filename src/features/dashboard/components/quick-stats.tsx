@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { getQuickStats } from '../server/actions/stats-actions';
-import { AnimatedNumber } from './animated-number';
+import AnimatedNumber from './animated-number';
 
 type TProps = {
 	className?: string;

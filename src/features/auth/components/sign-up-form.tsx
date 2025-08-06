@@ -7,8 +7,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { authClient } from '@/features/auth/client/auth-client';
+import { OAuthButtons } from '@/features/auth/components';
 import { Button } from '@/shared/components/ui/button';
-import { Spinner } from '@/shared/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
 	Form,
@@ -19,6 +19,7 @@ import {
 	FormMessage,
 } from '@/shared/components/ui/form';
 import { Input } from '@/shared/components/ui/input';
+import { LoadingButton } from '@/shared/components/ui/loading-button';
 
 const signUpSchema = z
 	.object({
@@ -174,18 +175,25 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 							)}
 						/>
 
-						<Button type='submit' disabled={isLoading} className='w-full'>
-							{isLoading ? (
-								<>
-									<Spinner size='sm' color='white' className='mr-2' />
-									Creating account...
-								</>
-							) : (
-								'Create Account'
-							)}
-						</Button>
+						<LoadingButton type='submit' loading={isLoading} className='w-full'>
+							Create Account
+						</LoadingButton>
 					</form>
 				</Form>
+
+				<div className='relative py-4'>
+					<div className='absolute inset-0 flex items-center'>
+						<span className='w-full border-t border-border' />
+					</div>
+					<span className='relative bg-background px-2 text-xs text-muted-foreground'>
+						Or continue with
+					</span>
+				</div>
+
+				<OAuthButtons
+					onError={(msg) => toast.error('OAuth sign-up failed', { description: msg })}
+					className='pt-2'
+				/>
 			</CardContent>
 		</Card>
 	);

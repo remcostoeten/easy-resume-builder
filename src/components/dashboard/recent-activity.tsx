@@ -5,15 +5,20 @@ type TProps = {
 	locale?: string;
 };
 
-type TActivityType = 'resume_edit' | 'sign_in';
+type TActivityType = 'resume_edit' | 'sign_in' | 'resume_create';
 
 export async function RecentActivity({ locale = 'en-US' }: TProps) {
 	const activities = await getRecentActivity();
 
-	function getActivityIcon(type: TActivityType) {
+	function getActivityIcon(type: TActivityType, providedIcon?: string) {
+		// Use the icon from the database if available, otherwise fallback to type-based icons
+		if (providedIcon) return providedIcon;
+
 		switch (type) {
 			case 'resume_edit':
 				return '✏️';
+			case 'resume_create':
+				return '📄';
 			case 'sign_in':
 				return '🔐';
 			default:
@@ -52,56 +57,54 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 	}
 
 	return (
-		<div className='space-y-6'>
-			<div>
-				<div className='flex items-center justify-between mb-4'>
-					<h2 className='text-xl font-semibold'>Recent Activity</h2>
-					<AnimatedActivityCount count={activities.length} />
-				</div>
-				<div className='bg-card rounded-lg border'>
-					<div className='p-6'>
-						{activities.length === 0 ? (
-							<p className='text-muted-foreground text-center py-8'>
-								No recent activity
-							</p>
-						) : (
-							<ol className='space-y-4' aria-label='Recent activity timeline'>
-								{activities.map((activity) => (
-									<li
-										key={activity.id}
-										className='flex items-start space-x-4 p-4 bg-background rounded-lg border'
+		<section className='space-y-6' aria-labelledby='recent-activity-heading'>
+			<div className='flex items-center justify-between mb-4'>
+				<h2 id='recent-activity-heading' className='text-xl font-semibold'>
+					Recent Activity
+				</h2>
+				<AnimatedActivityCount count={activities.length} />
+			</div>
+			<div className='bg-card rounded-lg border'>
+				<div className='p-6'>
+					{activities.length === 0 ? (
+						<p className='text-muted-foreground text-center py-8'>No recent activity</p>
+					) : (
+						<ol className='space-y-4' aria-label='Recent activity timeline'>
+							{activities.map((activity) => (
+								<li
+									key={activity.id}
+									className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
+								>
+									<div
+										className='text-xl flex-shrink-0'
+										role='img'
+										aria-label={`${activity.type} activity`}
 									>
-										<div
-											className='text-xl flex-shrink-0'
-											role='img'
-											aria-label={`${activity.type} activity`}
+										{getActivityIcon(activity.type, activity.icon)}
+									</div>
+									<article className='flex-1 min-w-0'>
+										<p className='text-sm'>
+											<span className='font-medium'>
+												{activity.description}
+											</span>{' '}
+											<span className='text-muted-foreground truncate'>
+												{activity.title}
+											</span>
+										</p>
+										<time
+											className='text-xs text-muted-foreground mt-1 block'
+											dateTime={activity.timestamp.toISOString()}
+											title={formatTimestamp(activity.timestamp, locale)}
 										>
-											{getActivityIcon(activity.type)}
-										</div>
-										<div className='flex-1 min-w-0'>
-											<p className='text-sm'>
-												<span className='font-medium'>
-													{activity.description}
-												</span>{' '}
-												<span className='text-muted-foreground truncate'>
-													{activity.title}
-												</span>
-											</p>
-											<time
-												className='text-xs text-muted-foreground mt-1 block'
-												dateTime={activity.timestamp.toISOString()}
-												title={formatTimestamp(activity.timestamp, locale)}
-											>
-												{getRelativeTimeString(activity.timestamp, locale)}
-											</time>
-										</div>
-									</li>
-								))}
-							</ol>
-						)}
-					</div>
+											{getRelativeTimeString(activity.timestamp, locale)}
+										</time>
+									</article>
+								</li>
+							))}
+						</ol>
+					)}
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }

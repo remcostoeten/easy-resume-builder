@@ -85,9 +85,7 @@ const contentVariants = {
 function Sheet({ open, children, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 	return (
 		<SheetPrimitive.Root data-slot='sheet' open={open} {...props}>
-			<AnimatePresence mode="wait">
-				{open && children}
-			</AnimatePresence>
+			<AnimatePresence mode='wait'>{open && children}</AnimatePresence>
 		</SheetPrimitive.Root>
 	);
 }
@@ -114,9 +112,9 @@ function SheetOverlay({
 				data-slot='sheet-overlay'
 				className={cn('fixed inset-0 z-50', className)}
 				variants={overlayVariants}
-				initial="initial"
-				animate="animate"
-				exit="exit"
+				initial='initial'
+				animate='animate'
+				exit='exit'
 				transition={{ duration: 0.2, ease: 'easeOut' }}
 			/>
 		</SheetPrimitive.Overlay>
@@ -139,20 +137,16 @@ function SheetContent({
 					data-slot='sheet-content'
 					className={cn(
 						'bg-background fixed z-50 flex flex-col gap-4 shadow-lg',
-						side === 'right' &&
-							'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
-						side === 'left' &&
-							'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
-						side === 'top' &&
-							'inset-x-0 top-0 h-auto border-b',
-						side === 'bottom' &&
-							'inset-x-0 bottom-0 h-auto border-t',
+						side === 'right' && 'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
+						side === 'left' && 'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
+						side === 'top' && 'inset-x-0 top-0 h-auto border-b',
+						side === 'bottom' && 'inset-x-0 bottom-0 h-auto border-t',
 						className
 					)}
 					variants={contentVariants[side]}
-					initial="initial"
-					animate="animate"
-					exit="exit"
+					initial='initial'
+					animate='animate'
+					exit='exit'
 					transition={{ duration: 0.3, ease: 'easeInOut' }}
 				>
 					{children}

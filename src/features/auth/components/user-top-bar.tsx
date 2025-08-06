@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react';
+import { ChevronDownIcon, Home as DashboardIcon, LogOutIcon, UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/features/auth/client/auth-client';
@@ -46,7 +46,12 @@ export function UserTopBar({ className }: TProps) {
 
 	function handleProfileClick() {
 		setIsOpen(false);
-		router.push('/profile');
+		router.push('/dashboard/profile');
+	}
+
+	function handleDashboardClick() {
+		setIsOpen(false);
+		router.push('/dashboard');
 	}
 
 	if (isLoading || !session) {
@@ -77,6 +82,16 @@ export function UserTopBar({ className }: TProps) {
 							{user.email}
 						</div>
 
+						<Button
+							variant='ghost'
+							className='justify-start h-9 px-2'
+							onClick={handleDashboardClick}
+						>
+							<DashboardIcon className='mr-2 h-4 w-4' />
+							Dashboard
+						</Button>
+
+						<Separator className='my-1' />
 						<Button
 							variant='ghost'
 							className='justify-start h-9 px-2'

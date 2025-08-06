@@ -1,9 +1,22 @@
-import { Card, CardContent, CardHeader } from '../ui/card';
-import { Skeleton } from '../ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 
 export function DashboardSkeleton() {
 	return (
 		<div className='space-y-8'>
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
+				{Array.from({ length: 6 }).map((_, i) => (
+					<Card key={i}>
+						<CardHeader>
+							<Skeleton className='h-4 w-24' />
+						</CardHeader>
+						<CardContent>
+							<Skeleton className='h-8 w-16' />
+						</CardContent>
+					</Card>
+				))}
+			</div>
+
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
 				{Array.from({ length: 3 }).map((_, i) => (
 					<Card key={i}>
@@ -45,7 +58,6 @@ export function DashboardSkeleton() {
 						</CardContent>
 					</Card>
 				</div>
-
 				<div className='lg:col-span-1'>
 					<Card>
 						<CardHeader>
@@ -60,7 +72,6 @@ export function DashboardSkeleton() {
 										<Skeleton className='h-3 w-24' />
 									</div>
 								</div>
-
 								<div className='grid grid-cols-2 gap-4'>
 									{Array.from({ length: 4 }).map((_, i) => (
 										<div key={i} className='text-center p-3 border rounded'>

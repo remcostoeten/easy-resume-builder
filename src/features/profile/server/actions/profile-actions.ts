@@ -56,9 +56,9 @@ export async function updateUserProfile(userId: string, data: TUpdateProfileData
 }
 
 export async function changeUserPassword(
-	userId: string,
-	currentPassword: string,
-	newPassword: string
+	_userId: string,
+	_currentPassword: string,
+	_newPassword: string
 ) {
 	try {
 		// TODO: Implement password change functionality
@@ -114,7 +114,7 @@ export async function listOAuthAccounts(userId: string): Promise<TOAuthAccount[]
 	return accounts;
 }
 
-export async function linkOAuthAccount(provider: TOAuthProvider) {
+export async function linkOAuthAccount(_provider: TOAuthProvider) {
 	try {
 		const sessionResult = await auth.api.getSession({
 			headers: await headers(),
