@@ -2,6 +2,7 @@
 
 import { Check, Save, User } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
 import { PersistedInput } from '@/components/ui/persisted-input';
 import { PersonalInfoSkeleton } from '@/shared/components/skeletons';
@@ -38,6 +39,9 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 			updatePersonalInfo(latestData as any);
 
 			setSaveStatus('saved');
+			toast.success('Personal information saved!', {
+				description: 'Your changes have been automatically saved.',
+			});
 
 			// Reset to idle after 2 seconds
 			setTimeout(() => {
@@ -45,6 +49,10 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 			}, 2000);
 		} catch (_error) {
 			setSaveStatus('error');
+			toast.error('Failed to save', {
+				description:
+					'There was an error saving your personal information. Please try again.',
+			});
 			setTimeout(() => {
 				setSaveStatus('idle');
 			}, 3000);
@@ -53,9 +61,12 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 
 	return (
 		<FormSection title='Personal Information' icon={<User className='h-5 w-5' />} isRequired>
-			<form onSubmit={handleFormSubmit} className={`space-y-6 ${className || ''}`}>
+			<form
+				onSubmit={handleFormSubmit}
+				className={`w-full max-w-4xl mx-auto space-y-6 ${className || ''}`}
+			>
 				{/* First Row - First Name & Last Name */}
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 					<div>
 						<label
 							htmlFor='firstName'
@@ -90,7 +101,7 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				</div>
 
 				{/* Second Row - Email & Phone */}
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 					<div>
 						<label
 							htmlFor='email'
@@ -127,7 +138,7 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				</div>
 
 				{/* Third Row - Location & Job Title */}
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 					<div>
 						<label
 							htmlFor='location'
@@ -162,7 +173,7 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				</div>
 
 				{/* Fourth Row - Website, Portfolio, LinkedIn */}
-				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
 					<div>
 						<label
 							htmlFor='website'
@@ -216,7 +227,7 @@ export function PersonalInfoSection({ className, data, isLoading }: TProps) {
 				</div>
 
 				{/* Fifth Row - GitHub, Twitter */}
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 					<div>
 						<label
 							htmlFor='github'

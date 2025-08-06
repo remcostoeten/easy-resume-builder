@@ -1,6 +1,9 @@
-/**
- * Initializes the Drizzle ORM with the Neon HTTP driver.
- * This file sets up the database connection using the DATABASE_URL environment variable.
- */
+import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-export const db = drizzle(process.env.DATABASE_URL);
+
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+	throw new Error('DATABASE_URL environment variable is not set');
+}
+
+export const db = drizzle(neon(databaseUrl));

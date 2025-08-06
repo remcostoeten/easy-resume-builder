@@ -3,7 +3,9 @@
 import { AnimatePresence } from 'framer-motion';
 import { Briefcase, Calendar, Edit, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, EmptyState } from '@/shared/components/ui';
+import { toast } from 'sonner';
+import { EmptyState } from '@/shared/components/ui';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { formatDateRange } from '@/shared/utilities/date-utils';
@@ -37,8 +39,14 @@ export function WorkExperienceSection({ data }: TProps) {
 	function handleSave(workItem: TWorkItem) {
 		if (editingItem) {
 			updateWorkExperience(workItem.id, workItem);
+			toast.success('Work experience updated!', {
+				description: `${workItem.position} at ${workItem.company} has been updated.`,
+			});
 		} else {
 			addWorkExperience(workItem);
+			toast.success('Work experience added!', {
+				description: `${workItem.position} at ${workItem.company} has been added to your resume.`,
+			});
 		}
 		setIsAddingNew(false);
 		setEditingItem(null);
@@ -50,8 +58,14 @@ export function WorkExperienceSection({ data }: TProps) {
 	}
 
 	function handleDelete(id: string) {
+		const workItem = data.find((item) => item.id === id);
 		removeWorkExperience(id);
 		setEditingItem(null);
+		toast.success('Work experience removed', {
+			description: workItem
+				? `${workItem.position} at ${workItem.company} has been removed.`
+				: 'Work experience has been removed from your resume.',
+		});
 	}
 
 	const isFormVisible = isAddingNew || editingItem;

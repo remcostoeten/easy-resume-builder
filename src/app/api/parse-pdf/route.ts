@@ -1,12 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import {
-	extractPersonalInfo,
-	extractWorkExperience,
-	extractEducation,
-	extractSkills,
-} from '../../../../utils/text-extraction';
 import type { TExtractedResumeData } from '../../../../types/extracted-data';
-
+import {
+	extractEducation,
+	extractPersonalInfo,
+	extractSkills,
+	extractWorkExperience,
+} from '../../../../utils/text-extraction';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -49,7 +48,7 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json({
 			success: true,
 			data: extractedData,
-			rawText: text.substring(0, 500) + '...',
+			rawText: `${text.substring(0, 500)}...`,
 		});
 	} catch (error) {
 		console.error('PDF parsing error:', error);
