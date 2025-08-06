@@ -1,3 +1,4 @@
+'use client';
 // src/shared/utilities/useSmartForm.ts
 import { useCallback, useState } from 'react';
 import { type FieldValues, type UseFormProps, useForm } from 'react-hook-form';

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { getFormData, saveFormData, saveFormField } from '@/utils/storage/form-storage';
 
-export interface UseFormPersistenceOptions {
+type TUseFormPersistenceOptions = {
 	/**
 	 * Unique key to identify this form in localStorage
 	 */
@@ -33,7 +33,7 @@ export interface UseFormPersistenceOptions {
 	 * Callback when data is saved to storage
 	 */
 	onDataSaved?: (data: Record<string, any>) => void;
-}
+};
 
 /**
  * Custom hook for automatic form persistence using localStorage
@@ -45,7 +45,7 @@ export function useFormPersistence({
 	excludeFields = [],
 	onDataLoaded,
 	onDataSaved,
-}: UseFormPersistenceOptions) {
+}: TUseFormPersistenceOptions) {
 	/**
 	 * Load saved form data from localStorage
 	 */

@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { authClient } from '@/features/auth/client/auth-client';
 import { Button } from '@/shared/components/ui/button';
+import { Spinner } from '@/shared/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
 	Form,
@@ -68,7 +69,10 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 				if (onSuccess) {
 					onSuccess();
 				} else {
-					router.push('/dashboard');
+					// Small delay to ensure session is established
+					setTimeout(() => {
+						router.push('/dashboard');
+					}, 100);
 				}
 			} else {
 				toast.error('Failed to create account', {
@@ -77,7 +81,8 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 				});
 			}
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+			const errorMessage =
+				error instanceof Error ? error.message : 'An unexpected error occurred';
 			toast.error('Failed to create account', {
 				description: errorMessage,
 			});
@@ -170,7 +175,14 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 						/>
 
 						<Button type='submit' disabled={isLoading} className='w-full'>
-							{isLoading ? 'Creating account...' : 'Create Account'}
+							{isLoading ? (
+								<>
+									<Spinner size='sm' color='white' className='mr-2' />
+									Creating account...
+								</>
+							) : (
+								'Create Account'
+							)}
 						</Button>
 					</form>
 				</Form>

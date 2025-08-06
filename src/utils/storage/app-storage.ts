@@ -10,26 +10,26 @@ const APP_STORAGE_KEYS = {
 } as const;
 
 /**
- * User preferences interface
+ * User preferences type
  */
-interface UserPreferences {
+type TUserPreferences = {
 	autoSave: boolean;
 	showTips: boolean;
 	preferredTemplate: string;
 	language: string;
-}
+};
 
 /**
  * Get user preferences from storage
  */
-export function getUserPreferences(): UserPreferences | null {
-	return getStorageObject<UserPreferences>(APP_STORAGE_KEYS.USER_PREFERENCES);
+export function getUserPreferences(): TUserPreferences | null {
+	return getStorageObject<TUserPreferences>(APP_STORAGE_KEYS.USER_PREFERENCES);
 }
 
 /**
  * Save user preferences to storage
  */
-export function saveUserPreferences(preferences: UserPreferences): boolean {
+export function saveUserPreferences(preferences: TUserPreferences): boolean {
 	return setStorageObject(APP_STORAGE_KEYS.USER_PREFERENCES, preferences);
 }
 
@@ -67,9 +67,9 @@ export function saveLastSavedTimestamp(): boolean {
  * Clear all app-specific storage data
  */
 export function clearAppStorage(): void {
-	Object.values(APP_STORAGE_KEYS).forEach((key) => {
+	for (const key of Object.values(APP_STORAGE_KEYS)) {
 		if (typeof window !== 'undefined') {
 			localStorage.removeItem(key);
 		}
-	});
+	}
 }

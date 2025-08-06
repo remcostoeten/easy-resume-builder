@@ -78,9 +78,6 @@ export function ProfessionalPersonalInfo({ data }: TProfessionalPersonalInfoProp
 		setSaveStatus('saving');
 
 		try {
-			// Simulate async operation
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
 			// Get the latest data from localStorage
 			const latestData = getFormData('personal-info') || {};
 			updatePersonalInfo(latestData as any);

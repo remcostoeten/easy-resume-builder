@@ -175,3 +175,22 @@
 ::-webkit-scrollbar-thumb:hover {
 	background: oklch(0.5 0 0 / 0.5);
 }
+
+
+@keyframes fade-spin {
+  0% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes spinner-blade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
+}

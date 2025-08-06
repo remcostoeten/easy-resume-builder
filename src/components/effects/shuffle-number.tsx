@@ -19,11 +19,9 @@ export function ShuffleNumber({ value, diff }: TProps) {
 
 	return (
 		<span className='flex items-center justify-center gap-2'>
-			<NumberFlow
-				value={value}
-				className='text-5xl font-semibold'
-				format={{ style: 'currency', currency: 'USD' }}
-			/>
+			<span className='text-5xl font-semibold inline-block'>
+				<NumberFlow value={value} format={{ style: 'currency', currency: 'USD' }} />
+			</span>
 			<motion.span
 				className={cn(
 					diff > 0 ? 'bg-emerald-400' : 'bg-red-500',

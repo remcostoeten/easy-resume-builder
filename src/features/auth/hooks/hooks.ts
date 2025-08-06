@@ -30,7 +30,7 @@ export function useRequireAuth() {
 	useEffect(
 		function redirectIfUnauthenticated() {
 			if (!isLoading && !session) {
-				router.push('/sign-in');
+				router.push('/login');
 			}
 		},
 		[session, isLoading, router]

@@ -9,18 +9,21 @@ function useMediaQuery(query: string): boolean {
 		setMatches(event.matches);
 	}
 
-	useEffect(function setupMediaQuery() {
-		const mediaQuery = window.matchMedia(query);
-		setMatches(mediaQuery.matches);
+	useEffect(
+		function setupMediaQuery() {
+			const mediaQuery = window.matchMedia(query);
+			setMatches(mediaQuery.matches);
 
-		mediaQuery.addEventListener('change', handleChange);
-		
-		function cleanup() {
-			mediaQuery.removeEventListener('change', handleChange);
-		}
-		
-		return cleanup;
-	}, [query]);
+			mediaQuery.addEventListener('change', handleChange);
+
+			function cleanup() {
+				mediaQuery.removeEventListener('change', handleChange);
+			}
+
+			return cleanup;
+		},
+		[query]
+	);
 
 	return matches;
 }

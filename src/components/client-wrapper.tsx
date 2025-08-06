@@ -14,8 +14,8 @@ function createDefaultSections(): Mutable<TResumeSection>[] {
 	const now = new Date();
 
 	return Object.values(SECTION_CONFIGS)
-		.sort(function(a, b) { return a.defaultOrder - b.defaultOrder; })
-		.map(function(config) { return {
+		.sort((a, b) => a.defaultOrder - b.defaultOrder)
+		.map((config) => ({
 			id: `section-${config.type}`,
 			createdAt: now,
 			updatedAt: now,
@@ -27,7 +27,7 @@ function createDefaultSections(): Mutable<TResumeSection>[] {
 				config.type === 'skills',
 			order: config.defaultOrder,
 			isRequired: config.isRequired,
-		}; }) as Mutable<TResumeSection>[];
+		})) as Mutable<TResumeSection>[];
 }
 
 function createEmptyResumeData(): Mutable<TResumeData> {
@@ -64,7 +64,7 @@ type TProps = {
 };
 
 export function ClientWrapper({ children }: TProps) {
-	useEffect(function() {
+	useEffect(() => {
 		const store = getDefaultStore();
 		store.set(resumeAtom, createEmptyResumeData());
 

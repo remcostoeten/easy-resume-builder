@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<JotaiProvider>
 			<ThemeProvider attribute='class' defaultTheme='dark'>
 				<WelcomeModalProvider>
-					<Toaster position='top-right' richColors />
+					<Toaster position='top-right' />
 					{children}
 				</WelcomeModalProvider>
 			</ThemeProvider>

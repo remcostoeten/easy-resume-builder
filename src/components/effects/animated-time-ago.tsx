@@ -23,14 +23,15 @@ export function AnimatedTimeAgo({ seconds, className = '' }: TProps) {
 
 	return (
 		<span className={cn('flex items-center gap-0.5', className)}>
-			<NumberFlow
-				value={value}
-				className='font-mono font-medium'
-				format={{
-					minimumIntegerDigits: 1,
-					maximumFractionDigits: 0,
-				}}
-			/>
+			<span className='font-mono font-medium inline-block'>
+				<NumberFlow
+					value={value}
+					format={{
+						minimumIntegerDigits: 1,
+						maximumFractionDigits: 0,
+					}}
+				/>
+			</span>
 			<span>saved {unit} ago</span>
 		</span>
 	);

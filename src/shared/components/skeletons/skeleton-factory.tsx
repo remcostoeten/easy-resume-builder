@@ -6,7 +6,7 @@ type TSkeletonProps = {
 	readonly className?: string;
 };
 
-export function Skeleton({ className }: TSkeletonProps) {
+function Skeleton({ className }: TSkeletonProps) {
 	return <div className={cn('animate-pulse rounded-md bg-muted', className)} />;
 }
 

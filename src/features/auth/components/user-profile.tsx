@@ -26,7 +26,7 @@ export function UserProfile({ session, className, onSignOut }: TProps) {
 			if (onSignOut) {
 				onSignOut();
 			} else {
-				router.push('/sign-in');
+				router.push('/login');
 			}
 		} catch (error) {
 			console.error('Sign out failed:', error);
@@ -50,8 +50,8 @@ export function UserProfile({ session, className, onSignOut }: TProps) {
 
 	return (
 		<Card className={className}>
-			<CardHeader className='text-center'>
-				<div className='flex justify-center mb-4'>
+			<CardHeader className='text-center space-y-4'>
+				<div className='flex justify-center'>
 					{user.image ? (
 						<img
 							src={user.image}
@@ -59,15 +59,17 @@ export function UserProfile({ session, className, onSignOut }: TProps) {
 							className='w-16 h-16 rounded-full object-cover'
 						/>
 					) : (
-						<div className='w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-semibold'>
+						<div className='w-16 h-16 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-lg font-semibold'>
 							{getInitials(user.name)}
 						</div>
 					)}
 				</div>
 
-				{user.name && <h2 className='text-xl font-semibold'>{user.name}</h2>}
+				<div className='space-y-1'>
+					{user.name && <h2 className='text-lg font-semibold'>{user.name}</h2>}
 
-				<p className='text-muted-foreground text-sm'>{user.email}</p>
+					<p className='text-muted-foreground text-sm break-words'>{user.email}</p>
+				</div>
 			</CardHeader>
 
 			<CardContent className='text-center'>

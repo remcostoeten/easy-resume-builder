@@ -17,7 +17,7 @@ type TProps = {
 	inView?: boolean;
 	inViewMargin?: MarginType;
 	blur?: string;
-}
+};
 
 export function BlurFade({ children, className }: TProps) {
 	return <div className={className}>{children}</div>;

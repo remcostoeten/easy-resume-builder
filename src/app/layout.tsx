@@ -11,7 +11,7 @@ export { metadata };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang='en' suppressHydrationWarning className={cn('dark', nunito.variable)}>
-			<body className='font-sans antialiased bg-background text-foreground'>
+			<body className='dark font-sans antialiased bg-background text-foreground'>
 				<Providers>{children}</Providers>
 			</body>
 		</html>

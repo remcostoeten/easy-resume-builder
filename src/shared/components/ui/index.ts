@@ -1,8 +1,11 @@
-// Core UI Components (actually used)
 export * from './accordion';
 export * from './alert';
 export * from './alert-dialog';
 export * from './animated-background';
+export * from './avatar';
+export * from './badge';
+export * from './button';
+export * from './card';
 export * from './chart';
 export * from './dialog';
 export * from './empty-state';
@@ -22,6 +25,7 @@ export * from './sheet';
 export * from './sidebar';
 export * from './skeleton';
 export * from './slider';
+export * from './spinner';
 export * from './switch';
 export * from './textarea';
 export * from './toggle';

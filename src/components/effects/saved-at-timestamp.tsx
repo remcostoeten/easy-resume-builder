@@ -24,18 +24,21 @@ export function SavedAtTimestamp({ className = '' }: TProps) {
 		}
 	}
 
-	useEffect(function setupTimestamp() {
-		if (!lastSavedAt) return;
+	useEffect(
+		function setupTimestamp() {
+			if (!lastSavedAt) return;
 
-		updateTimeSince();
-		const interval = setInterval(updateTimeSince, 1000);
+			updateTimeSince();
+			const interval = setInterval(updateTimeSince, 1000);
 
-		function cleanup() {
-			clearInterval(interval);
-		}
+			function cleanup() {
+				clearInterval(interval);
+			}
 
-		return cleanup;
-	}, [timeSince]);
+			return cleanup;
+		},
+		[timeSince]
+	);
 
 	function _formatTimeAgo(seconds: number) {
 		if (seconds < 60) return `${seconds}s ago`;

@@ -28,14 +28,11 @@ export default function RegisterPage() {
 				<div className='text-center space-y-4'>
 					<p className='text-sm text-muted-foreground'>
 						Already have an account?{' '}
-						<Link 
-							href='/login' 
-							className='text-primary hover:underline font-medium'
-						>
+						<Link href='/login' className='text-primary hover:underline font-medium'>
 							Sign in here
 						</Link>
 					</p>
-					
+
 					<div className='flex items-center justify-center space-x-4 text-xs text-muted-foreground'>
 						<Link href='/' className='hover:text-foreground transition-colors'>
 							← Back to Home
@@ -55,8 +52,8 @@ export default function RegisterPage() {
 						</span>
 					</div>
 					<p className='text-xs text-muted-foreground leading-relaxed'>
-						We only collect essential information. Your resume data is encrypted and never shared.
-						You can delete your account anytime.
+						We only collect essential information. Your resume data is encrypted and
+						never shared. You can delete your account anytime.
 					</p>
 				</div>
 			</div>

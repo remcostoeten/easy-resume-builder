@@ -22,10 +22,10 @@ import { AnimatePresence } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { ClientOnly } from '@/shared/components/client-only';
 import { Button } from '@/shared/components/ui/button';
 import { Switch } from '@/shared/components/ui/switch';
 import { cn } from '@/shared/utilities';
-import { ClientOnly } from '@/shared/components/client-only';
 import type { TResumeSection } from '@/types/resume';
 
 type TProps = {

@@ -5,9 +5,9 @@ import { Briefcase, Calendar, Edit, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/shared/components/ui';
-import { Card, CardContent } from '@/shared/components/ui/card';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { formatDateRange } from '@/shared/utilities/date-utils';
 import {
 	addWorkExperience,

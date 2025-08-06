@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getFormField, saveFormField } from '@/utils/storage/form-storage';
 
-export interface UsePersistedInputOptions {
+type TUsePersistedInputOptions = {
 	/**
 	 * Form key to group related fields
 	 */
@@ -28,7 +28,7 @@ export interface UsePersistedInputOptions {
 	 * @default false
 	 */
 	saveImmediately?: boolean;
-}
+};
 
 /**
  * Simple hook for persisting individual input field values
@@ -39,7 +39,7 @@ export function usePersistedInput({
 	defaultValue = '',
 	debounceMs = 300,
 	saveImmediately = false,
-}: UsePersistedInputOptions) {
+}: TUsePersistedInputOptions) {
 	const [value, setValue] = useState<string>(defaultValue);
 	const [isLoading, setIsLoading] = useState(true);
 

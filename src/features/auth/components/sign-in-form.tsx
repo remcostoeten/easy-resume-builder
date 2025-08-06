@@ -6,8 +6,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { Eye, EyeOff } from 'lucide-react';
 import { authClient } from '@/features/auth/client/auth-client';
+import { AnimatedCheckbox } from '@/shared/components/primitives/animated-checkbox';
 import { Button } from '@/shared/components/ui/button';
+import { Spinner } from '@/shared/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
 	Form,
@@ -32,6 +35,7 @@ type TProps = {
 
 export function SignInForm({ onSuccess, className }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof signInSchema>>({
@@ -39,6 +43,7 @@ export function SignInForm({ onSuccess, className }: TProps) {
 		defaultValues: {
 			email: '',
 			password: '',
+			rememberMe: false,
 		},
 	});
 
@@ -69,7 +74,8 @@ export function SignInForm({ onSuccess, className }: TProps) {
 				});
 			}
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+			const errorMessage =
+				error instanceof Error ? error.message : 'An unexpected error occurred';
 			toast.error('Sign in failed', {
 				description: errorMessage,
 			});
@@ -112,12 +118,31 @@ export function SignInForm({ onSuccess, className }: TProps) {
 								<FormItem>
 									<FormLabel>Password</FormLabel>
 									<FormControl>
-										<Input
-											type='password'
-											placeholder='Enter your password'
-											disabled={isLoading}
-											{...field}
-										/>
+										<div className='relative'>
+											<Input
+												type={showPassword ? 'text' : 'password'}
+												placeholder='Enter your password'
+												disabled={isLoading}
+												className='pr-10'
+												{...field}
+											/>
+											<Button
+												type='button'
+												variant='ghost'
+												size='sm'
+												className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+												onClick={function togglePassword() {
+													setShowPassword(!showPassword);
+												}}
+												disabled={isLoading}
+											>
+												{showPassword ? (
+													<EyeOff className='h-4 w-4 text-muted-foreground' />
+												) : (
+													<Eye className='h-4 w-4 text-muted-foreground' />
+												)}
+											</Button>
+										</div>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -128,25 +153,28 @@ export function SignInForm({ onSuccess, className }: TProps) {
 							control={form.control}
 							name='rememberMe'
 							render={({ field }) => (
-								<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
+								<FormItem>
 									<FormControl>
-										<input
-											type='checkbox'
+										<AnimatedCheckbox
+											label='Remember me'
 											disabled={isLoading}
 											checked={field.value}
 											onChange={field.onChange}
-											className='rounded border border-input'
 										/>
 									</FormControl>
-									<FormLabel className='text-sm font-normal'>
-										Remember me
-									</FormLabel>
 								</FormItem>
 							)}
 						/>
 
 						<Button type='submit' disabled={isLoading} className='w-full'>
-							{isLoading ? 'Signing in...' : 'Sign In'}
+							{isLoading ? (
+								<>
+									<Spinner size='sm' color='primary' className='mr-2' />
+									Signing in...
+								</>
+							) : (
+								'Sign In'
+							)}
 						</Button>
 					</form>
 				</Form>

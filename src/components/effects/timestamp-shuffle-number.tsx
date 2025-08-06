@@ -20,14 +20,15 @@ export function TimestampShuffleNumber({ value, diff, className = '' }: TProps) 
 
 	return (
 		<span className={cn('flex items-center gap-2', className)}>
-			<NumberFlow
-				value={value}
-				className='text-lg font-mono text-gray-700 font-semibold'
-				format={{
-					minimumIntegerDigits: 1,
-					maximumFractionDigits: 0,
-				}}
-			/>
+			<span className='text-lg font-mono text-gray-700 font-semibold inline-block'>
+				<NumberFlow
+					value={value}
+					format={{
+						minimumIntegerDigits: 1,
+						maximumFractionDigits: 0,
+					}}
+				/>
+			</span>
 			<span className='text-sm text-gray-500'>s</span>
 			{diff !== 0 && (
 				<motion.span
@@ -42,17 +43,18 @@ export function TimestampShuffleNumber({ value, diff, className = '' }: TProps) 
 					exit={{ scale: 0.8, opacity: 0 }}
 				>
 					<span className='mr-1'>{diff > 0 ? '+' : '-'}</span>
-					<MotionNumberFlow
-						value={Math.abs(diff)}
-						className='font-bold'
-						format={{
-							signDisplay: 'never',
-							minimumIntegerDigits: 1,
-							maximumFractionDigits: 0,
-						}}
-						layout={canAnimate}
-						layoutRoot={canAnimate}
-					/>
+					<span className='font-bold inline-block'>
+						<MotionNumberFlow
+							value={Math.abs(diff)}
+							format={{
+								signDisplay: 'never',
+								minimumIntegerDigits: 1,
+								maximumFractionDigits: 0,
+							}}
+							layout={canAnimate}
+							layoutRoot={canAnimate}
+						/>
+					</span>
 				</motion.span>
 			)}
 		</span>

@@ -28,14 +28,11 @@ export default function LoginPage() {
 				<div className='text-center space-y-4'>
 					<p className='text-sm text-muted-foreground'>
 						Don't have an account?{' '}
-						<Link 
-							href='/register' 
-							className='text-primary hover:underline font-medium'
-						>
+						<Link href='/register' className='text-primary hover:underline font-medium'>
 							Create one here
 						</Link>
 					</p>
-					
+
 					<div className='flex items-center justify-center space-x-4 text-xs text-muted-foreground'>
 						<Link href='/' className='hover:text-foreground transition-colors'>
 							← Back to Home

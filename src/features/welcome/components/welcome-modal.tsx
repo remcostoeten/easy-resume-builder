@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FocusScope } from '@radix-ui/react-focus-scope';
 import { setStorageOnBlur } from '@/utils/storage';
 import { FEATURES, TIPS } from '../data';
 
@@ -6,6 +8,8 @@ type TProps = {
 	isOpen: boolean;
 	onClose: () => void;
 	onGetStarted: () => void;
+	onExitComplete?: () => void;
+	onGetStartedExitComplete?: () => void;
 };
 
 const FeatureCard = React.memo(function FeatureCard({
@@ -13,23 +17,23 @@ const FeatureCard = React.memo(function FeatureCard({
 }: {
 	feature: (typeof FEATURES)[number];
 }) {
-	return (
-		<article className='border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-default rounded-lg'>
-			<div className='p-4 text-center h-full flex flex-col'>
-				<div
-					className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg hover:scale-110 hover:rotate-3 transition-transform duration-200 flex items-center justify-center text-white text-lg`}
-					role='img'
-					aria-label={feature.title}
-				>
-					{feature.icon}
+		return (
+			<article className='border border-border/50 bg-card/50 backdrop-blur-sm cursor-default rounded-lg'>
+				<div className='p-4 text-center h-full flex flex-col'>
+					<div
+						className={`w-10 h-10 rounded-xl bg-gradient-to-r ${feature.gradient} p-2 mx-auto mb-3 shadow-lg flex items-center justify-center text-white text-lg`}
+						role='img'
+						aria-label={feature.title}
+					>
+						{feature.icon}
+					</div>
+					<h4 className='font-semibold mb-1 text-sm text-foreground'>{feature.title}</h4>
+					<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
+						{feature.description}
+					</p>
 				</div>
-				<h4 className='font-semibold mb-1 text-sm text-foreground'>{feature.title}</h4>
-				<p className='text-xs text-muted-foreground leading-relaxed flex-1'>
-					{feature.description}
-				</p>
-			</div>
-		</article>
-	);
+			</article>
+		);
 });
 
 FeatureCard.displayName = 'FeatureCard';
@@ -45,16 +49,44 @@ const TipItem = React.memo(function TipItem({ tip }: { tip: string }) {
 
 TipItem.displayName = 'TipItem';
 
-export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
+export function WelcomeModal({ isOpen, onClose, onGetStarted, onExitComplete, onGetStartedExitComplete }: TProps) {
+	const firstButtonRef = useRef<HTMLButtonElement>(null);
+	const exitReasonRef = useRef<'close' | 'get-started'>('close');
+
+	function handleMountAutoFocus(event: Event) {
+		event.preventDefault();
+		firstButtonRef.current?.focus();
+	}
+
 	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
 		if (event.key === 'Escape') {
+			exitReasonRef.current = 'close';
 			onClose();
 		}
 	}
 
 	function handleBackdropClick(event: React.MouseEvent) {
 		if (event.target === event.currentTarget) {
+			exitReasonRef.current = 'close';
 			onClose();
+		}
+	}
+
+	function handleCloseClick() {
+		exitReasonRef.current = 'close';
+		onClose();
+	}
+
+	function handleGetStartedClick() {
+		exitReasonRef.current = 'get-started';
+		onGetStarted();
+	}
+
+	function handleAnimationExitComplete() {
+		if (exitReasonRef.current === 'get-started' && onGetStartedExitComplete) {
+			onGetStartedExitComplete();
+		} else if (exitReasonRef.current === 'close' && onExitComplete) {
+			onExitComplete();
 		}
 	}
 
@@ -71,226 +103,260 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 		}
 	}
 
-	const handleDocumentKeyDown = useCallback(
-		function handleKeyDown(event: KeyboardEvent) {
-			if (event.key === 'Escape') {
-				onClose();
-			}
-		},
-		[onClose]
-	);
-
-	useEffect(function setupModalEffects() {
-		if (isOpen) {
-			document.addEventListener('keydown', handleDocumentKeyDown);
-			document.body.style.overflow = 'hidden';
-
-			function cleanup() {
-				document.removeEventListener('keydown', handleDocumentKeyDown);
-				document.body.style.overflow = '';
-			}
-
-			return cleanup;
+	function handleDocumentKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			exitReasonRef.current = 'close';
+			onClose();
 		}
-	}, [isOpen, handleDocumentKeyDown]);
+	}
 
-	const featureCards = useMemo(
-		function renderFeatureCards() {
-			return FEATURES.map(function mapFeature(feature) {
-				return <FeatureCard key={feature.id} feature={feature} />;
-			});
+	function handleFocusScopeKeyDown(event: React.KeyboardEvent) {
+		if (event.key === 'Enter' && event.target === event.currentTarget) {
+			event.stopPropagation();
+			return;
+		}
+
+		if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+			const registerButton = document.querySelector('[aria-label="Create a new account"]') as HTMLButtonElement;
+			const loginButton = document.querySelector('[aria-label="Sign in to your account"]') as HTMLButtonElement;
+			
+			if (registerButton && loginButton) {
+				const currentFocus = document.activeElement;
+				
+				if (event.key === 'ArrowRight') {
+					if (currentFocus === registerButton) {
+						loginButton.focus();
+					} else if (currentFocus !== loginButton) {
+						registerButton.focus();
+					}
+				} else {
+					if (currentFocus === loginButton) {
+						registerButton.focus();
+					} else if (currentFocus !== registerButton) {
+						loginButton.focus();
+					}
+				}
+				
+				event.stopPropagation();
+			}
+		}
+	}
+
+	function handleRegisterClick() {
+		return handleAuthAction('register');
+	}
+
+	function handleLoginClick() {
+		return handleAuthAction('login');
+	}
+
+	useEffect(
+		function setupModalEffects() {
+			if (isOpen) {
+				document.addEventListener('keydown', handleDocumentKeyDown);
+				document.body.style.overflow = 'hidden';
+
+				function cleanup() {
+					document.removeEventListener('keydown', handleDocumentKeyDown);
+					document.body.style.overflow = '';
+				}
+
+				return cleanup;
+			}
 		},
-		[]
+		[isOpen, onClose]
 	);
 
-	const tipItems = useMemo(
-		function renderTipItems() {
-			return TIPS.map(function mapTip(tip, index) {
-				return <TipItem key={`tip-${index}`} tip={tip} />;
-			});
-		},
-		[]
-	);
+	const featureCards = useMemo(function renderFeatureCards() {
+		return FEATURES.map(function mapFeature(feature) {
+			return <FeatureCard key={feature.id} feature={feature} />;
+		});
+	}, []);
 
-	if (!isOpen) return null;
+	const tipItems = useMemo(function renderTipItems() {
+		return TIPS.map(function mapTip(tip, index) {
+			return <TipItem key={`tip-${index}`} tip={tip} />;
+		});
+	}, []);
 
 	return (
-		<div
-			className='fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4'
-			onClick={handleBackdropClick}
-			onKeyDown={handleKeyDown}
-			role='dialog'
-			aria-modal='true'
-			aria-labelledby='modal-title'
-			aria-describedby='modal-description'
-		>
-			<div
-				className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
-				onBlur={handleModalBlur}
-				tabIndex={-1}
-				role='document'
-			>
+		<AnimatePresence mode="wait" onExitComplete={handleAnimationExitComplete}>
+			{isOpen && (
+				<motion.div
+					className='fixed inset-0 z-50 flex items-center justify-center p-4'
+					onClick={handleBackdropClick}
+					onKeyDown={handleKeyDown}
+					role='dialog'
+					aria-modal='true'
+					aria-labelledby='modal-title'
+					aria-describedby='modal-description'
+					aria-live='polite'
+					initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+					animate={{ opacity: 1, backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+					exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+					transition={{ duration: 0.2, ease: 'easeOut' }}
+				>
+					<motion.div
+						className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
+						onBlur={handleModalBlur}
+						tabIndex={-1}
+						role='document'
+						initial={{ opacity: 0, scale: 0.9, y: 30 }}
+						animate={{ opacity: 1, scale: 1, y: 0 }}
+						exit={{ opacity: 0, scale: 0.9, y: 30 }}
+						transition={{ duration: 0.2, ease: 'easeOut' }}
+					>
+	<FocusScope
+							loop
+							trapped
+							onMountAutoFocus={handleMountAutoFocus}
+							onKeyDown={handleFocusScopeKeyDown}
+						>
 				<div className='relative flex flex-col h-full'>
-					<header className='relative p-6 pb-4 text-center bg-gradient-to-r from-primary/20 via-primary/5 to-primary/30 rounded-t-lg'>
+					<header className='relative p-6 pb-4 text-center border-b border-border/50'>
 						<div className='flex items-center justify-center mb-4'>
-							<div className='relative'>
-								<div className='p-3 rounded-2xl bg-gradient-to-r from-primary to-secondary shadow-xl'>
-									<span
-										className='text-xl'
-										role='img'
-										aria-label='Resume document'
-									>
-										📄
-									</span>
-								</div>
-								<div className='absolute -top-1 -right-1'>
-									<div className='p-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 shadow-lg'>
-										<span
-											className='text-white text-xs'
-											role='img'
-											aria-label='Premium feature'
-										>
-											⭐
-										</span>
-									</div>
-								</div>
+							<div className='w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center'>
+								<span className='text-2xl' role='img' aria-label='Resume document'>📄</span>
 							</div>
 						</div>
 
 						<div>
 							<h1
 								id='modal-title'
-								className='text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent'
+								className='text-2xl font-bold mb-2 text-foreground'
 							>
-								Welcome to Resume Builder! 🚀
+								Welcome to Resume Builder
 							</h1>
 							<p
 								id='modal-description'
-								className='text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed'
+								className='text-base text-muted-foreground max-w-xl mx-auto'
 							>
-								Create professional, ATS-optimized resumes in minutes. Join
-								thousands who've landed their dream positions.
+								Create professional, ATS-optimized resumes in minutes
 							</p>
 						</div>
 					</header>
 
-					<main className='flex-1 overflow-y-auto px-6'>
-						<section className='py-4'>
-							<h2 className='text-lg font-semibold text-center mb-4 text-foreground'>
-								Everything you need to build the perfect resume
-							</h2>
-
-							<ul className='grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6'>
+					<main className='flex-1 overflow-y-auto p-6'>
+						<div className='max-w-4xl mx-auto'>
+							<div className='grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6'>
 								{featureCards}
-							</ul>
-							<section className='bg-muted/30 rounded-lg p-4 mb-4'>
-								<div className='flex items-center gap-2 mb-3'>
-									<div className='w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center'>
-										<span
-											className='text-primary text-sm'
-											role='img'
-											aria-label='Information'
-										>
-											ℹ️
-										</span>
-									</div>
-									<h3 className='font-semibold text-foreground text-sm'>
-										Pro Tips for Success
-									</h3>
-								</div>
-								<ol className='grid grid-cols-1 md:grid-cols-2 gap-2 list-none'>
+							</div>
+							
+							<div className='bg-muted/30 rounded-xl p-4 mb-4'>
+								<h3 className='font-semibold text-foreground mb-3'>
+									Quick Tips
+								</h3>
+								<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
 									{tipItems}
-								</ol>
-							</section>
+								</div>
+							</div>
 
-							<aside className='bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-lg p-4 mb-4'>
-								<div className='flex items-start gap-3'>
-									<div className='w-6 h-6 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0'>
-										<span
-											className='text-amber-600 dark:text-amber-400 text-sm'
-											role='img'
-											aria-label='Storage'
-										>
-											🗄️
-										</span>
+							<div className='bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/20'>
+								<div className='text-center mb-3'>
+									<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
+										<span className='text-lg'>⭐</span>
 									</div>
-									<div className='flex-1'>
-										<h4 className='font-semibold text-amber-800 dark:text-amber-200 mb-1 text-sm'>
-											About Data Persistence
-										</h4>
-										<p className='text-xs text-amber-700 dark:text-amber-300 leading-relaxed mb-2'>
-											Start building immediately without an account! Your data
-											stays in memory during this session. For persistent
-											storage, create a free account.
-										</p>
-										<div className='flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400'>
-											<span role='img' aria-label='Warning'>
-												⚠️
-											</span>
-											<span>
-												Data is lost when you refresh or close the browser
-											</span>
+									<h3 className='font-semibold text-foreground mb-1'>Unlock Premium Features</h3>
+									<p className='text-xs text-muted-foreground mb-3'>
+										Get the most out of Resume Builder with a free account
+									</p>
+								</div>
+								
+								<div className='grid grid-cols-2 gap-3 mb-2'>
+									<div className='flex items-center gap-2'>
+										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+											<span className='text-green-500 text-xs'>✓</span>
+										</div>
+										<span className='text-xs text-muted-foreground'>Cloud Storage</span>
+									</div>
+									<div className='flex items-center gap-2'>
+										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+											<span className='text-green-500 text-xs'>✓</span>
+										</div>
+										<span className='text-xs text-muted-foreground'>Multiple Resumes</span>
+									</div>
+									<div className='flex items-center gap-2'>
+										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+											<span className='text-green-500 text-xs'>✓</span>
+										</div>
+										<span className='text-xs text-muted-foreground'>Share Links</span>
+									</div>
+									<div className='flex items-center gap-2'>
+										<div className='w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center'>
+											<span className='text-green-500 text-xs'>✓</span>
+										</div>
+										<span className='text-xs text-muted-foreground'>AI Assistance</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</main>
+
+					<footer className='bg-muted/20 border-t border-border/50'>
+						<div className='p-6'>
+							<div className='max-w-2xl mx-auto'>
+								<div className='text-center mb-4'>
+									<h3 className='font-semibold text-foreground mb-1'>Ready to get started?</h3>
+									<p className='text-sm text-muted-foreground'>Choose how you'd like to begin</p>
+								</div>
+								
+								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4'>
+									<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
+										<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2'>
+											<span className='text-primary text-base'>⚡</span>
+										</div>
+										<h4 className='font-medium text-foreground mb-1 text-sm'>Start Building</h4>
+										<p className='text-xs text-muted-foreground mb-3'>Jump right in instantly</p>
+										<button
+											ref={firstButtonRef}
+											type='button'
+											onClick={handleGetStartedClick}
+											className='w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+											aria-describedby='get-started-description'
+										>
+											Start Now
+										</button>
+									</div>
+									
+									<div className='bg-background rounded-lg p-4 border border-border/50 text-center'>
+										<div className='w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-2'>
+											<span className='text-secondary text-base'>👤</span>
+										</div>
+										<h4 className='font-medium text-foreground mb-1 text-sm'>Create Account</h4>
+										<p className='text-xs text-muted-foreground mb-3'>Unlock premium features</p>
+										<div className='flex gap-2'>
+											<button
+												type='button'
+												className='flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2'
+												onClick={handleRegisterClick}
+												aria-label='Create a new account'
+											>
+												Register
+											</button>
+											<button
+												type='button'
+												className='flex-1 border border-border hover:bg-muted px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+												onClick={handleLoginClick}
+												aria-label='Sign in to your account'
+											>
+												Sign In
+											</button>
 										</div>
 									</div>
 								</div>
-							</aside>
-						</section>
-					</main>
-
-					<footer className='p-6 pt-4 bg-background border-t border-border/50 rounded-b-lg'>
-						<div className='flex flex-col sm:flex-row gap-3 justify-center mb-4'>
-							<button
-								type='button'
-								onClick={onGetStarted}
-								className='gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg px-6 py-2.5 text-sm font-medium hover:scale-105 transition-transform duration-200 rounded-lg inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-								aria-describedby='get-started-description'
-							>
-								<span role='img' aria-hidden='true'>
-									✨
+								
+								<div className='text-center pt-3 border-t border-border/30'>
+									<p className='text-xs text-muted-foreground flex items-center justify-center gap-2'>
+										<span className='w-1.5 h-1.5 rounded-full bg-green-500'></span>
+										Free to use • No credit card required
+									</p>
+								</div>
+								
+								<span id='get-started-description' className='sr-only'>
+									Begin creating your resume immediately without registration
 								</span>
-								Start Building Now
-								<span role='img' aria-hidden='true'>
-									→
-								</span>
-							</button>
-							<span id='get-started-description' className='sr-only'>
-								Begin creating your resume immediately without registration
-							</span>
+							</div>
 						</div>
-
-						<div className='flex flex-col sm:flex-row gap-2 justify-center mb-3'>
-							<button
-								type='button'
-								className='gap-2 border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-muted/50 px-4 py-2 text-sm hover:scale-105 transition-transform duration-200 rounded-lg inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-							onClick={function handleRegisterClick() {
-								return handleAuthAction('register');
-							}}
-								aria-label='Create a new account'
-							>
-								<span role='img' aria-hidden='true'>
-									👤+
-								</span>
-								Register
-							</button>
-
-							<button
-								type='button'
-								className='gap-2 border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-muted/50 px-4 py-2 text-sm hover:scale-105 transition-transform duration-200 rounded-lg inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-							onClick={function handleLoginClick() {
-								return handleAuthAction('login');
-							}}
-								aria-label='Sign in to your account'
-							>
-								<span role='img' aria-hidden='true'>
-									🔐
-								</span>
-								Login
-							</button>
-						</div>
-
-						<p className='text-center text-xs text-muted-foreground'>
-							No signup required to get started • Your privacy is protected
-						</p>
 					</footer>
 
 					<div
@@ -312,14 +378,17 @@ export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
 
 					<button
 						type='button'
-						onClick={onClose}
-						className='absolute top-4 right-12 w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+						onClick={handleCloseClick}
+						className='absolute top-4 right-12 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
 						aria-label='Close welcome modal'
 					>
 						<span aria-hidden='true'>✕</span>
 					</button>
 				</div>
-			</div>
-		</div>
+						</FocusScope>
+						</motion.div>
+					</motion.div>
+				)}
+			</AnimatePresence>
 	);
 }

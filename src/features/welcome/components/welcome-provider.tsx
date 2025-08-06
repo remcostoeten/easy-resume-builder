@@ -1,14 +1,7 @@
 import type React from 'react';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { hasSeenWelcomeModal, setStorageOnClick } from '@/utils/storage';
-
-function importWelcomeModal() {
-	return import('./welcome-modal').then(function handleImport(m) {
-		return { default: m.WelcomeModal };
-	});
-}
-
-const WelcomeModal = lazy(importWelcomeModal);
+import { WelcomeModal } from './welcome-modal';
 
 type TProps = {
 	children: React.ReactNode;
@@ -16,35 +9,53 @@ type TProps = {
 
 export function WelcomeModalProvider({ children }: TProps) {
 	const [isVisible, setIsVisible] = useState(false);
+	const previousActiveElementRef = useRef<Element | null>(null);
 
 	useEffect(function checkWelcomeModalStatus() {
 		const hasSeen = hasSeenWelcomeModal();
-		setIsVisible(!hasSeen);
+		const shouldShow = !hasSeen;
+		
+		if (shouldShow) {
+			previousActiveElementRef.current = document.activeElement;
+		}
+		
+		setIsVisible(shouldShow);
 	}, []);
 
 	function handleGetStarted() {
-		setStorageOnClick(); // Mark as seen in localStorage
-
 		setIsVisible(false);
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
 	function handleClose() {
-		setStorageOnClick(); // Mark as seen when closed
 		setIsVisible(false);
+	}
+
+	function handleExitComplete() {
+		setStorageOnClick();
+		
+		setTimeout(function restoreFocus() {
+			if (previousActiveElementRef.current instanceof HTMLElement) {
+				previousActiveElementRef.current.focus();
+			}
+		}, 50);
+	}
+
+	function handleGetStartedExitComplete() {
+		handleExitComplete();
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
 	return (
 		<>
 			{children}
 			{isVisible && (
-				<Suspense fallback={null}>
-					<WelcomeModal
-						isOpen={isVisible}
-						onClose={handleClose}
-						onGetStarted={handleGetStarted}
-					/>
-				</Suspense>
+				<WelcomeModal
+					isOpen={isVisible}
+					onClose={handleClose}
+					onGetStarted={handleGetStarted}
+					onExitComplete={handleExitComplete}
+					onGetStartedExitComplete={handleGetStartedExitComplete}
+				/>
 			)}
 		</>
 	);

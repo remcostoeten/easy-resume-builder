@@ -11,11 +11,7 @@ type TProps = {
 	variant?: 'full' | 'compact';
 };
 
-export function AutoSaveIndicator({
-	className = '',
-	showIcon = true,
-	variant = 'full',
-}: TProps) {
+export function AutoSaveIndicator({ className = '', showIcon = true, variant = 'full' }: TProps) {
 	const [secondsSinceLastSave, setSecondsSinceLastSave] = useState(0);
 	const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
@@ -30,17 +26,20 @@ export function AutoSaveIndicator({
 		}
 	}
 
-	useEffect(function setupTimer() {
-		if (!lastSaveTime) return;
+	useEffect(
+		function setupTimer() {
+			if (!lastSaveTime) return;
 
-		const interval = setInterval(updateTimer, 1000);
+			const interval = setInterval(updateTimer, 1000);
 
-		function cleanup() {
-			clearInterval(interval);
-		}
+			function cleanup() {
+				clearInterval(interval);
+			}
 
-		return cleanup;
-	}, [lastSaveTime]);
+			return cleanup;
+		},
+		[lastSaveTime]
+	);
 
 	function handleStorageChange() {
 		setLastSaveTime(new Date());
@@ -73,7 +72,7 @@ export function AutoSaveIndicator({
 			return { value: hours, unit: 'h', label: hours === 1 ? 'hour' : 'hours' };
 		}
 		const days = Math.floor(seconds / 86400);
-	return { value: days, unit: 'd', label: days === 1 ? 'day' : 'days' };
+		return { value: days, unit: 'd', label: days === 1 ? 'day' : 'days' };
 	}
 
 	const { value, unit } = getTimeDisplay(secondsSinceLastSave);

@@ -20,7 +20,7 @@ export function GradientCard({
 		blue: 'from-blue-500/10 via-cyan-500/5 to-blue-600/10',
 		purple: 'from-purple-500/10 via-pink-500/5 to-purple-600/10',
 		green: 'from-green-500/10 via-emerald-500/5 to-green-600/10',
-		orange: 'from-orange-500/10 via-yellow-500/5 to-orange-600/10',
+	orange: 'from-orange-400/10 via-amber-400/5 to-rose-500/10',
 	};
 
 	return (
