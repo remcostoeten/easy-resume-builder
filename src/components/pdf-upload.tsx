@@ -85,6 +85,15 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 			const result = await response.json();
 
 			if (!response.ok) {
+				// Check if mock data is available in development mode
+				if (result.mockDataAvailable && result.mockData) {
+					console.log('PDF parsing failed, using mock data for development');
+					setUploadStatus('success');
+					setExtractedData(result.mockData);
+					onDataExtracted(result.mockData);
+					setError('Note: PDF parsing failed, using sample data for demonstration');
+					return;
+				}
 				throw new Error(result.error || 'Failed to parse PDF');
 			}
 
@@ -129,6 +138,33 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		document.getElementById('pdf-upload')?.click();
 	}
 
+	async function handleMockData() {
+		setUploadStatus('uploading');
+		setError('');
+
+		try {
+			const response = await fetch('/api/parse-pdf-mock', {
+				method: 'POST',
+			});
+
+			const result = await response.json();
+
+			if (result.success) {
+				setUploadStatus('success');
+				setExtractedData(result.data);
+				onDataExtracted(result.data);
+				setError('Using sample data for demonstration purposes');
+			} else {
+				throw new Error('Failed to load mock data');
+			}
+		} catch (err) {
+			const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+			setError(errorMessage);
+			setUploadStatus('error');
+			onError?.(errorMessage);
+		}
+	}
+
 	return (
 		<Card className='w-full max-w-2xl mx-auto'>
 			<CardContent className='p-6'>
@@ -138,6 +174,16 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 						<p className='text-sm text-muted-foreground'>
 							Upload your existing resume to automatically fill out the form fields
 						</p>
+						{process.env.NODE_ENV === 'development' && (
+							<Button
+								variant='secondary'
+								size='sm'
+								className='mt-2'
+								onClick={handleMockData}
+							>
+								Use Sample Data (Dev)
+							</Button>
+						)}
 					</div>
 
 					{!selectedFile && (

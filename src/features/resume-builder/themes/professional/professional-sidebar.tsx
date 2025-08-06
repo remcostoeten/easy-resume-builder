@@ -20,7 +20,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import { PdfUploadModal } from '@/components/pdf-upload-modal';
 import { Button } from '@/shared/components/ui/button';
@@ -101,6 +101,11 @@ function SortableSectionItem({
 
 export function ProfessionalSidebar({ sections, onToggleSection, onReorderSections }: TProps) {
 	const [_activeId, setActiveId] = useState<string | null>(null);
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -145,28 +150,73 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 			</div>
 
 			<div className='p-4 space-y-2'>
-				<DndContext
-					sensors={sensors}
-					collisionDetection={closestCenter}
-					onDragStart={handleDragStart}
-					onDragEnd={handleDragEnd}
-				>
-					<SortableContext
-						items={sortedSections.map((s) => s.id)}
-						strategy={verticalListSortingStrategy}
+				{isClient ? (
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						onDragStart={handleDragStart}
+						onDragEnd={handleDragEnd}
 					>
-						<AnimatePresence>
-							{sortedSections.map((section) => (
+						<SortableContext
+							items={sortedSections.map((s) => s.id)}
+							strategy={verticalListSortingStrategy}
+						>
+							<AnimatePresence>
+								{sortedSections.map((section) => (
+									<div key={section.id}>
+										<SortableSectionItem
+											section={section}
+											onToggle={onToggleSection}
+										/>
+									</div>
+								))}
+							</AnimatePresence>
+						</SortableContext>
+					</DndContext>
+				) : (
+					<div className="space-y-2">
+						{sortedSections.map((section) => {
+							const config = SECTION_CONFIGS[section.type];
+							const IconComponent = config.icon;
+							return (
 								<div key={section.id}>
-									<SortableSectionItem
-										section={section}
-										onToggle={onToggleSection}
-									/>
+									<div
+										className={cn(
+											'flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors',
+											!section.isEnabled && 'opacity-50'
+										)}
+									>
+										<div className='p-1'>
+											<GripVertical className='h-4 w-4 text-muted-foreground' />
+										</div>
+										<div className='flex items-center gap-2 flex-1 min-w-0'>
+											<IconComponent className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+											<div className='flex-1 min-w-0'>
+												<div className='flex items-center gap-2'>
+													<span className='text-sm font-medium truncate'>{section.title}</span>
+													{section.isRequired && (
+														<span className='text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded'>
+															Required
+														</span>
+													)}
+												</div>
+											</div>
+										</div>
+										<Switch
+											checked={section.isEnabled}
+											onCheckedChange={(checked) => {
+												if (!section.isRequired) {
+													onToggleSection(section.id);
+												}
+											}}
+											disabled={section.isRequired}
+										/>
+									</div>
 								</div>
-							))}
-						</AnimatePresence>
-					</SortableContext>
-				</DndContext>
+							);
+						})}
+					</div>
+				)}
 
 				<div className='pt-4 border-t space-y-3'>
 					<PdfUploadModal />

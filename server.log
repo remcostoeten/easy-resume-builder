@@ -1,9 +1,7 @@
-nohup: ignoring input
 
-> easy-resume-builder@0.1.0 dev
-> next dev
+> easy-resume-builder@0.1.0 dev /home/remcostoeten/sites/easy-resume-builder
+> next dev --port 3001
 
- [33m[1m⚠[22m[39m Port 3000 is in use, trying 3001 instead.
    [1m[38;2;173;127;168m▲ Next.js 15.2.4[39m[22m
    - Local:        http://localhost:3001
    - Network:      http://192.168.1.92:3001
@@ -12,41 +10,18 @@ nohup: ignoring input
      [1m✓[22m optimizeCss
 
  [32m[1m✓[22m[39m Starting...
- [32m[1m✓[22m[39m Ready in 1487ms
+ [32m[1m✓[22m[39m Ready in 1616ms
  [37m[1m○[22m[39m Compiling / ...
- [32m[1m✓[22m[39m Compiled / in 4.2s (3370 modules)
- GET / [32m200[39m in 131ms
- GET / [32m200[39m in 144ms
- [37m[1m○[22m[39m Compiling /_not-found ...
- [32m[1m✓[22m[39m Compiled /_not-found in 701ms (3374 modules)
- GET /fonts/geist-sans.woff2 [33m404[39m in 870ms
- GET /fonts/inter-var.woff2 [33m404[39m in 873ms
- [32m[1m✓[22m[39m Compiled in 1032ms (3384 modules)
- GET / [32m200[39m in 63ms
- [32m[1m✓[22m[39m Compiled in 505ms (3384 modules)
- GET / [32m200[39m in 50ms
+ [32m[1m✓[22m[39m Compiled / in 6.4s (3384 modules)
+ HEAD / [32m200[39m in 7074ms
  [37m[1m○[22m[39m Compiling /api/parse-pdf ...
- [32m[1m✓[22m[39m Compiled /api/parse-pdf in 2.2s (3408 modules)
- GET /api/parse-pdf [33m405[39m in 762ms
-PDF parsing error: Error: ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'
-    at __webpack_require__ (.next/server/webpack-runtime.js:33:43)
-    at __webpack_require__.t (.next/server/webpack-runtime.js:78:38)
-    at async parsePdfBuffer (services/parse-pdf.ts:10:18)
-    at async POST (src/features/pdf-parser/services/route.ts:21:24)
-[0m [90m  8 |[39m[0m
-[0m [90m  9 |[39m [36masync[39m [36mfunction[39m parsePdfBuffer(buffer[33m:[39m [33mBuffer[39m)[33m:[39m [33mPromise[39m[33m<[39m[33mTExtractedResumeData[39m[33m>[39m {[0m
-[0m[31m[1m>[22m[39m[90m 10 |[39m 	[36mconst[39m pdfParse [33m=[39m [36mawait[39m [36mimport[39m([32m'pdf-parse'[39m)[33m;[39m[0m
-[0m [90m    |[39m 	                [31m[1m^[22m[39m[0m
-[0m [90m 11 |[39m 	[0m
-[0m [90m 12 |[39m 	[36mconst[39m pdfData [33m=[39m [36mawait[39m pdfParse[33m.[39m[36mdefault[39m(buffer)[33m;[39m[0m
-[0m [90m 13 |[39m 	[36mconst[39m text [33m=[39m pdfData[33m.[39mtext[33m;[39m[0m {
-  errno: [33m-2[39m,
-  code: [32m'ENOENT'[39m,
-  syscall: [32m'open'[39m,
-  path: [32m'./test/data/05-versions-space.pdf'[39m
-}
- POST /api/parse-pdf [31m500[39m in 2462ms
-PDF parsing error: [TypeError: Content-Type was not one of "multipart/form-data" or "application/x-www-form-urlencoded".]
- POST /api/parse-pdf [31m500[39m in 3ms
- POST /api/parse-pdf [33m400[39m in 3ms
- GET / [32m200[39m in 525ms
+ [32m[1m✓[22m[39m Compiled /api/parse-pdf in 1053ms (3422 modules)
+ POST /api/parse-pdf [33m400[39m in 1250ms
+ [32m[1m✓[22m[39m Compiled in 359ms (1775 modules)
+ [32m[1m✓[22m[39m Compiled in 271ms (1672 modules)
+ [32m[1m✓[22m[39m Compiled in 395ms (1672 modules)
+ [32m[1m✓[22m[39m Compiled in 228ms (1672 modules)
+ [32m[1m✓[22m[39m Compiled in 282ms (1672 modules)
+ [32m[1m✓[22m[39m Compiled in 246ms (1672 modules)
+ [32m[1m✓[22m[39m Compiled /api/parse-pdf-mock in 174ms (1741 modules)
+ POST /api/parse-pdf-mock [32m200[39m in 227ms
