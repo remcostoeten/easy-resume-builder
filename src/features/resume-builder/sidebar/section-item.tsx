@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { GripVertical } from 'lucide-react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import { Label } from '@/shared/components/ui/label';

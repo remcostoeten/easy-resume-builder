@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useAtomValue } from 'jotai/react';
 import { Download, Eye, Maximize2, Printer } from 'lucide-react';
 import { useState } from 'react';
-import { useAtomValue } from 'jotai/react';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { resumeAtom } from '@/store/resume-store';
@@ -14,7 +14,7 @@ export function PreviewArea() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const resumeData = useAtomValue(resumeAtom) as unknown as TResumeData;
 
-	const enabledSections = resumeData.sections.filter(function(section) { return section.isEnabled; });
+	const enabledSections = resumeData.sections.filter((section) => section.isEnabled);
 
 	function handleToggleFullscreen() {
 		setIsFullscreen(!isFullscreen);

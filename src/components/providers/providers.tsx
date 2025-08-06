@@ -9,13 +9,13 @@ import { ThemeProvider } from './theme-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
-	<JotaiProvider>
-		<ThemeProvider attribute='class' defaultTheme='dark'>
-			<WelcomeModalProvider>
-				<Toaster position='top-right' richColors />
-				{children}
-			</WelcomeModalProvider>
-		</ThemeProvider>
-	</JotaiProvider>
+		<JotaiProvider>
+			<ThemeProvider attribute='class' defaultTheme='dark'>
+				<WelcomeModalProvider>
+					<Toaster position='top-right' richColors />
+					{children}
+				</WelcomeModalProvider>
+			</ThemeProvider>
+		</JotaiProvider>
 	);
 }

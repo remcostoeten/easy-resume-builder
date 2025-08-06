@@ -2,7 +2,6 @@
 
 import { AlertTriangle, Check, Clock, Save } from 'lucide-react';
 
-
 type TSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 type TProps = {
@@ -38,12 +37,14 @@ export function SaveButton({ className }: TProps) {
 		}
 	}
 
-return (
+	return (
 		<div className={`flex items-center gap-3 ${className || ''}`}>
-			<span className={`
+			<span
+				className={`
 				text-sm flex items-center
 				text-gray-400
-			`}>
+			`}
+			>
 				{getButtonIcon()}
 				{getButtonText()}
 			</span>

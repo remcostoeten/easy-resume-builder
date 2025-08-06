@@ -1,18 +1,18 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Briefcase, Calendar, Edit, MapPin, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
+import { formatDateRange } from '@/shared/utilities/date-utils';
 import {
 	addWorkExperience,
 	removeWorkExperience,
 	updateWorkExperience,
 } from '@/store/resume-store';
 import type { TWorkItem } from '@/types/resume';
-import { formatDateRange } from '@/shared/utilities/date-utils';
 import { FormSection } from '../form/form-section';
 import { WorkExperienceForm } from './work-experience-form';
 
@@ -75,10 +75,8 @@ export function WorkExperienceSection({ data }: TProps) {
 				{!isFormVisible && (
 					<div className='space-y-4'>
 						<AnimatePresence>
-						{data.map((item, index) => (
-								<div
-									key={item.id}
-								>
+							{data.map((item, _index) => (
+								<div key={item.id}>
 									<Card className='hover:shadow-md transition-shadow cursor-pointer group'>
 										<CardContent className='p-4'>
 											<div className='flex items-start justify-between'>

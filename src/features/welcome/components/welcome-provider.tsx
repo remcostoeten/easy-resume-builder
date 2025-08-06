@@ -1,7 +1,10 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
-import { WelcomeModal } from './welcome-modal';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { hasSeenWelcomeModal, setStorageOnClick } from '@/utils/storage';
+
+const WelcomeModal = lazy(() =>
+	import('./welcome-modal').then((m) => ({ default: m.WelcomeModal }))
+);
 
 type TProps = {
 	children: React.ReactNode;
@@ -22,6 +25,7 @@ export function WelcomeModalProvider({ children }: TProps) {
 
 	function handleGetStarted() {
 		setStorageOnClick(); // Mark as seen in localStorage
+
 		setIsVisible(false);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
@@ -34,11 +38,15 @@ export function WelcomeModalProvider({ children }: TProps) {
 	return (
 		<>
 			{children}
-			<WelcomeModal
-				isOpen={isVisible}
-				onClose={handleClose}
-				onGetStarted={handleGetStarted}
-			/>
+			{isVisible && (
+				<Suspense fallback={null}>
+					<WelcomeModal
+						isOpen={isVisible}
+						onClose={handleClose}
+						onGetStarted={handleGetStarted}
+					/>
+				</Suspense>
+			)}
 		</>
 	);
 }

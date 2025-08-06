@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Code, Edit, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { EmptyState } from '@/shared/components/ui';
@@ -108,10 +108,8 @@ export function SkillsSection({ data }: TProps) {
 				{!isFormVisible && (
 					<div className='space-y-4'>
 						<AnimatePresence>
-						{data.map((category, index) => (
-								<div
-									key={category.id}
-								>
+							{data.map((category, _index) => (
+								<div key={category.id}>
 									<Card className='hover:shadow-md transition-shadow cursor-pointer group'>
 										<CardContent className='p-4'>
 											<div className='flex items-start justify-between'>

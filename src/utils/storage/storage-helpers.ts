@@ -7,7 +7,7 @@
  */
 export function getStorageItem(key: string): string | null {
 	if (typeof window === 'undefined') return null;
-	
+
 	try {
 		return localStorage.getItem(key);
 	} catch (error) {
@@ -21,7 +21,7 @@ export function getStorageItem(key: string): string | null {
  */
 export function setStorageItem(key: string, value: string): boolean {
 	if (typeof window === 'undefined') return false;
-	
+
 	try {
 		localStorage.setItem(key, value);
 		return true;
@@ -36,7 +36,7 @@ export function setStorageItem(key: string, value: string): boolean {
  */
 export function removeStorageItem(key: string): boolean {
 	if (typeof window === 'undefined') return false;
-	
+
 	try {
 		localStorage.removeItem(key);
 		return true;
@@ -51,7 +51,7 @@ export function removeStorageItem(key: string): boolean {
  */
 export function isStorageAvailable(): boolean {
 	if (typeof window === 'undefined') return false;
-	
+
 	try {
 		const testKey = '__storage_test__';
 		localStorage.setItem(testKey, 'test');
@@ -84,7 +84,7 @@ export function setStorageBoolean(key: string, value: boolean): boolean {
 export function getStorageObject<T>(key: string, defaultValue: T | null = null): T | null {
 	const value = getStorageItem(key);
 	if (value === null) return defaultValue;
-	
+
 	try {
 		return JSON.parse(value) as T;
 	} catch (error) {

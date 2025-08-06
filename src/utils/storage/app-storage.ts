@@ -67,7 +67,7 @@ export function saveLastSavedTimestamp(): boolean {
  * Clear all app-specific storage data
  */
 export function clearAppStorage(): void {
-	Object.values(APP_STORAGE_KEYS).forEach(key => {
+	Object.values(APP_STORAGE_KEYS).forEach((key) => {
 		if (typeof window !== 'undefined') {
 			localStorage.removeItem(key);
 		}

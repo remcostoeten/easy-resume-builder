@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';

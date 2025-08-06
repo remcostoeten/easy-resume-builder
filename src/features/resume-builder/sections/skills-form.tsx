@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, Trash2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { Button } from '@/shared/components/ui/button';
@@ -20,8 +20,8 @@ import {
 } from '@/shared/components/ui/select';
 import { Slider } from '@/shared/components/ui/slider';
 import { Switch } from '@/shared/components/ui/switch';
-import type { TSkill, TSkillCategory } from '@/types/resume';
 import { createEntity } from '@/shared/utilities/entity';
+import type { TSkill, TSkillCategory } from '@/types/resume';
 import { skillCategorySchema, type TSkillCategoryForm } from '../../resume-schemas';
 import { FormField } from '../form/form-field';
 
@@ -66,7 +66,7 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 	});
 
 	function setAllFormValues(loadedData: Record<string, any>) {
-		Object.entries(loadedData).forEach(function([key, value]) {
+		Object.entries(loadedData).forEach(([key, value]) => {
 			setValue(key as keyof TSkillCategoryForm, value);
 		});
 		if (loadedData.skills) {
@@ -83,9 +83,9 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 		setValue(name as keyof TSkillCategoryForm, value);
 	}
 
-	const enhancedSetValue = createChangeHandler(setValueWrapper, getValues);
+	const _enhancedSetValue = createChangeHandler(setValueWrapper, getValues);
 
-	useEffect(function() {
+	useEffect(() => {
 		loadFormData();
 	}, [loadFormData]);
 
@@ -126,7 +126,7 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 	}
 
 	function handleRemoveSkill(index: number) {
-		setSkills(skills.filter(function(_, i) { return i !== index; }));
+		setSkills(skills.filter((_, i) => i !== index));
 	}
 
 	function handleDelete() {
@@ -146,14 +146,12 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 			case 'dots':
 				return (
 					<div className='flex gap-1'>
-				{Array.from({ length: 5 }, function(_, i) {
-					return (
-						<div
-							key={i}
-							className={`w-2 h-2 rounded-full ${i < Math.ceil(level / 2) ? 'bg-primary' : 'bg-muted'}`}
-						/>
-					);
-				})}
+						{Array.from({ length: 5 }, (_, i) => (
+							<div
+								key={i}
+								className={`w-2 h-2 rounded-full ${i < Math.ceil(level / 2) ? 'bg-primary' : 'bg-muted'}`}
+							/>
+						))}
 					</div>
 				);
 			case 'text':
@@ -209,7 +207,9 @@ export function SkillsForm({ skillCategory, onSave, onCancel, onDelete }: TSkill
 							<Switch
 								id='show-group-label'
 								checked={showGroupLabel}
-								onCheckedChange={function(checked) { setValue('showGroupLabel', checked); }}
+								onCheckedChange={(checked) => {
+									setValue('showGroupLabel', checked);
+								}}
 							/>
 							<Label htmlFor='show-group-label' className='text-sm'>
 								Show category label in resume

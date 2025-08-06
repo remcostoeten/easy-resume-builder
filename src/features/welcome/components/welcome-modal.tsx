@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
-import { FEATURES, TIPS } from '../data';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
+import { FEATURES, TIPS } from '../data';
 
 type TProps = {
 	isOpen: boolean;
@@ -8,7 +8,11 @@ type TProps = {
 	onGetStarted: () => void;
 };
 
-const FeatureCard = React.memo(function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
+const FeatureCard = React.memo(function FeatureCard({
+	feature,
+}: {
+	feature: (typeof FEATURES)[number];
+}) {
 	return (
 		<article className='border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-default rounded-lg'>
 			<div className='p-4 text-center h-full flex flex-col'>
@@ -42,24 +46,24 @@ const TipItem = React.memo(function TipItem({ tip }: { tip: string }) {
 TipItem.displayName = 'TipItem';
 
 export function WelcomeModal({ isOpen, onClose, onGetStarted }: TProps) {
-function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-			if (event.key === 'Escape') {
-				onClose();
-			}
+	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+		if (event.key === 'Escape') {
+			onClose();
 		}
+	}
 
-function handleBackdropClick(event: React.MouseEvent) {
-			if (event.target === event.currentTarget) {
-				onClose();
-			}
+	function handleBackdropClick(event: React.MouseEvent) {
+		if (event.target === event.currentTarget) {
+			onClose();
 		}
+	}
 
-function handleModalBlur() {
+	function handleModalBlur() {
 		// Mark as seen when modal loses focus (user clicks outside or tabs away)
 		setStorageOnBlur();
 	}
 
-function handleAuthAction(action: 'register' | 'login') {
+	function handleAuthAction(action: 'register' | 'login') {
 		try {
 			const url = `/${action}`;
 			window.open(url, '_blank', 'noopener,noreferrer');
@@ -68,31 +72,36 @@ function handleAuthAction(action: 'register' | 'login') {
 		}
 	}
 
-function handleDocumentKeyDown(event: KeyboardEvent) {
+	const handleDocumentKeyDown = useCallback(
+		(event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
 				onClose();
 			}
-		}
+		},
+		[onClose]
+	);
 
-	useEffect(function() {
+	useEffect(() => {
 		if (isOpen) {
 			document.addEventListener('keydown', handleDocumentKeyDown);
 			document.body.style.overflow = 'hidden';
 
-			return function() {
+			return () => {
 				document.removeEventListener('keydown', handleDocumentKeyDown);
 				document.body.style.overflow = '';
 			};
 		}
 	}, [isOpen, handleDocumentKeyDown]);
 
-	const featureCards = useMemo(function() {
-		return FEATURES.map((feature) => <FeatureCard key={feature.id} feature={feature} />);
-	}, []);
+	const featureCards = useMemo(
+		() => FEATURES.map((feature) => <FeatureCard key={feature.id} feature={feature} />),
+		[]
+	);
 
-	const tipItems = useMemo(function() {
-		return TIPS.map((tip, index) => <TipItem key={`tip-${index}`} tip={tip} />);
-	}, []);
+	const tipItems = useMemo(
+		() => TIPS.map((tip, index) => <TipItem key={`tip-${index}`} tip={tip} />),
+		[]
+	);
 
 	if (!isOpen) return null;
 
@@ -106,10 +115,11 @@ function handleDocumentKeyDown(event: KeyboardEvent) {
 			aria-labelledby='modal-title'
 			aria-describedby='modal-description'
 		>
-			<div 
+			<div
 				className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
 				onBlur={handleModalBlur}
 				tabIndex={-1}
+				role='document'
 			>
 				<div className='relative flex flex-col h-full'>
 					<header className='relative p-6 pb-4 text-center bg-gradient-to-r from-primary/20 via-primary/5 to-primary/30 rounded-t-lg'>
@@ -200,9 +210,9 @@ function handleDocumentKeyDown(event: KeyboardEvent) {
 											About Data Persistence
 										</h4>
 										<p className='text-xs text-amber-700 dark:text-amber-300 leading-relaxed mb-2'>
-											Start building immediately without an account!
-											Your data stays in memory during this session.
-											For persistent storage, create a free account.
+											Start building immediately without an account! Your data
+											stays in memory during this session. For persistent
+											storage, create a free account.
 										</p>
 										<div className='flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400'>
 											<span role='img' aria-label='Warning'>

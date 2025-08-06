@@ -14,7 +14,7 @@ export function MainLayout() {
 	const sections = resumeData.sections as unknown as readonly TResumeSection[];
 	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(function() {
+	useEffect(() => {
 		console.log('MainLayout render - store data:', {
 			personalInfo: resumeData.personalInfo,
 			sectionsCount: resumeData.sections.length,
@@ -23,7 +23,7 @@ export function MainLayout() {
 		});
 	}, [resumeData]);
 
-	useEffect(function() {
+	useEffect(() => {
 		if (sections.length === 0) {
 			console.log('Sections are empty, this should not happen with proper initialization');
 		}
@@ -41,7 +41,9 @@ export function MainLayout() {
 		setIsLoading(loading);
 		if (loading) {
 			// Auto-hide after 3 seconds for demo purposes
-			setTimeout(function() { setIsLoading(false); }, 3000);
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 3000);
 		}
 	}
 

@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
 import { getDefaultStore } from 'jotai';
-import { resumeAtom } from '@/store/resume-store';
+import { useEffect } from 'react';
+import { trackWebVitals } from '@/app/web-vitals';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
-import type { TResumeData, TResumeSection } from '@/types/resume';
+import { logBundleSize } from '@/shared/utilities/performance';
+import { preloadCriticalResources, preloadModulesOnIdle } from '@/shared/utilities/preload';
 import type { Mutable } from '@/store/resume-store';
+import { resumeAtom } from '@/store/resume-store';
+import type { TResumeData, TResumeSection } from '@/types/resume';
 
 function createDefaultSections(): Mutable<TResumeSection>[] {
 	const now = new Date();
@@ -56,7 +59,6 @@ function createEmptyResumeData(): Mutable<TResumeData> {
 	} as Mutable<TResumeData>;
 }
 
-
 type TClientWrapperProps = {
 	children: React.ReactNode;
 };
@@ -65,6 +67,18 @@ export function ClientWrapper({ children }: TClientWrapperProps) {
 	useEffect(() => {
 		const store = getDefaultStore();
 		store.set(resumeAtom, createEmptyResumeData());
+
+		// Preload critical resources and modules
+		preloadCriticalResources();
+		preloadModulesOnIdle();
+
+		// Start web vitals tracking
+		trackWebVitals();
+
+		// Log performance metrics in development
+		if (process.env.NODE_ENV === 'development') {
+			setTimeout(logBundleSize, 1000);
+		}
 	}, []);
 
 	return <>{children}</>;

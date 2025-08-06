@@ -1,4 +1,4 @@
-import { forceShowWelcomeModal, resetWelcomeModal, hasSeenWelcomeModal } from '@/utils/storage';
+import { forceShowWelcomeModal, hasSeenWelcomeModal, resetWelcomeModal } from '@/utils/storage';
 
 // Re-export the main function
 export { forceShowWelcomeModal };

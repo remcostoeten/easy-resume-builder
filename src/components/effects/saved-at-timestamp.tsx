@@ -8,11 +8,11 @@ type TProps = {
 };
 
 export function SavedAtTimestamp({ className = '' }: TProps) {
-const lastSavedAt: Date | null = null;
+	const lastSavedAt: Date | null = null;
 	const [timeSince, setTimeSince] = useState<number>(0);
 	const [previousTime, setPreviousTime] = useState<number>(0);
 
-	useEffect(function() {
+	useEffect(() => {
 		if (!lastSavedAt) return;
 
 		function updateTimeSince() {
@@ -30,8 +30,8 @@ const lastSavedAt: Date | null = null;
 		updateTimeSince();
 		const interval = setInterval(updateTimeSince, 1000);
 
-		return function() { return clearInterval(interval); };
-	}, [lastSavedAt, timeSince]);
+		return () => clearInterval(interval);
+	}, [timeSince]);
 
 	function _formatTimeAgo(seconds: number) {
 		if (seconds < 60) return `${seconds}s ago`;
