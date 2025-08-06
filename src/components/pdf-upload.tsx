@@ -73,44 +73,65 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		setUploadStatus('uploading');
 		setError('');
 
-		try {
-			const formData = new FormData();
-			formData.append('pdf', selectedFile);
+	try {
+		const formData = new FormData();
+		formData.append('pdf', selectedFile);
 
-			const response = await fetch('/api/parse-pdf', {
-				method: 'POST',
-				body: formData,
-			});
+		const response = await fetch('/api/parse-pdf', {
+			method: 'POST',
+			body: formData,
+		});
 
-			const result = await response.json();
-
-			if (!response.ok) {
-				// Check if mock data is available in development mode
-				if (result.mockDataAvailable && result.mockData) {
-					console.log('PDF parsing failed, using mock data for development');
-					setUploadStatus('success');
-					setExtractedData(result.mockData);
-					onDataExtracted(result.mockData);
-					setError('Note: PDF parsing failed, using sample data for demonstration');
-					return;
-				}
-				throw new Error(result.error || 'Failed to parse PDF');
-			}
-
-			if (result.success) {
-				setUploadStatus('success');
-				setExtractedData(result.data);
-				onDataExtracted(result.data);
-			} else {
-				throw new Error('Failed to extract data from PDF');
-			}
-		} catch (err) {
-			const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-			setError(errorMessage);
-			setUploadStatus('error');
-			onError?.(errorMessage);
+		const responseText = await response.text();
+		console.log('Raw response status:', response.status, 'length:', responseText.length);
+		console.log('Raw response preview:', responseText.substring(0, 200));
+		
+		if (!responseText.trim()) {
+			throw new Error('Empty response from server');
 		}
+		
+		let result;
+		try {
+			result = JSON.parse(responseText);
+		} catch (parseError) {
+			const parseErrorMsg = parseError instanceof Error ? parseError.message : 'JSON parse error';
+			console.error('Failed to parse JSON response:', {
+				error: parseErrorMsg,
+				status: response.status,
+				responseText: responseText.substring(0, 500)
+			});
+			throw new Error(`Server returned invalid JSON (status ${response.status}): ${parseErrorMsg}`);
+		}
+
+		if (!response.ok) {
+			console.error('Server error response:', result);
+			// Check if mock data is available in development mode
+			if (result.mockDataAvailable && result.mockData) {
+				console.log('PDF parsing failed, using mock data for development');
+				setUploadStatus('success');
+				setExtractedData(result.mockData);
+				onDataExtracted(result.mockData);
+				setError('Note: PDF parsing failed, using sample data for demonstration');
+				return;
+			}
+			throw new Error(result.error || `Server error: ${response.status}`);
+		}
+
+		if (result.success) {
+			setUploadStatus('success');
+			setExtractedData(result.data);
+			onDataExtracted(result.data);
+		} else {
+			throw new Error('Failed to extract data from PDF');
+		}
+	} catch (err) {
+		const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+		console.error('Upload error:', err);
+		setError(errorMessage);
+		setUploadStatus('error');
+		onError?.(errorMessage);
 	}
+}
 
 	function handleClear() {
 		setSelectedFile(null);

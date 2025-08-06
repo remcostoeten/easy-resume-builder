@@ -52,7 +52,7 @@ const nextConfig = {
 			},
 		},
 	},
-	transpilePackages: ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+	transpilePackages: ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', 'pdfreader'],
 	eslint: {
 		ignoreDuringBuilds: false,
 	},
@@ -164,7 +164,28 @@ const nextConfig = {
 			'@': './src',
 		};
 		
-		// No special handling needed with dynamic imports
+		// Configure PDF.js module resolution
+		config.resolve.fallback = {
+			...config.resolve.fallback,
+			canvas: false,
+			fs: false,
+			path: false,
+		};
+		
+		// Handle PDF.js worker and canvas dependencies
+		if (isServer) {
+			// Properly handle externals for server-side rendering
+			if (Array.isArray(config.externals)) {
+				config.externals.push('canvas');
+			} else if (typeof config.externals === 'object') {
+				config.externals = {
+					...config.externals,
+					canvas: 'canvas'
+				};
+			} else {
+				config.externals = ['canvas'];
+			}
+		}
 		
 		return config;
 	},

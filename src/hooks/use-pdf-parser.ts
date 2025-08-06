@@ -127,6 +127,7 @@ export function usePdfParser() {
 
 	function handleParsingError(error: string) {
 		console.error('PDF parsing error:', error);
+		console.trace('Error stack trace');
 	}
 
 	return {
