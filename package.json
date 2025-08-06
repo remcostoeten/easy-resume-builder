@@ -4,6 +4,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"preinstall": "node scripts/check-react-version.mjs",
 		"build": "next build",
 		"build:analyze": "next build && node scripts/analyze-bundle.mjs",
 		"dev": "next dev",
