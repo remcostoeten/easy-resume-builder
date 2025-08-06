@@ -1,11 +1,11 @@
 import type {
-	TPersonalInfo,
+ TPersonalInfoRaw,
 	TWorkItemRaw,
 	TEducationItemRaw,
 	TSkillRaw,
-} from '../types/extracted-data';
+} from '../src/types/extracted-data';
 
-function extractPersonalInfo(text: string): TPersonalInfo {
+function extractPersonalInfo(text: string): TPersonalInfoRaw {
 	const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
 	const phoneRegex = /(?:\+?1[-.\\s]?)?\(?([0-9]{3})\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})/;
 

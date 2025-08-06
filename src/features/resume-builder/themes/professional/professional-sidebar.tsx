@@ -22,6 +22,7 @@ import { AnimatePresence } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
+import { PdfUploadModal } from '@/components/pdf-upload-modal';
 import { Button } from '@/shared/components/ui/button';
 import { Switch } from '@/shared/components/ui/switch';
 import { cn } from '@/shared/utilities';
@@ -167,7 +168,8 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 					</SortableContext>
 				</DndContext>
 
-				<div className='pt-4 border-t'>
+				<div className='pt-4 border-t space-y-3'>
+					<PdfUploadModal />
 					<Button variant='outline' className='w-full justify-start bg-transparent'>
 						<Plus className='h-4 w-4 mr-2' />
 						Add Custom Section

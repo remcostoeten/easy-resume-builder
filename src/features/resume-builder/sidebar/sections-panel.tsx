@@ -21,7 +21,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { AnimatePresence } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import { useState } from 'react';
-import { PdfUploadModal } from '@/features/resume-builder/components/pdf-upload-modal';
+import { PdfUploadModal } from '@/components/pdf-upload-modal';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import type { TResumeSection } from '@/types/resume';
@@ -81,7 +81,11 @@ export function SectionsPanel({
 		})
 	);
 
-	const sortedSections = [...sections].sort((a, b) => a.order - b.order);
+	function compareByOrder(a: TResumeSection, b: TResumeSection) {
+		return a.order - b.order;
+	}
+
+	const sortedSections = [...sections].sort(compareByOrder);
 
 	function handleDragStart(event: DragStartEvent) {
 		setActiveId(event.active.id as string);
@@ -92,15 +96,27 @@ export function SectionsPanel({
 		setActiveId(null);
 
 		if (over && active.id !== over.id) {
-			const oldIndex = sortedSections.findIndex((section) => section.id === active.id);
-			const newIndex = sortedSections.findIndex((section) => section.id === over.id);
+			function findActiveIndex(section: TResumeSection) {
+				return section.id === active.id;
+			}
+
+			function findOverIndex(section: TResumeSection) {
+				return section.id === over?.id;
+			}
+
+			const oldIndex = sortedSections.findIndex(findActiveIndex);
+			const newIndex = sortedSections.findIndex(findOverIndex);
 
 			const reorderedSections = arrayMove(sortedSections, oldIndex, newIndex);
 			onReorderSections(reorderedSections);
 		}
 	}
 
-	const enabledCount = sections.filter((section) => section.isEnabled).length;
+	function isEnabledSection(section: TResumeSection) {
+		return section.isEnabled;
+	}
+
+	const enabledCount = sections.filter(isEnabledSection).length;
 	const totalCount = sections.length;
 
 	return (
@@ -123,18 +139,22 @@ export function SectionsPanel({
 					onDragEnd={handleDragEnd}
 				>
 					<SortableContext
-						items={sortedSections.map((s) => s.id)}
+						items={sortedSections.map(function getSectionId(s) {
+							return s.id;
+						})}
 						strategy={verticalListSortingStrategy}
 					>
 						<AnimatePresence mode='popLayout'>
-							{sortedSections.map((section) => (
-								<div key={section.id}>
-									<SortableSectionItem
-										section={section}
-										onToggle={onToggleSection}
-									/>
-								</div>
-							))}
+							{sortedSections.map(function renderSectionItem(section) {
+								return (
+									<div key={section.id}>
+										<SortableSectionItem
+											section={section}
+											onToggle={onToggleSection}
+										/>
+									</div>
+								);
+							})}
 						</AnimatePresence>
 					</SortableContext>
 				</DndContext>
@@ -150,7 +170,9 @@ export function SectionsPanel({
 							<Button
 								size='sm'
 								variant='outline'
-								onClick={() => onToggleLoading(true)}
+								onClick={function handleLoadingToggle() {
+									onToggleLoading(true);
+								}}
 								className='w-full text-xs'
 							>
 								Demo: Show Skeleton

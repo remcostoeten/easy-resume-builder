@@ -41,7 +41,6 @@ export interface UseFormPersistenceOptions {
 export function useFormPersistence({
 	formKey,
 	debounceMs = 500,
-	autoSave = true,
 	excludeFields = [],
 	onDataLoaded,
 	onDataSaved,

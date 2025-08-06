@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { PdfUpload } from '@/features/resume-builder/components/pdf-upload';
+import { PdfUpload } from '@/components/pdf-upload';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 
-export default function PdfTestPage() {
+export function PdfTestExample() {
 	const [extractedData, setExtractedData] = useState<any>(null);
 	const [error, setError] = useState<string>('');
 

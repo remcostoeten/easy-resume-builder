@@ -2,6 +2,7 @@
 
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
+import { PdfUpload } from '@/components/pdf-upload';
 import { usePdfParser } from '@/hooks/use-pdf-parser';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -12,17 +13,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/shared/components/ui/dialog';
-import { PdfUpload } from './pdf-upload';
 
 export function PdfUploadModal() {
 	const [open, setOpen] = useState(false);
 	const { handleExtractedData, handleParsingError } = usePdfParser();
 
+	function closeModal() {
+		setOpen(false);
+	}
+
 	function onDataExtracted(data: any) {
 		handleExtractedData(data);
-		setTimeout(() => {
-			setOpen(false);
-		}, 2000);
+		setTimeout(closeModal, 2000);
 	}
 
 	function onError(error: string) {

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle2, FileText, Upload, X } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
@@ -37,14 +37,14 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		setDragActive(false);
 
 		const files = e.dataTransfer.files;
-		if (files && files[0]) {
+		if (files?.[0]) {
 			handleFile(files[0]);
 		}
 	}
 
 	function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
 		const files = e.target.files;
-		if (files && files[0]) {
+		if (files?.[0]) {
 			handleFile(files[0]);
 		}
 	}
@@ -110,7 +110,7 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 		setExtractedData(null);
 	}
 
-	const getStatusIcon = () => {
+	function getStatusIcon() {
 		switch (uploadStatus) {
 			case 'uploading':
 				return (
@@ -123,7 +123,11 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 			default:
 				return <FileText className='h-5 w-5 text-muted-foreground' />;
 		}
-	};
+	}
+
+	function handleUploadClick() {
+		document.getElementById('pdf-upload')?.click();
+	}
 
 	return (
 		<Card className='w-full max-w-2xl mx-auto'>
@@ -150,7 +154,7 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 							onDragLeave={handleDrag}
 							onDragOver={handleDrag}
 							onDrop={handleDrop}
-							onClick={() => document.getElementById('pdf-upload')?.click()}
+							onClick={handleUploadClick}
 							whileHover={{ scale: 1.02 }}
 							whileTap={{ scale: 0.98 }}
 						>
