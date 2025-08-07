@@ -26,7 +26,8 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 		}
 	}
 
-	function formatTimestamp(timestamp: Date, locale: string) {
+	function formatTimestamp(timestamp: Date | string, locale: string) {
+		const dateObj = new Date(timestamp);
 		const formatter = new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
 			month: 'short',
@@ -34,12 +35,13 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 			hour: '2-digit',
 			minute: '2-digit',
 		});
-		return formatter.format(timestamp);
+		return formatter.format(dateObj);
 	}
 
-	function getRelativeTimeString(timestamp: Date, locale: string) {
+	function getRelativeTimeString(timestamp: Date | string, locale: string) {
+		const dateObj = new Date(timestamp);
 		const now = new Date();
-		const diffInMs = now.getTime() - timestamp.getTime();
+		const diffInMs = now.getTime() - dateObj.getTime();
 		const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
 		const diffInDays = Math.floor(diffInHours / 24);
 
@@ -52,7 +54,7 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 			const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 			return formatter.format(-diffInDays, 'day');
 		} else {
-			return formatTimestamp(timestamp, locale);
+			return formatTimestamp(dateObj, locale);
 		}
 	}
 
@@ -70,37 +72,48 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 						<p className='text-muted-foreground text-center py-8'>No recent activity</p>
 					) : (
 						<ol className='space-y-4' aria-label='Recent activity timeline'>
-							{activities.map((activity) => (
-								<li
-									key={activity.id}
-									className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
-								>
-									<div
-										className='text-xl flex-shrink-0'
-										role='img'
-										aria-label={`${activity.type} activity`}
+							{activities.map((activity) => {
+								// Ensure timestamp is a Date object with defensive handling
+								const timestamp = new Date(activity.timestamp);
+								
+								// Skip this activity if timestamp is invalid
+								if (isNaN(timestamp.getTime())) {
+									console.warn('Invalid timestamp for activity:', activity.id, activity.timestamp);
+									return null;
+								}
+								
+								return (
+									<li
+										key={activity.id}
+										className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
 									>
-										{getActivityIcon(activity.type, activity.icon)}
-									</div>
-									<article className='flex-1 min-w-0'>
-										<p className='text-sm'>
-											<span className='font-medium'>
-												{activity.description}
-											</span>{' '}
-											<span className='text-muted-foreground truncate'>
-												{activity.title}
-											</span>
-										</p>
-										<time
-											className='text-xs text-muted-foreground mt-1 block'
-											dateTime={activity.timestamp.toISOString()}
-											title={formatTimestamp(activity.timestamp, locale)}
+										<div
+											className='text-xl flex-shrink-0'
+											role='img'
+											aria-label={`${activity.type} activity`}
 										>
-											{getRelativeTimeString(activity.timestamp, locale)}
-										</time>
-									</article>
-								</li>
-							))}
+											{getActivityIcon(activity.type, activity.icon)}
+										</div>
+										<article className='flex-1 min-w-0'>
+											<p className='text-sm'>
+												<span className='font-medium'>
+													{activity.description}
+												</span>{' '}
+												<span className='text-muted-foreground truncate'>
+													{activity.title}
+												</span>
+											</p>
+											<time
+												className='text-xs text-muted-foreground mt-1 block'
+												dateTime={timestamp.toISOString()}
+												title={formatTimestamp(timestamp, locale)}
+											>
+												{getRelativeTimeString(timestamp, locale)}
+											</time>
+										</article>
+									</li>
+								);
+							}).filter(Boolean)}
 						</ol>
 					)}
 				</div>

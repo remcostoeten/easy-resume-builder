@@ -9,7 +9,7 @@ import {
 	SidebarProvider,
 } from '@/shared/components/ui';
 import { SidebarNavigation } from './sidebar-navigation';
-import { UserTopBar } from './user-top-bar';
+import { UserTopBar } from '@/features/auth/components/user-top-bar';
 
 type TProps = {
 	children: React.ReactNode;

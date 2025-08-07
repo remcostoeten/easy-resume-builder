@@ -6,9 +6,9 @@ type TProps = {
 	totalResumes: number;
 	activeApplications: number;
 	interviewsScheduled: number;
-	lastLogin: Date | null;
-	memberSince: Date;
-	lastResumeUpdate: Date | null;
+	lastLogin: Date | string | null;
+	memberSince: Date | string;
+	lastResumeUpdate: Date | string | null;
 };
 
 export function Overview(props: TProps) {
@@ -21,10 +21,11 @@ export function Overview(props: TProps) {
 		lastResumeUpdate,
 	} = props;
 
-	function formatMemberSince(date: Date) {
-		const day = date.getDate();
-		const month = date.toLocaleString('default', { month: 'long' });
-		const year = date.getFullYear();
+	function formatMemberSince(date: Date | string) {
+		const dateObj = new Date(date);
+		const day = dateObj.getDate();
+		const month = dateObj.toLocaleString('default', { month: 'long' });
+		const year = dateObj.getFullYear();
 		return (
 			<>
 				<AnimatedActivityCount count={day} /> {month} {year}
@@ -32,14 +33,14 @@ export function Overview(props: TProps) {
 		);
 	}
 
-	function formatLastLogin(date: Date | null) {
+	function formatLastLogin(date: Date | string | null) {
 		if (!date) return 'Never';
-		return formatDistanceToNow(date, { addSuffix: true });
+		return formatDistanceToNow(new Date(date), { addSuffix: true });
 	}
 
-	function formatLastUpdate(date: Date | null) {
+	function formatLastUpdate(date: Date | string | null) {
 		if (!date) return 'No updates yet';
-		return formatDistanceToNow(date, { addSuffix: true });
+		return formatDistanceToNow(new Date(date), { addSuffix: true });
 	}
 
 	return (

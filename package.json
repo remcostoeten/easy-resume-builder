@@ -8,9 +8,10 @@
 	"description": "A user-friendly platform for building and managing resumes with a focus on ease of use and modern design.",
 	"keywords": ["resume builder", "CV", "Next.js", "React", "dashboard", "job application", "portfolio"],
 	"version": "0.1.0",
+	"packageManager": "bun@1.1.13",
 	"private": true,
 	"scripts": {
-		"preinstall": "node scripts/check-react-version.mjs",
+		"preinstall": "node scripts/check-react-version.mjs && bun scripts/remove-stray-lock.mjs",
 		"build": "next build",
 		"build:analyze": "next build && node scripts/analyze-bundle.mjs",
 		"dev": "next dev",

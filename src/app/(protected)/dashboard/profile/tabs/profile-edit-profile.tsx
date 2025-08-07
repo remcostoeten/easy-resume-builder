@@ -1,6 +1,7 @@
 'use client';
 
-import { Camera, Mail, Pencil, User } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Camera, User, Pencil } from 'lucide-react';
 import type { TSession } from '@/features/auth/types';
 import { Avatar } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
@@ -11,21 +12,33 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
-import { Textarea } from '@/shared/components/ui/textarea';
+import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
 
 type TProps = {
 	user: TSession['user'];
 };
 
 export function ProfileEditProfile({ user }: TProps) {
+	const fileInputRef = useRef<HTMLInputElement>(null!);
+	const [isLoading, setIsLoading] = useState(false);
 	const userInitials = user.name
 		.split(' ')
 		.map((n) => n[0])
 		.join('')
 		.toUpperCase()
 		.slice(0, 2);
+
+	function handleUploadClick() {
+		fileInputRef.current?.click();
+	}
+
+	function handleFormSubmitStart() {
+		setIsLoading(true);
+	}
+
+	function handleFormSubmitEnd() {
+		setIsLoading(false);
+	}
 
 	return (
 		<div className='space-y-6'>
@@ -56,7 +69,12 @@ export function ProfileEditProfile({ user }: TProps) {
 							className='text-lg'
 						/>
 						<div className='space-y-2'>
-							<Button variant='outline' size='sm' disabled>
+							<Button 
+								variant='outline' 
+								size='sm' 
+								onClick={handleUploadClick}
+								className={isLoading ? 'opacity-50 pointer-events-none' : ''}
+							>
 								<Camera className='h-4 w-4 mr-2' />
 								Upload New Picture
 							</Button>
@@ -79,72 +97,21 @@ export function ProfileEditProfile({ user }: TProps) {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form className='space-y-4'>
-						<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-							<div className='space-y-2'>
-								<Label htmlFor='fullName'>Full Name</Label>
-								<Input
-									id='fullName'
-									defaultValue={user.name}
-									placeholder='Enter your full name'
-									disabled
-								/>
-							</div>
-							<div className='space-y-2'>
-								<Label htmlFor='email'>Email Address</Label>
-								<div className='relative'>
-									<Input
-										id='email'
-										type='email'
-										defaultValue={user.email}
-										placeholder='Enter your email'
-										disabled
-									/>
-									<Mail className='absolute right-3 top-2.5 h-4 w-4 text-muted-foreground' />
-								</div>
-							</div>
-						</div>
-
-						<div className='space-y-2'>
-							<Label htmlFor='bio'>Bio</Label>
-							<Textarea
-								id='bio'
-								placeholder='Tell us about yourself...'
-								rows={3}
-								disabled
-							/>
-							<div className='text-xs text-muted-foreground'>
-								Brief description for your profile. Maximum 500 characters.
-							</div>
-						</div>
-
-						<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-							<div className='space-y-2'>
-								<Label htmlFor='location'>Location</Label>
-								<Input id='location' placeholder='City, Country' disabled />
-							</div>
-							<div className='space-y-2'>
-								<Label htmlFor='website'>Website</Label>
-								<Input
-									id='website'
-									type='url'
-									placeholder='https://yourwebsite.com'
-									disabled
-								/>
-							</div>
-						</div>
-
-						<div className='pt-4 border-t'>
-							<div className='flex space-x-2'>
-								<Button type='submit' disabled>
-									Save Changes
-								</Button>
-								<Button type='button' variant='outline' disabled>
-									Cancel
-								</Button>
-							</div>
-						</div>
-					</form>
+					<EditProfileForm
+						initialData={{
+							name: user.name,
+							email: user.email,
+							image: user.image || undefined,
+							bio: '',
+							location: '',
+							website: '',
+						}}
+						userId={user.id}
+						externalFileInputRef={fileInputRef}
+						onSubmitStart={handleFormSubmitStart}
+						onSuccess={handleFormSubmitEnd}
+						onError={handleFormSubmitEnd}
+					/>
 				</CardContent>
 			</Card>
 		</div>

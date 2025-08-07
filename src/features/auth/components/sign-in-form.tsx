@@ -38,7 +38,6 @@ export function SignInForm({ onSuccess, className }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
-
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {

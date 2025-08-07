@@ -2,6 +2,7 @@
 
 import { and, eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/features/auth/server/auth';
 import { account, user } from '@/features/auth/server/schemas';
 import { createResumeFactory } from '@/features/resume/server/factories';
@@ -11,6 +12,9 @@ type TUpdateProfileData = {
 	name?: string;
 	email?: string;
 	image?: string;
+	bio?: string;
+	location?: string;
+	website?: string;
 };
 
 type TPasswordChangeData = {
@@ -51,6 +55,11 @@ export async function updateUserProfile(userId: string, data: TUpdateProfileData
 		.set(updateData)
 		.where(eq(user.id, userId))
 		.returning();
+
+	// Revalidate relevant pages to show updated profile data
+	revalidatePath('/dashboard/profile');
+	revalidatePath('/dashboard');
+	revalidatePath('/', 'layout'); // Revalidate root layout for session data
 
 	return updatedUser;
 }
