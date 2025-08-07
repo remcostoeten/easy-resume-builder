@@ -52,7 +52,6 @@ function preloadModulesOnIdle() {
 	const modules = [
 		// Preload heavy components when idle
 		() => import('framer-motion'),
-		() => import('recharts'),
 	];
 
 	if ('requestIdleCallback' in window) {

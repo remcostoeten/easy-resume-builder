@@ -1,10 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { Camera, User, Pencil } from 'lucide-react';
+import { useState } from 'react';
+import { User, Pencil } from 'lucide-react';
 import type { TSession } from '@/features/auth/types';
 import { Avatar } from '@/shared/components/ui/avatar';
-import { Button } from '@/shared/components/ui/button';
 import {
 	Card,
 	CardContent,
@@ -19,7 +18,6 @@ type TProps = {
 };
 
 export function ProfileEditProfile({ user }: TProps) {
-	const fileInputRef = useRef<HTMLInputElement>(null!);
 	const [isLoading, setIsLoading] = useState(false);
 	const userInitials = user.name
 		.split(' ')
@@ -27,10 +25,6 @@ export function ProfileEditProfile({ user }: TProps) {
 		.join('')
 		.toUpperCase()
 		.slice(0, 2);
-
-	function handleUploadClick() {
-		fileInputRef.current?.click();
-	}
 
 	function handleFormSubmitStart() {
 		setIsLoading(true);
@@ -68,19 +62,8 @@ export function ProfileEditProfile({ user }: TProps) {
 							size='2xl'
 							className='text-lg'
 						/>
-						<div className='space-y-2'>
-							<Button 
-								variant='outline' 
-								size='sm' 
-								onClick={handleUploadClick}
-								className={isLoading ? 'opacity-50 pointer-events-none' : ''}
-							>
-								<Camera className='h-4 w-4 mr-2' />
-								Upload New Picture
-							</Button>
-							<div className='text-xs text-muted-foreground'>
-								Recommended: Square image, at least 200x200px
-							</div>
+						<div className='space-y-2 text-xs text-muted-foreground'>
+							Image upload not supported yet.
 						</div>
 					</div>
 				</CardContent>
@@ -107,7 +90,6 @@ export function ProfileEditProfile({ user }: TProps) {
 							website: '',
 						}}
 						userId={user.id}
-						externalFileInputRef={fileInputRef}
 						onSubmitStart={handleFormSubmitStart}
 						onSuccess={handleFormSubmitEnd}
 						onError={handleFormSubmitEnd}

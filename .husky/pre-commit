@@ -1,0 +1,4 @@
+# Check for incorrect Framer Motion imports
+node scripts/check-framer-motion-imports.mjs
+
+bun test

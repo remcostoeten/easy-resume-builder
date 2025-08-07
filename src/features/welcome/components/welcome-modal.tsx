@@ -1,8 +1,8 @@
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
 import { FEATURES, TIPS } from '../data';
+import '@/styles/modal-transitions.css';
 
 type TProps = {
 	isOpen: boolean;
@@ -191,37 +191,27 @@ export function WelcomeModal({
 		});
 	}, []);
 
+	if (!isOpen) return null;
+
 	return (
-		<AnimatePresence mode='wait' onExitComplete={handleAnimationExitComplete}>
-			{isOpen && (
-				<motion.div
-					className='fixed inset-0 z-50 flex items-center justify-center p-4'
-					onClick={handleBackdropClick}
-					onKeyDown={handleKeyDown}
-					role='dialog'
-					aria-modal='true'
-					aria-labelledby='modal-title'
-					aria-describedby='modal-description'
-					aria-live='polite'
-					initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-					animate={{
-						opacity: 1,
-						backdropFilter: 'blur(4px)',
-						backgroundColor: 'rgba(0, 0, 0, 0.5)',
-					}}
-					exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-					transition={{ duration: 0.2, ease: 'easeOut' }}
-				>
-					<motion.div
-						className='bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
-						onBlur={handleModalBlur}
-						tabIndex={-1}
-						role='document'
-						initial={{ opacity: 0, scale: 0.9, y: 30 }}
-						animate={{ opacity: 1, scale: 1, y: 0 }}
-						exit={{ opacity: 0, scale: 0.9, y: 30 }}
-						transition={{ duration: 0.2, ease: 'easeOut' }}
-					>
+		<div
+			data-open='true'
+			className='modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4'
+			onClick={handleBackdropClick}
+			onKeyDown={handleKeyDown}
+			role='dialog'
+			aria-modal='true'
+			aria-labelledby='modal-title'
+			aria-describedby='modal-description'
+			aria-live='polite'
+		>
+			<div
+				data-open='true'
+				className='modal bg-background rounded-lg max-w-5xl w-full max-h-[95vh] shadow-2xl border flex flex-col'
+				onBlur={handleModalBlur}
+				tabIndex={-1}
+				role='document'
+			>
 						<FocusScope
 							loop
 							trapped
@@ -444,9 +434,7 @@ export function WelcomeModal({
 								</button>
 							</div>
 						</FocusScope>
-					</motion.div>
-				</motion.div>
-			)}
-		</AnimatePresence>
-	);
+				</div>
+			</div>
+		);
 }

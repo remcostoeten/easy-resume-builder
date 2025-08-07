@@ -1,8 +1,6 @@
-import { CheckCircle, XCircle } from 'lucide-react';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
 import { Avatar } from '@/shared/components/ui/avatar';
-import { Badge } from '@/shared/components/ui/badge';
 import { Card } from '@/shared/components/ui/card';
 import { ProfileStats } from './profile-stats';
 
@@ -10,7 +8,6 @@ type TUserProfileData = {
 	name: string;
 	email: string;
 	lastLoginTime: Date | null;
-	verificationStatus: boolean;
 	image?: string | null;
 	createdAt: Date;
 };
@@ -35,7 +32,6 @@ async function getUserProfileData(): Promise<TUserProfileData | null> {
 			name: user.name,
 			email: user.email,
 			lastLoginTime: session.createdAt,
-			verificationStatus: user.emailVerified,
 			image: user.image,
 			createdAt: user.createdAt,
 		};
@@ -96,29 +92,6 @@ export async function ProfileOverview({ userData: providedUserData }: TProps) {
 								<p className='text-muted-foreground'>{userData.email}</p>
 							</div>
 
-							<div className='flex items-center gap-2'>
-								{userData.verificationStatus ? (
-									<>
-										<CheckCircle className='h-5 w-5 text-green-600' />
-										<Badge
-											variant='default'
-											className='bg-green-50 text-green-700 border-green-200'
-										>
-											Verified
-										</Badge>
-									</>
-								) : (
-									<>
-										<XCircle className='h-5 w-5 text-amber-600' />
-										<Badge
-											variant='secondary'
-											className='bg-amber-50 text-amber-700 border-amber-200'
-										>
-											Unverified
-										</Badge>
-									</>
-								)}
-							</div>
 						</div>
 					</div>
 

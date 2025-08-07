@@ -2,17 +2,17 @@
 
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import { AnimatePresence, motion } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import type * as React from 'react';
 import { useRef } from 'react';
 
 import { cn } from 'utilities';
+import '@/styles/modal-transitions.css';
 
 function Dialog({ open, children, ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
 	return (
 		<DialogPrimitive.Root data-slot='dialog' open={open} {...props}>
-			<AnimatePresence mode='wait'>{open && children}</AnimatePresence>
+			{children}
 		</DialogPrimitive.Root>
 	);
 }
@@ -35,17 +35,10 @@ function DialogOverlay({
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
 	return (
 		<DialogPrimitive.Overlay asChild {...props}>
-			<motion.div
+			<div
 				data-slot='dialog-overlay'
-				className={cn('fixed inset-0 z-50', className)}
-				initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-				animate={{
-					opacity: 1,
-					backdropFilter: 'blur(4px)',
-					backgroundColor: 'rgba(0, 0, 0, 0.5)',
-				}}
-				exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-				transition={{ duration: 0.2, ease: 'easeOut' }}
+				data-open='true'
+				className={cn('modal-overlay fixed inset-0 z-50', className)}
 			/>
 		</DialogPrimitive.Overlay>
 	);
@@ -78,25 +71,22 @@ function DialogContent({
 		}
 	}
 
-	return (
+		return (
 		<DialogPortal data-slot='dialog-portal'>
 			<DialogOverlay />
 			<DialogPrimitive.Content asChild {...props}>
-				<motion.div
+				<div
 					data-slot='dialog-content'
+					data-open='true'
 					role='dialog'
 					aria-modal='true'
 					aria-labelledby='dialog-title'
 					aria-describedby='dialog-description'
 					aria-live='polite'
 					className={cn(
-						'bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-[50%] -translate-y-[50%] gap-4 rounded-lg border p-6 shadow-lg sm:max-w-lg',
+						'modal bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-[50%] -translate-y-[50%] gap-4 rounded-lg border p-6 shadow-lg sm:max-w-lg',
 						className
 					)}
-					initial={{ opacity: 0, scale: 0.9, y: 30 }}
-					animate={{ opacity: 1, scale: 1, y: 0 }}
-					exit={{ opacity: 0, scale: 0.9, y: 30 }}
-					transition={{ duration: 0.2, ease: 'easeOut' }}
 				>
 					<FocusScope
 						loop
@@ -116,7 +106,7 @@ function DialogContent({
 							</DialogPrimitive.Close>
 						)}
 					</FocusScope>
-				</motion.div>
+				</div>
 			</DialogPrimitive.Content>
 		</DialogPortal>
 	);

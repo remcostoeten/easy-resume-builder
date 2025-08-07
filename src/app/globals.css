@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../shared/components/ui/AnimatedBackground.css";
+@import "../styles/modal-transitions.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,6 +39,9 @@
 	--sidebar-border: oklch(0.3715 0 0);
 	--sidebar-ring: oklch(0.7686 0.1647 70.0804);
 	--radius: 0.5rem;
+	--ease: cubic-bezier(0.4, 0, 0.2, 1);
+	--mouseX: 50vw;
+	--mouseY: 50vh;
 }
 
 .light {
@@ -193,4 +198,38 @@
   100% {
     opacity: 0.15;
   }
+}
+
+/* Converted Framer Motion animations to CSS */
+.floating-button {
+	transform: scale(1) rotate(0deg);
+	transition: transform 0.15s var(--ease);
+}
+
+.floating-button:hover {
+	transform: scale(1.1);
+}
+
+.floating-button:active {
+	transform: scale(0.9);
+}
+
+.gradient-card {
+	transition: transform 0.15s var(--ease);
+}
+
+.gradient-card:hover {
+	transform: translateY(-2px);
+}
+
+.upload-drop-zone {
+	transition: transform 0.15s var(--ease);
+}
+
+.upload-drop-zone:hover {
+	transform: scale(1.02);
+}
+
+.upload-drop-zone:active {
+	transform: scale(0.98);
 }

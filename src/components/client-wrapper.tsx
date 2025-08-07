@@ -6,6 +6,7 @@ import { trackWebVitals } from '@/app/web-vitals';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import { logBundleSize } from '@/shared/utilities/performance';
 import { preloadCriticalResources, preloadModulesOnIdle } from '@/shared/utilities/preload';
+import { initAnimatedBackgroundMouse } from '@/shared/components/ui/animated-background-mouse';
 import type { Mutable } from '@/store/resume-store';
 import { resumeAtom } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
@@ -72,9 +73,14 @@ export function ClientWrapper({ children }: TProps) {
 		preloadModulesOnIdle();
 		trackWebVitals();
 
+		// Initialize mouse tracking for animated background
+		const cleanupMouse = initAnimatedBackgroundMouse();
+
 		if (process.env.NODE_ENV === 'development') {
 			setTimeout(logBundleSize, 1000);
 		}
+
+		return cleanupMouse;
 	}, []);
 
 	return <>{children}</>;

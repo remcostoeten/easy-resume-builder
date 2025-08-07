@@ -1,0 +1,94 @@
+:root {
+  --mouseX: 50vw;
+  --mouseY: 50vh;
+}
+
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.animated-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    600px circle at var(--mouseX) var(--mouseY),
+    rgba(59, 130, 246, 0.15),
+    transparent 40%
+  );
+  opacity: 0.3;
+  transform: translate3d(calc(var(--mouseX) * 0.01px), calc(var(--mouseY) * 0.01px), 0);
+}
+
+.dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(96, 165, 250, 0.2);
+  border-radius: 50%;
+  animation: float 20s ease-in-out infinite;
+  transform: translate3d(calc(var(--mouseX) * 0.03px), calc(var(--mouseY) * 0.03px), 0);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate3d(
+      calc(var(--mouseX) * 0.03px),
+      calc(var(--mouseY) * 0.03px),
+      0
+    ) scale(1);
+  }
+  25% {
+    transform: translate3d(
+      calc(var(--mouseX) * 0.03px + 50px),
+      calc(var(--mouseY) * 0.03px - 30px),
+      0
+    ) scale(1.2);
+  }
+  50% {
+    transform: translate3d(
+      calc(var(--mouseX) * 0.03px - 30px),
+      calc(var(--mouseY) * 0.03px + 40px),
+      0
+    ) scale(0.8);
+  }
+  75% {
+    transform: translate3d(
+      calc(var(--mouseX) * 0.03px + 20px),
+      calc(var(--mouseY) * 0.03px - 50px),
+      0
+    ) scale(1.1);
+  }
+}
+
+/* Individual dot positioning using CSS Grid concepts */
+.dot:nth-child(1) { top: 10%; left: 15%; animation-delay: -0.5s; animation-duration: 15s; }
+.dot:nth-child(2) { top: 20%; left: 85%; animation-delay: -2s; animation-duration: 18s; }
+.dot:nth-child(3) { top: 30%; left: 25%; animation-delay: -4s; animation-duration: 22s; }
+.dot:nth-child(4) { top: 40%; left: 75%; animation-delay: -1s; animation-duration: 16s; }
+.dot:nth-child(5) { top: 50%; left: 45%; animation-delay: -6s; animation-duration: 20s; }
+.dot:nth-child(6) { top: 60%; left: 90%; animation-delay: -3s; animation-duration: 14s; }
+.dot:nth-child(7) { top: 70%; left: 10%; animation-delay: -8s; animation-duration: 19s; }
+.dot:nth-child(8) { top: 80%; left: 55%; animation-delay: -2.5s; animation-duration: 17s; }
+.dot:nth-child(9) { top: 90%; left: 35%; animation-delay: -5s; animation-duration: 21s; }
+.dot:nth-child(10) { top: 15%; left: 65%; animation-delay: -7s; animation-duration: 13s; }
+.dot:nth-child(11) { top: 25%; left: 5%; animation-delay: -1.5s; animation-duration: 24s; }
+.dot:nth-child(12) { top: 35%; left: 95%; animation-delay: -9s; animation-duration: 15s; }
+.dot:nth-child(13) { top: 45%; left: 20%; animation-delay: -4.5s; animation-duration: 18s; }
+.dot:nth-child(14) { top: 55%; left: 80%; animation-delay: -6.5s; animation-duration: 16s; }
+.dot:nth-child(15) { top: 65%; left: 50%; animation-delay: -3.5s; animation-duration: 23s; }
+.dot:nth-child(16) { top: 75%; left: 30%; animation-delay: -8.5s; animation-duration: 12s; }
+.dot:nth-child(17) { top: 85%; left: 70%; animation-delay: -2.2s; animation-duration: 19s; }
+.dot:nth-child(18) { top: 95%; left: 40%; animation-delay: -7.5s; animation-duration: 17s; }
+.dot:nth-child(19) { top: 12%; left: 88%; animation-delay: -5.5s; animation-duration: 21s; }
+.dot:nth-child(20) { top: 18%; left: 12%; animation-delay: -9.5s; animation-duration: 14s; }

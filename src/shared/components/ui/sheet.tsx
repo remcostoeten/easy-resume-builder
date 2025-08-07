@@ -1,91 +1,16 @@
 'use client';
 
 import * as SheetPrimitive from '@radix-ui/react-dialog';
-import { AnimatePresence, motion } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import type * as React from 'react';
 
 import { cn } from 'utilities';
-
-const overlayVariants = {
-	initial: {
-		opacity: 0,
-		backdropFilter: 'blur(0px)',
-	},
-	animate: {
-		opacity: 1,
-		backdropFilter: 'blur(4px)',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-	},
-	exit: {
-		opacity: 0,
-		backdropFilter: 'blur(0px)',
-	},
-};
-
-const contentVariants = {
-	right: {
-		initial: {
-			opacity: 0,
-			x: '100%',
-		},
-		animate: {
-			opacity: 1,
-			x: 0,
-		},
-		exit: {
-			opacity: 0,
-			x: '100%',
-		},
-	},
-	left: {
-		initial: {
-			opacity: 0,
-			x: '-100%',
-		},
-		animate: {
-			opacity: 1,
-			x: 0,
-		},
-		exit: {
-			opacity: 0,
-			x: '-100%',
-		},
-	},
-	top: {
-		initial: {
-			opacity: 0,
-			y: '-100%',
-		},
-		animate: {
-			opacity: 1,
-			y: 0,
-		},
-		exit: {
-			opacity: 0,
-			y: '-100%',
-		},
-	},
-	bottom: {
-		initial: {
-			opacity: 0,
-			y: '100%',
-		},
-		animate: {
-			opacity: 1,
-			y: 0,
-		},
-		exit: {
-			opacity: 0,
-			y: '100%',
-		},
-	},
-};
+import '@/styles/modal-transitions.css';
 
 function Sheet({ open, children, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 	return (
 		<SheetPrimitive.Root data-slot='sheet' open={open} {...props}>
-			<AnimatePresence mode='wait'>{open && children}</AnimatePresence>
+			{children}
 		</SheetPrimitive.Root>
 	);
 }
@@ -108,14 +33,10 @@ function SheetOverlay({
 }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
 	return (
 		<SheetPrimitive.Overlay asChild {...props}>
-			<motion.div
+			<div
 				data-slot='sheet-overlay'
-				className={cn('fixed inset-0 z-50', className)}
-				variants={overlayVariants}
-				initial='initial'
-				animate='animate'
-				exit='exit'
-				transition={{ duration: 0.2, ease: 'easeOut' }}
+				data-open='true'
+				className={cn('modal-overlay fixed inset-0 z-50', className)}
 			/>
 		</SheetPrimitive.Overlay>
 	);
@@ -133,28 +54,24 @@ function SheetContent({
 		<SheetPortal>
 			<SheetOverlay />
 			<SheetPrimitive.Content asChild {...props}>
-				<motion.div
+				<div
 					data-slot='sheet-content'
+					data-open='true'
 					className={cn(
-						'bg-background fixed z-50 flex flex-col gap-4 shadow-lg',
+						`sheet-${side} bg-background fixed z-50 flex flex-col gap-4 shadow-lg`,
 						side === 'right' && 'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
 						side === 'left' && 'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
 						side === 'top' && 'inset-x-0 top-0 h-auto border-b',
 						side === 'bottom' && 'inset-x-0 bottom-0 h-auto border-t',
 						className
 					)}
-					variants={contentVariants[side]}
-					initial='initial'
-					animate='animate'
-					exit='exit'
-					transition={{ duration: 0.3, ease: 'easeInOut' }}
 				>
 					{children}
 					<SheetPrimitive.Close className='ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none'>
 						<XIcon className='size-4' />
 						<span className='sr-only'>Close</span>
 					</SheetPrimitive.Close>
-				</motion.div>
+				</div>
 			</SheetPrimitive.Content>
 		</SheetPortal>
 	);

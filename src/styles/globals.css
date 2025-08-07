@@ -126,6 +126,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+	--ease: cubic-bezier(0.4, 0, 0.2, 1);
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
@@ -241,5 +242,63 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+/* EmptyState component animations */
+.empty-state-icon {
+	animation: empty-state-icon 0.3s var(--ease) forwards;
+}
+
+.empty-state-content {
+	animation: empty-state-content 0.3s var(--ease) 0.1s forwards;
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+.empty-state-button {
+	animation: empty-state-button 0.3s var(--ease) 0.2s forwards;
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+@keyframes empty-state-icon {
+	from {
+		scale: 0.8;
+		opacity: 0;
+	}
+	to {
+		scale: 1;
+		opacity: 1;
+	}
+}
+
+@keyframes empty-state-content {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes empty-state-button {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Keyboard hint animation */
+.keyboard-hint {
+	animation: keyboard-hint 0.15s var(--ease) forwards;
+}
+
+@keyframes keyboard-hint {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -10px);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
 	}
 }
