@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatedNumber } from '@/features/dashboard/components/animated-number';
+import AnimatedNumber from '@/features/dashboard/components/animated-number';
 
 type TProps = {
 	lastLoginTime: Date | null;

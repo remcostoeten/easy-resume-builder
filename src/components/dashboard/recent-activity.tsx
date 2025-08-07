@@ -5,15 +5,20 @@ type TProps = {
 	locale?: string;
 };
 
-type TActivityType = 'resume_edit' | 'sign_in';
+type TActivityType = 'resume_edit' | 'sign_in' | 'resume_create';
 
 export async function RecentActivity({ locale = 'en-US' }: TProps) {
 	const activities = await getRecentActivity();
 
-	function getActivityIcon(type: TActivityType) {
+	function getActivityIcon(type: TActivityType, providedIcon?: string) {
+		// Use the icon from the database if available, otherwise fallback to type-based icons
+		if (providedIcon) return providedIcon;
+
 		switch (type) {
 			case 'resume_edit':
 				return '✏️';
+			case 'resume_create':
+				return '📄';
 			case 'sign_in':
 				return '🔐';
 			default:
@@ -21,7 +26,8 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 		}
 	}
 
-	function formatTimestamp(timestamp: Date, locale: string) {
+	function formatTimestamp(timestamp: Date | string, locale: string) {
+		const dateObj = new Date(timestamp);
 		const formatter = new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
 			month: 'short',
@@ -29,12 +35,13 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 			hour: '2-digit',
 			minute: '2-digit',
 		});
-		return formatter.format(timestamp);
+		return formatter.format(dateObj);
 	}
 
-	function getRelativeTimeString(timestamp: Date, locale: string) {
+	function getRelativeTimeString(timestamp: Date | string, locale: string) {
+		const dateObj = new Date(timestamp);
 		const now = new Date();
-		const diffInMs = now.getTime() - timestamp.getTime();
+		const diffInMs = now.getTime() - dateObj.getTime();
 		const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
 		const diffInDays = Math.floor(diffInHours / 24);
 
@@ -47,38 +54,47 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 			const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 			return formatter.format(-diffInDays, 'day');
 		} else {
-			return formatTimestamp(timestamp, locale);
+			return formatTimestamp(dateObj, locale);
 		}
 	}
 
 	return (
-		<div className='space-y-6'>
-			<div>
-				<div className='flex items-center justify-between mb-4'>
-					<h2 className='text-xl font-semibold'>Recent Activity</h2>
-					<AnimatedActivityCount count={activities.length} />
-				</div>
-				<div className='bg-card rounded-lg border'>
-					<div className='p-6'>
-						{activities.length === 0 ? (
-							<p className='text-muted-foreground text-center py-8'>
-								No recent activity
-							</p>
-						) : (
-							<ol className='space-y-4' aria-label='Recent activity timeline'>
-								{activities.map((activity) => (
+		<section className='space-y-6' aria-labelledby='recent-activity-heading'>
+			<div className='flex items-center justify-between mb-4'>
+				<h2 id='recent-activity-heading' className='text-xl font-semibold'>
+					Recent Activity
+				</h2>
+				<AnimatedActivityCount count={activities.length} />
+			</div>
+			<div className='bg-card rounded-lg border'>
+				<div className='p-6'>
+					{activities.length === 0 ? (
+						<p className='text-muted-foreground text-center py-8'>No recent activity</p>
+					) : (
+						<ol className='space-y-4' aria-label='Recent activity timeline'>
+							{activities.map((activity) => {
+								// Ensure timestamp is a Date object with defensive handling
+								const timestamp = new Date(activity.timestamp);
+								
+								// Skip this activity if timestamp is invalid
+								if (isNaN(timestamp.getTime())) {
+									console.warn('Invalid timestamp for activity:', activity.id, activity.timestamp);
+									return null;
+								}
+								
+								return (
 									<li
 										key={activity.id}
-										className='flex items-start space-x-4 p-4 bg-background rounded-lg border'
+										className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
 									>
 										<div
 											className='text-xl flex-shrink-0'
 											role='img'
 											aria-label={`${activity.type} activity`}
 										>
-											{getActivityIcon(activity.type)}
+											{getActivityIcon(activity.type, activity.icon)}
 										</div>
-										<div className='flex-1 min-w-0'>
+										<article className='flex-1 min-w-0'>
 											<p className='text-sm'>
 												<span className='font-medium'>
 													{activity.description}
@@ -89,19 +105,19 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 											</p>
 											<time
 												className='text-xs text-muted-foreground mt-1 block'
-												dateTime={activity.timestamp.toISOString()}
-												title={formatTimestamp(activity.timestamp, locale)}
+												dateTime={timestamp.toISOString()}
+												title={formatTimestamp(timestamp, locale)}
 											>
-												{getRelativeTimeString(activity.timestamp, locale)}
+												{getRelativeTimeString(timestamp, locale)}
 											</time>
-										</div>
+										</article>
 									</li>
-								))}
-							</ol>
-						)}
-					</div>
+								);
+							}).filter(Boolean)}
+						</ol>
+					)}
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }

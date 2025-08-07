@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { WelcomeModalProvider } from '../welcome-provider';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as storage from '@/utils/storage';
+import { WelcomeModalProvider } from '../welcome-provider';
 
 vi.mock('@/utils/storage', () => ({
 	hasSeenWelcomeModal: vi.fn(),
@@ -44,7 +44,7 @@ function mockEnvironment() {
 function TestApp() {
 	return (
 		<div>
-			<button data-testid="page-button">Page Button</button>
+			<button data-testid='page-button'>Page Button</button>
 			<WelcomeModalProvider>
 				<div>App Content</div>
 			</WelcomeModalProvider>
@@ -92,7 +92,9 @@ describe('WelcomeModal Integration Tests', () => {
 			for (let i = 0; i < 10; i++) {
 				await user.tab();
 				const newElement = document.activeElement;
-				expect([getStartedButton, registerButton, loginButton, closeButton]).toContain(newElement);
+				expect([getStartedButton, registerButton, loginButton, closeButton]).toContain(
+					newElement
+				);
 				if (newElement === currentElement) break;
 				currentElement = newElement;
 			}
@@ -133,9 +135,12 @@ describe('WelcomeModal Integration Tests', () => {
 				expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 			});
 
-			await waitFor(() => {
-				expect(pageButton).toHaveFocus();
-			}, { timeout: 100 });
+			await waitFor(
+				() => {
+					expect(pageButton).toHaveFocus();
+				},
+				{ timeout: 100 }
+			);
 		});
 	});
 
@@ -200,7 +205,7 @@ describe('WelcomeModal Integration Tests', () => {
 			await user.tab();
 			await user.tab();
 			await user.tab();
-			
+
 			expect(document.activeElement).toBeTruthy();
 			expect([
 				screen.getByText('Start Building Now'),
@@ -217,9 +222,12 @@ describe('WelcomeModal Integration Tests', () => {
 
 			expect(storage.setStorageOnClick).toHaveBeenCalled();
 
-			await waitFor(() => {
-				expect(pageButton).toHaveFocus();
-			}, { timeout: 100 });
+			await waitFor(
+				() => {
+					expect(pageButton).toHaveFocus();
+				},
+				{ timeout: 100 }
+			);
 		});
 	});
 });

@@ -2,6 +2,7 @@
 
 import { and, eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/features/auth/server/auth';
 import { account, user } from '@/features/auth/server/schemas';
 import { createResumeFactory } from '@/features/resume/server/factories';
@@ -11,6 +12,9 @@ type TUpdateProfileData = {
 	name?: string;
 	email?: string;
 	image?: string;
+	bio?: string;
+	location?: string;
+	website?: string;
 };
 
 type TPasswordChangeData = {
@@ -52,13 +56,18 @@ export async function updateUserProfile(userId: string, data: TUpdateProfileData
 		.where(eq(user.id, userId))
 		.returning();
 
+	// Revalidate relevant pages to show updated profile data
+	revalidatePath('/dashboard/profile');
+	revalidatePath('/dashboard');
+	revalidatePath('/', 'layout'); // Revalidate root layout for session data
+
 	return updatedUser;
 }
 
 export async function changeUserPassword(
-	userId: string,
-	currentPassword: string,
-	newPassword: string
+	_userId: string,
+	_currentPassword: string,
+	_newPassword: string
 ) {
 	try {
 		// TODO: Implement password change functionality
@@ -114,7 +123,7 @@ export async function listOAuthAccounts(userId: string): Promise<TOAuthAccount[]
 	return accounts;
 }
 
-export async function linkOAuthAccount(provider: TOAuthProvider) {
+export async function linkOAuthAccount(_provider: TOAuthProvider) {
 	try {
 		const sessionResult = await auth.api.getSession({
 			headers: await headers(),

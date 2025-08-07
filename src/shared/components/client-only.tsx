@@ -15,7 +15,7 @@ export function ClientOnly({ children, fallback }: TProps) {
 	}, []);
 
 	if (!hasMounted) {
-		return fallback ? <>{fallback}</> : null;
+		return fallback ? fallback : null;
 	}
 
 	return <>{children}</>;

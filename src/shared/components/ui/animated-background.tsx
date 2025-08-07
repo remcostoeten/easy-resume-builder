@@ -14,10 +14,13 @@ export function AnimatedBackground() {
 		window.removeEventListener('mousemove', handleMouseMove);
 	}
 
-	useEffect(function setupMouseTracking() {
-		window.addEventListener('mousemove', handleMouseMove);
-		return cleanup;
-	}, []);
+	useEffect(
+		function setupMouseTracking() {
+			window.addEventListener('mousemove', handleMouseMove);
+			return cleanup;
+		},
+		[cleanup, handleMouseMove]
+	);
 
 	return (
 		<div className='fixed inset-0 overflow-hidden pointer-events-none'>

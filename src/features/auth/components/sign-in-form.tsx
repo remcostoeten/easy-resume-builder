@@ -1,16 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { Eye, EyeOff } from 'lucide-react';
 import { authClient } from '@/features/auth/client/auth-client';
+import { OAuthButtons } from '@/features/auth/components';
 import { AnimatedCheckbox } from '@/shared/components/primitives/animated-checkbox';
 import { Button } from '@/shared/components/ui/button';
-import { Spinner } from '@/shared/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
 	Form,
@@ -21,6 +21,7 @@ import {
 	FormMessage,
 } from '@/shared/components/ui/form';
 import { Input } from '@/shared/components/ui/input';
+import { LoadingButton } from '@/shared/components/ui/loading-button';
 
 const signInSchema = z.object({
 	email: z.string().email('Please enter a valid email address'),
@@ -37,7 +38,6 @@ export function SignInForm({ onSuccess, className }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
-
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {
@@ -131,9 +131,7 @@ export function SignInForm({ onSuccess, className }: TProps) {
 												variant='ghost'
 												size='sm'
 												className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
-												onClick={function togglePassword() {
-													setShowPassword(!showPassword);
-												}}
+												onClick={() => setShowPassword(!showPassword)}
 												disabled={isLoading}
 											>
 												{showPassword ? (
@@ -166,18 +164,25 @@ export function SignInForm({ onSuccess, className }: TProps) {
 							)}
 						/>
 
-						<Button type='submit' disabled={isLoading} className='w-full'>
-							{isLoading ? (
-								<>
-									<Spinner size='sm' color='primary' className='mr-2' />
-									Signing in...
-								</>
-							) : (
-								'Sign In'
-							)}
-						</Button>
+						<LoadingButton type='submit' loading={isLoading} className='w-full'>
+							Sign In
+						</LoadingButton>
 					</form>
 				</Form>
+
+				<div className='relative py-4'>
+					<div className='absolute inset-0 flex items-center'>
+						<span className='w-full border-t border-border' />
+					</div>
+					<span className='relative bg-background px-2 text-xs text-muted-foreground'>
+						Or continue with
+					</span>
+				</div>
+
+				<OAuthButtons
+					onError={(msg) => toast.error('OAuth sign-in failed', { description: msg })}
+					className='pt-2'
+				/>
 			</CardContent>
 		</Card>
 	);

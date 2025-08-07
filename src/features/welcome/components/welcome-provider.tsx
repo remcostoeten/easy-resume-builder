@@ -14,11 +14,11 @@ export function WelcomeModalProvider({ children }: TProps) {
 	useEffect(function checkWelcomeModalStatus() {
 		const hasSeen = hasSeenWelcomeModal();
 		const shouldShow = !hasSeen;
-		
+
 		if (shouldShow) {
 			previousActiveElementRef.current = document.activeElement;
 		}
-		
+
 		setIsVisible(shouldShow);
 	}, []);
 
@@ -32,7 +32,7 @@ export function WelcomeModalProvider({ children }: TProps) {
 
 	function handleExitComplete() {
 		setStorageOnClick();
-		
+
 		setTimeout(function restoreFocus() {
 			if (previousActiveElementRef.current instanceof HTMLElement) {
 				previousActiveElementRef.current.focus();

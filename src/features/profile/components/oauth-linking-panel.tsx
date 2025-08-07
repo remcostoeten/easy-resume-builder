@@ -46,7 +46,7 @@ export function OAuthLinkingPanel({
 
 	useEffect(() => {
 		loadAccounts();
-	}, [userId]);
+	}, [loadAccounts]);
 
 	function loadAccounts() {
 		startTransition(async () => {

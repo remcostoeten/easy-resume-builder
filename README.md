@@ -5,7 +5,15 @@ This is a simple resume builder built with Next.js and Tailwind CSS.
 ## Requirements
 
 - **Node.js**: 18.x or 20.x (recommended: 20.x)
-- **npm**: 9.x or higher
+- **Bun**: Latest version (package manager)
+
+### Package Manager Policy
+
+**⚠️ Important: Bun is the only accepted package manager for this project.**
+
+- Use `bun` for all package management operations
+- **No other lockfiles** (pnpm-lock.yaml, yarn.lock, package-lock.json) may exist anywhere above the project directory
+- This ensures consistent dependency resolution and prevents conflicts between different package managers
 
 ## Developer Recovery Steps
 
@@ -17,16 +25,16 @@ If you encounter build errors, dependency conflicts, or other issues, follow the
 # 1. Remove all cached data and dependencies
 rm -rf node_modules
 rm -rf .next
-rm package-lock.json
+rm -rf bun.lockb
 
-# 2. Clear npm cache
-npm cache clean --force
+# 2. Clear Bun cache
+bun pm cache rm
 
 # 3. Clear Next.js cache (if exists)
-npx next clean
+bunx next clean
 
 # 4. Reinstall dependencies
-npm install
+bun install
 ```
 
 ### ⚠️ Important: React Version Warning
@@ -85,7 +93,7 @@ This environment variable is used for server-side API calls during build time an
 First, run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

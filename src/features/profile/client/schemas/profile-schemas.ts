@@ -3,7 +3,10 @@ import { z } from 'zod';
 export const TUpdateProfileSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters').optional(),
 	email: z.string().email('Please enter a valid email address').optional(),
-	image: z.string().url('Please enter a valid image URL').optional(),
+	image: z.string().optional(),
+	bio: z.string().optional(),
+	location: z.string().optional(),
+	website: z.string().url('Please enter a valid website URL').optional(),
 });
 
 export const TChangePasswordSchema = z
