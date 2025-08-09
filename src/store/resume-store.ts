@@ -1,7 +1,8 @@
 import { atom, getDefaultStore } from 'jotai';
+import { produce } from 'immer';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import type { TPersonalInfoForm } from '@/features/resume-schemas/resume-schemas';
-import type { TResumeData, TResumeSection, TSkillCategory, TWorkItem } from '@/types/resume';
+import type { TResumeData, TResumeSection, TSkillCategory, TWorkItem, TEducationItem } from '@/types/resume';
 
 // ---------------------- Jotai store ----------------------
 
@@ -141,6 +142,43 @@ export function removeWorkExperience(id: string): void {
 		...current,
 		workExperience: current.workExperience.filter((item) => item.id !== id),
 	}));
+}
+
+// Add education using Immer-style draft mutation
+export function addEducation(data: TEducationItem): void {
+	const store = getDefaultStore();
+	store.set(resumeAtom, (current) =>
+		produce(current, (draft) => {
+			// Ensure default empty array exists
+			if (!draft.education) draft.education = [] as unknown as Mutable<TEducationItem>[];
+			draft.education.push(data as unknown as Mutable<TEducationItem>);
+		})
+	);
+}
+
+// Update education using Immer-style draft mutation
+export function updateEducation(id: string, data: TEducationItem): void {
+	const store = getDefaultStore();
+	store.set(resumeAtom, (current) =>
+		produce(current, (draft) => {
+			if (!draft.education) draft.education = [] as unknown as Mutable<TEducationItem>[];
+			const idx = draft.education.findIndex((item) => item.id === id);
+			if (idx !== -1) {
+				draft.education[idx] = data as unknown as Mutable<TEducationItem>;
+			}
+		})
+	);
+}
+
+// Remove education using Immer-style draft mutation
+export function removeEducation(id: string): void {
+	const store = getDefaultStore();
+	store.set(resumeAtom, (current) =>
+		produce(current, (draft) => {
+			if (!draft.education) draft.education = [] as unknown as Mutable<TEducationItem>[];
+			draft.education = draft.education.filter((item) => item.id !== id) as unknown as Mutable<TEducationItem>[];
+		})
+	);
 }
 
 // Add skill category using the new atom

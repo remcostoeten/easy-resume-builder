@@ -3,7 +3,6 @@
 import { format } from 'date-fns';
 import type { TSession } from '@/features/auth/types';
 import { Avatar } from '@/shared/components/ui/avatar';
-import { Badge } from '@/shared/components/ui/badge';
 
 type TProps = {
 	user: TSession['user'];
@@ -31,11 +30,7 @@ export function ProfileOverview({ user, session }: TProps) {
 				<div>
 					<h2 className='text-2xl font-semibold'>{user.name}</h2>
 					<p className='text-muted-foreground'>{user.email}</p>
-					<div className='flex items-center space-x-2 mt-2'>
-						<Badge variant={user.emailVerified ? 'default' : 'destructive'}>
-							{user.emailVerified ? 'Email Verified' : 'Email Not Verified'}
-						</Badge>
-					</div>
+					<div className='flex items-center space-x-2 mt-2'></div>
 				</div>
 			</div>
 

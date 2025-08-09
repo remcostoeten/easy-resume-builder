@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { cn } from 'utilities';
 export type TGradientCardProps = {
@@ -24,19 +23,17 @@ export function GradientCard({
 	};
 
 	return (
-		<motion.div
+		<div
 			className={cn(
 				'relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br backdrop-blur-sm',
 				gradients[gradient],
 				hover &&
-					'transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10',
+					'gradient-card transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10',
 				className
 			)}
-			whileHover={hover ? { y: -2 } : undefined}
-			transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 		>
 			<div className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent' />
 			<div className='relative'>{children}</div>
-		</motion.div>
+		</div>
 	);
 }

@@ -3,6 +3,8 @@
 import { GraduationCap } from 'lucide-react';
 import { EmptyState } from '@/shared/components/ui';
 import type { TEducationItem } from '@/types/resume';
+import { addEducation } from '@/store/resume-store';
+import { nanoid } from 'nanoid';
 import { FormSection } from '../form/form-section';
 
 type TProps = {
@@ -10,10 +12,6 @@ type TProps = {
 };
 
 export function EducationSection({ data }: TProps) {
-	function handleAddEducation() {
-		console.log('Add education functionality coming soon');
-	}
-
 	return (
 		<FormSection title='Education' icon={<GraduationCap className='h-5 w-5' />}>
 			<div className='space-y-4'>
@@ -23,7 +21,18 @@ export function EducationSection({ data }: TProps) {
 						title='No Education Added'
 						description='Add your educational background, degrees, and academic achievements to showcase your qualifications.'
 						actionLabel='Add Education'
-						onAction={handleAddEducation}
+						onAction={() =>
+							addEducation({
+								id: nanoid(),
+								// The following fields reflect the simplified payload requested
+								// and will be completed in the form after creation
+								// Casting to any to align with helper expectations during initial add
+								institution: 'New School',
+								degree: 'Degree',
+								startDate: '',
+								endDate: '',
+							} as any)
+						}
 					/>
 				) : (
 					<div className='space-y-4'>

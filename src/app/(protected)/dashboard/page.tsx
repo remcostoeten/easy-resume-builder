@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 
 // Force dynamic rendering - this page requires authentication
 export const dynamic = 'force-dynamic';
+
 import { RecentActivity, ResumeListServer } from '@/components/dashboard';
-import { DashboardSkeleton } from '@/components/dashboard/dashboard-skeleton';
 import { OverviewServer } from '@/components/dashboard/overview-server';
 import { QuickStats } from '@/features/dashboard';
 import { ProfileOverview } from '@/features/profile/components';

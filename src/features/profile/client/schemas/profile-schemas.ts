@@ -6,7 +6,10 @@ export const TUpdateProfileSchema = z.object({
 	image: z.string().optional(),
 	bio: z.string().optional(),
 	location: z.string().optional(),
-	website: z.string().url('Please enter a valid website URL').optional(),
+	website: z.preprocess(
+		(val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+		z.string().url('Please enter a valid website URL').optional()
+	),
 });
 
 export const TChangePasswordSchema = z

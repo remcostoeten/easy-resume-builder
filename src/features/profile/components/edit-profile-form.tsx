@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
@@ -35,17 +35,17 @@ type TProps = {
 	onSuccess?: (data: TUpdateProfile) => void;
 	onError?: (error: string) => void;
 	onSubmitStart?: () => void;
-	externalFileInputRef?: React.RefObject<HTMLInputElement>;
 };
 
-export function EditProfileForm({ initialData, userId, onSuccess, onError, onSubmitStart, externalFileInputRef }: TProps) {
+export function EditProfileForm({
+	initialData,
+	userId,
+	onSuccess,
+	onError,
+	onSubmitStart,
+}: TProps) {
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
-	const internalFileInputRef = useRef<HTMLInputElement>(null);
-	const fileInputRef = externalFileInputRef || internalFileInputRef;
-	const [imagePreview, setImagePreview] = useState<string>(initialData.image || '');
-	const [currentObjectUrl, setCurrentObjectUrl] = useState<string | null>(null);
-	
 	const isSubmitting = isPending;
 
 	const form = useForm<TUpdateProfile>({
@@ -60,41 +60,11 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 		},
 	});
 
-	// Cleanup object URLs on unmount
-	useEffect(() => {
-		return () => {
-			if (currentObjectUrl) {
-				URL.revokeObjectURL(currentObjectUrl);
-			}
-		};
-	}, [currentObjectUrl]);
-
-	function handleFileUpload() {
-		fileInputRef.current?.click();
-	}
-
-	function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-		const file = event.target.files?.[0];
-		if (file) {
-			// Clean up previous object URL
-			if (currentObjectUrl) {
-				URL.revokeObjectURL(currentObjectUrl);
-			}
-
-			// Create new object URL for preview
-			const objectUrl = URL.createObjectURL(file);
-			setCurrentObjectUrl(objectUrl);
-			setImagePreview(objectUrl);
-			// For now, set the image field to the object URL (in real app, you'd upload to server first)
-			form.setValue('image', objectUrl);
-		}
-	}
-
 	function handleSubmit(data: TUpdateProfile) {
 		onSubmitStart?.();
 		startTransition(async () => {
 			try {
-		const _updatedUser = await updateUserProfile(userId, data);
+				const _updatedUser = await updateUserProfile(userId, data);
 
 				// Force a full page refresh to update session data and UI
 				router.refresh();
@@ -128,13 +98,6 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 			location: initialData.location || '',
 			website: initialData.website || '',
 		});
-		// Reset image preview to original
-		setImagePreview(initialData.image || '');
-		// Clean up any current object URL
-		if (currentObjectUrl) {
-			URL.revokeObjectURL(currentObjectUrl);
-			setCurrentObjectUrl(null);
-		}
 	}
 
 	return (
@@ -168,45 +131,8 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 					)}
 				/>
 
-				{!externalFileInputRef && (
-					<FormField
-						control={form.control}
-						name='image'
-						render={() => (
-							<FormItem>
-								<FormLabel>Profile Picture</FormLabel>
-								<FormControl>
-									<div className='flex items-center space-x-4'>
-										{imagePreview && (
-											<img 
-												src={imagePreview} 
-												alt='Profile preview' 
-												className='w-16 h-16 rounded-full object-cover'
-											/>
-										)}
-										<Button
-											type='button'
-											variant='outline'
-											onClick={handleFileUpload}
-											disabled={isSubmitting}
-										>
-											Upload New Picture
-										</Button>
-									</div>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				)}
-
-				<input
-					ref={fileInputRef}
-					type='file'
-					accept='image/*'
-					className='hidden'
-					onChange={handleFileChange}
-				/>
+				{/* Image upload UI disabled */}
+				<div className='text-xs text-muted-foreground'>Image upload not supported yet.</div>
 
 				<FormField
 					control={form.control}
@@ -276,6 +202,6 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 					</Button>
 				</div>
 			</form>
-		</Form>
-	);
+	</Form>
+	)
 }

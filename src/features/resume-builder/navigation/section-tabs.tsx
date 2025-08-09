@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
@@ -342,11 +342,8 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 
 			{/* Keyboard hint overlay */}
 			{showKeyboardHint && (
-				<motion.div
-					initial={{ opacity: 0, y: -10 }}
-					animate={{ opacity: 1, y: 0 }}
-					exit={{ opacity: 0, y: -10 }}
-					className='absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50'
+				<div
+					className='absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 keyboard-hint'
 					role='alert'
 					aria-live='polite'
 				>
@@ -354,7 +351,7 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 						💡 Use ← → arrow keys or number keys (1-{enabledSections.length}) to
 						navigate sections
 					</div>
-				</motion.div>
+				</div>
 			)}
 		</nav>
 	);

@@ -1,7 +1,9 @@
 'use client';
 
-import { AlertTriangle, Database, LogOut, Trash2, UserX } from 'lucide-react';
+import { AlertTriangle, Database, LogOut, UserX } from 'lucide-react';
 import type { TSession } from '@/features/auth/types';
+import { useRouter } from 'next/navigation';
+import { DeleteAccountPanel } from '@/features/profile/components/delete-account-panel';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -29,6 +31,7 @@ type TProps = {
 };
 
 export function ProfileDangerZone({ user, session }: TProps) {
+	const router = useRouter();
 	return (
 		<div className='space-y-6'>
 			<div className='flex items-center space-x-3'>
@@ -153,74 +156,15 @@ export function ProfileDangerZone({ user, session }: TProps) {
 					</CardContent>
 				</Card>
 
-				<Card className='border-destructive'>
-					<CardHeader>
-						<CardTitle className='text-base flex items-center space-x-2'>
-							<Trash2 className='h-4 w-4 text-destructive' />
-							<span className='text-destructive'>Delete Account</span>
-							<Badge variant='destructive' className='ml-2'>
-								Permanent
-							</Badge>
-						</CardTitle>
-						<CardDescription>
-							Permanently delete your account and all associated data. This cannot be
-							undone.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className='space-y-3'>
-							<div className='text-sm text-muted-foreground'>
-								This will permanently delete:
-							</div>
-							<ul className='text-sm text-muted-foreground space-y-1 ml-4'>
-								<li className='flex items-center space-x-2'>
-									<div className='h-1 w-1 rounded-full bg-destructive' />
-									<span>Your profile and account data</span>
-								</li>
-								<li className='flex items-center space-x-2'>
-									<div className='h-1 w-1 rounded-full bg-destructive' />
-									<span>All connected OAuth accounts</span>
-								</li>
-								<li className='flex items-center space-x-2'>
-									<div className='h-1 w-1 rounded-full bg-destructive' />
-									<span>Settings and preferences</span>
-								</li>
-								<li className='flex items-center space-x-2'>
-									<div className='h-1 w-1 rounded-full bg-destructive' />
-									<span>Activity history and sessions</span>
-								</li>
-							</ul>
-							<div className='pt-2'>
-								<AlertDialog>
-									<AlertDialogTrigger asChild>
-										<Button variant='destructive' size='sm' disabled>
-											<Trash2 className='h-4 w-4 mr-2' />
-											Delete Account Permanently
-										</Button>
-									</AlertDialogTrigger>
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle className='text-destructive'>
-												Delete account permanently?
-											</AlertDialogTitle>
-											<AlertDialogDescription>
-												This action cannot be undone. This will permanently
-												delete your account and remove all your data from
-												our servers.
-											</AlertDialogDescription>
-										</AlertDialogHeader>
-										<AlertDialogFooter>
-											<AlertDialogCancel>Cancel</AlertDialogCancel>
-											<AlertDialogAction className='bg-destructive hover:bg-destructive/90'>
-												Delete Account Forever
-											</AlertDialogAction>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+				{/* Replace the static delete card with functional DeleteAccountPanel */}
+				<DeleteAccountPanel
+					userId={user.id}
+					onSuccess={() => {
+						// Redirect to login after deletion and refresh
+						router.replace('/login');
+						router.refresh();
+					}}
+				/>
 			</div>
 		</div>
 	);

@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { Building, Calendar, Plus, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useFormPersistence } from '@/hooks/use-form-persistence';

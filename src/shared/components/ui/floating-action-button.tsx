@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cn } from 'utilities';
@@ -21,13 +20,7 @@ export function FloatingActionButton({
 	variant = 'primary',
 }: TFloatingActionButtonProps) {
 	return (
-		<motion.div
-			className={cn('fixed bottom-8 right-8 z-50', className)}
-			initial={{ scale: 0, rotate: -180 }}
-			animate={{ scale: 1, rotate: 0 }}
-			whileHover={{ scale: 1.1 }}
-			whileTap={{ scale: 0.9 }}
-		>
+		<div className={cn('fixed bottom-8 right-8 z-50 floating-button', className)}>
 			<Button
 				onClick={onClick}
 				size='lg'
@@ -43,6 +36,6 @@ export function FloatingActionButton({
 				{icon}
 				{label && <span className='font-medium'>{label}</span>}
 			</Button>
-		</motion.div>
+		</div>
 	);
 }

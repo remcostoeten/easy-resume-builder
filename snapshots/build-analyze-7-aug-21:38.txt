@@ -1,0 +1,66 @@
+bun build:analyze
+$ next build && node scripts/analyze-bundle.mjs
+ ⚠ Warning: Found multiple lockfiles. Selecting /home/remcostoeten/bun.lock.
+   Consider removing the lockfiles at:
+   * /home/remcostoeten/sites/easy/bun.lock
+
+   ▲ Next.js 15.4.5
+   - Environments: .env
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 5.0s
+ ✓ Linting and checking validity of types    
+ ✓ Collecting page data    
+ ✓ Generating static pages (12/12)
+ ✓ Collecting build traces    
+ ✓ Finalizing page optimization    
+
+Route (app)                                 Size  First Load JS    
+┌ ○ /                                    8.46 kB         289 kB
+├ ○ /_not-found                            141 B         101 kB
+├ ƒ /api/auth/[...better]                  141 B         101 kB
+├ ƒ /api/parse-pdf                         141 B         101 kB
+├ ƒ /dashboard                             17 kB         292 kB
+├ ƒ /dashboard/profile                   8.36 kB         131 kB
+├ ○ /dashboard/resume/create               141 B         101 kB
+├ ƒ /dashboard/resume/edit/[id]            141 B         101 kB
+├ ○ /image-test                          5.82 kB         106 kB
+├ ○ /login                                 808 B         169 kB
+├ ○ /pdf-test                            5.67 kB         137 kB
+├ ○ /register                               1 kB         169 kB
+└ ○ /sign-in                               806 B         169 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/4bd1b696-602635ee57868870.js  54.1 kB
+  ├ chunks/5964-fecb15fdb3b6e43e.js      43.5 kB
+  └ other shared chunks (total)          2.91 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+📊 Analyzing bundle sizes...
+
+📦 Total .next directory: 560.75 MB
+🖼️  Static assets: 2.72 MB
+🧩 JavaScript chunks: 1.64 MB
+
+🏆 Top 10 largest JavaScript chunks:
+1. 9068-3db30d6a94274252.js: 223.49 KB
+2. 4bd1b696-602635ee57868870.js: 168.68 KB
+3. 5964-fecb15fdb3b6e43e.js: 161.84 KB
+4. framework-9eecfdb87c0ba10f.js: 136.61 KB
+5. main-5d33359737662dbd.js: 112.92 KB
+6. polyfills-42372ed130431b0a.js: 109.96 KB
+7. 7435-2b54c7c2a57a48e7.js: 60.17 KB
+8. 8180-4e1818c6b4eea421.js: 47.78 KB
+9. 6352.454dfb7ee885e9e5.js: 45.29 KB
+10. 1527-89ff839e8d6abe6b.js: 39.86 KB
+
+💡 Optimization recommendations:
+⚠️  Large bundle size detected - consider lazy loading more components
+✅ Use lazy loading for heavy components
+✅ Consider preloading critical resources
+✅ Optimize images and fonts
+✅ Enable compression in production
