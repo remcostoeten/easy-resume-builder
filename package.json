@@ -20,7 +20,6 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"build:analyze": "next build && node scripts/analyze-bundle.mjs",
 		"dev": "next dev",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write --unsafe src",
@@ -34,9 +33,6 @@
 		"test:run": "vitest run",
 		"remove-unused": "bun scripts/remove-unused.ts",
 		"remove-unused:yes": "bun scripts/remove-unused.ts --yes",
-		"check:animations": "node scripts/check-framer-motion-imports.mjs",
-		"prepare": "husky",
-		"precommit:fast": "node scripts/precommit-sanitize.mjs"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "^6.1.0",
@@ -119,7 +115,6 @@
 		"@vitest/ui": "^3.2.4",
 		"babel-plugin-react-compiler": "latest",
 		"drizzle-kit": "^0.31.4",
-		"husky": "^9.1.7",
 		"jsdom": "^26.1.0",
 		"postcss": "^8.5",
 		"tailwindcss": "^4.1.9",
