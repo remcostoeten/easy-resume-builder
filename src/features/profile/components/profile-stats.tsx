@@ -1,6 +1,5 @@
 'use client';
 
-import AnimatedNumber from '@/features/dashboard/components/animated-number';
 
 type TProps = {
 	lastLoginTime: Date | null;
@@ -64,12 +63,7 @@ export function ProfileStats({ lastLoginTime, createdAt }: TProps) {
 						relative.label
 					) : (
 						<>
-							<AnimatedNumber
-								value={relative.value}
-								className='font-mono'
-								format={{ notation: 'standard' }}
-							/>{' '}
-							{relative.label}
+							span className='font-mono'{relative.value}/span {relative.label}
 						</>
 					)}
 				</dd>
@@ -78,12 +72,7 @@ export function ProfileStats({ lastLoginTime, createdAt }: TProps) {
 			<div>
 				<dt className='text-sm font-medium text-muted-foreground mb-2'>Member Since</dt>
 				<dd className='text-base'>
-					<AnimatedNumber
-						value={day}
-						className='font-mono'
-						format={{ notation: 'standard' }}
-					/>{' '}
-					{monthLabel} <span className='font-mono inline-block'>{year}</span>
+					span className='font-mono'{day}/span {monthLabel} span className='font-mono inline-block'{year}/span
 				</dd>
 			</div>
 		</dl>

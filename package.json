@@ -26,7 +26,6 @@
 		"lint:fix": "biome check --write --unsafe src",
 		"format": "biome format --write src",
 		"start": "next start",
-		"analyze": "node scripts/analyze-bundle.mjs",
 		"gen": "drizzle-kit generate",
 		"push": "drizzle-kit push",
 		"migrate": "drizzle-kit migrate",
@@ -36,7 +35,6 @@
 		"remove-unused": "bun scripts/remove-unused.ts",
 		"remove-unused:yes": "bun scripts/remove-unused.ts --yes",
 		"check:animations": "node scripts/check-framer-motion-imports.mjs",
-		"bundle:analyze": "bun run build:analyze",
 		"prepare": "husky",
 		"precommit:fast": "node scripts/precommit-sanitize.mjs"
 	},

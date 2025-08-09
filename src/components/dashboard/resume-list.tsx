@@ -85,7 +85,7 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 		<section className='space-y-6' aria-labelledby='resume-list-heading'>
 			<div className='flex justify-between items-center mb-4'>
 				<h2 id='resume-list-heading' className='text-xl font-semibold'>
-					Resume List (<AnimatedActivityCount count={resumes.length} />)
+					Resume List ({resumes.length})
 				</h2>
 				<button
 					type='button'

@@ -1,4 +1,3 @@
-import { AnimatedActivityCount } from './animated-activity-count';
 import { StatCard } from './stat-card';
 
 export function Stats() {
@@ -9,11 +8,11 @@ export function Stats() {
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 					<StatCard
 						title='Application Status'
-						value={<AnimatedActivityCount count={5} />}
+						value={5}
 					/>
 					<StatCard
 						title='Monthly Progress'
-						value={<AnimatedActivityCount count={15} />}
+						value={15}
 					/>
 				</div>
 			</div>
