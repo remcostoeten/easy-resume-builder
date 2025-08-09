@@ -6,17 +6,13 @@ import type { TAccount } from '@/features/auth/server/schemas/account';
 import type { TSession } from '@/features/auth/types';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { cn } from '@/shared/utilities';
+import { ChangePasswordForm } from '@/features/profile/components/change-password-form';
 
 const ProfileOverview = lazy(() =>
 	import('./tabs/profile-overview').then((module) => ({ default: module.ProfileOverview }))
 );
 const ProfileEditProfile = lazy(() =>
 	import('./tabs/profile-edit-profile').then((module) => ({ default: module.ProfileEditProfile }))
-);
-const ProfileChangePassword = lazy(() =>
-	import('./tabs/profile-change-password').then((module) => ({
-		default: module.ProfileChangePassword,
-	}))
 );
 const ProfileOAuth = lazy(() =>
 	import('./tabs/profile-oauth').then((module) => ({ default: module.ProfileOAuth }))
@@ -119,8 +115,8 @@ export function ProfileTabs({ user, session, oauthAccounts }: TProps) {
 					</Tabs.Content>
 
 					<Tabs.Content value='change-password'>
-						<Suspense fallback={<TabSkeleton />}>
-							<ProfileChangePassword />
+						<Suspense fallback={<TabSkeleton />}> 
+							<ChangePasswordForm userId={user.id} />
 						</Suspense>
 					</Tabs.Content>
 

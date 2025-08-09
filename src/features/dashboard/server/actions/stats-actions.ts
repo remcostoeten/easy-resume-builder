@@ -1,6 +1,6 @@
 'use server';
 
-import { count, desc, eq, sql } from 'drizzle-orm';
+import { count, eq, sql } from 'drizzle-orm';
 import { unstable_cache } from 'next/cache';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';

@@ -30,8 +30,7 @@ export function ProfileOverview({ user, session }: TProps) {
 				<div>
 					<h2 className='text-2xl font-semibold'>{user.name}</h2>
 					<p className='text-muted-foreground'>{user.email}</p>
-					<div className='flex items-center space-x-2 mt-2'>
-					</div>
+					<div className='flex items-center space-x-2 mt-2'></div>
 				</div>
 			</div>
 

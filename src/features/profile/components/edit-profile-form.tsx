@@ -37,7 +37,13 @@ type TProps = {
 	onSubmitStart?: () => void;
 };
 
-export function EditProfileForm({ initialData, userId, onSuccess, onError, onSubmitStart }: TProps) {
+export function EditProfileForm({
+	initialData,
+	userId,
+	onSuccess,
+	onError,
+	onSubmitStart,
+}: TProps) {
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
 	const isSubmitting = isPending;
@@ -178,43 +184,6 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 				</div>
 
 				<div className='flex gap-4'>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-					<FormField
-						control={form.control}
-						name='location'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Location</FormLabel>
-								<FormControl>
-									<Input placeholder='City, Country' disabled={isSubmitting} {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name='website'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Website</FormLabel>
-								<FormControl>
-									<Input type='url' placeholder='https://yourwebsite.com' disabled={isSubmitting} {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
-
-				<div className='flex gap-4'>
 					<Button 
 						type='button' 
 						variant='outline' 
@@ -233,6 +202,6 @@ export function EditProfileForm({ initialData, userId, onSuccess, onError, onSub
 					</Button>
 				</div>
 			</form>
-		</Form>
-	);
+	</Form>
+	)
 }

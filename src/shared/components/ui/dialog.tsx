@@ -71,7 +71,7 @@ function DialogContent({
 		}
 	}
 
-		return (
+	return (
 		<DialogPortal data-slot='dialog-portal'>
 			<DialogOverlay />
 			<DialogPrimitive.Content asChild {...props}>
@@ -99,7 +99,7 @@ function DialogContent({
 							<DialogPrimitive.Close
 								data-slot='dialog-close'
 								aria-label='Close dialog'
-								className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+								className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 							>
 								<XIcon />
 								<span className='sr-only'>Close</span>

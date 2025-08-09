@@ -33,9 +33,9 @@ export function FloatingActionButton({
 					label && 'w-auto px-6 gap-2'
 				)}
 			>
-			{icon}
-			{label && <span className='font-medium'>{label}</span>}
-		</Button>
-	</div>
+				{icon}
+				{label && <span className='font-medium'>{label}</span>}
+			</Button>
+		</div>
 	);
 }

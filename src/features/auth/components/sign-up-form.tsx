@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { authClient } from '@/features/auth/client/auth-client';
 import { OAuthButtons } from '@/features/auth/components';
-import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import {
 	Form,

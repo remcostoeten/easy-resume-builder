@@ -1,10 +1,11 @@
 'use server';
 
 import { and, eq } from 'drizzle-orm';
-import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
 import { account, user } from '@/features/auth/server/schemas';
+import { session, verification } from '@/features/auth/server/better-auth-schema';
 import { createResumeFactory } from '@/features/resume/server/factories';
 import { db } from '@/server/db';
 
@@ -64,46 +65,93 @@ export async function updateUserProfile(userId: string, data: TUpdateProfileData
 	return updatedUser;
 }
 
-export async function changeUserPassword(
-	_userId: string,
-	_currentPassword: string,
-	_newPassword: string
-) {
-	try {
-		// TODO: Implement password change functionality
-		// const result = await auth.api.changePassword({
-		//   body: {
-		//     currentPassword,
-		//     newPassword,
-		//   },
-		//   headers: await headers(),
-		// });
+type TResult = { ok: boolean; message?: string };
 
-		return { success: true };
-	} catch (error) {
-		const errorMessage = error instanceof Error ? error.message : 'Failed to change password';
-		throw new Error(`Password change failed: ${errorMessage}`);
+export async function changeUserPassword(
+	userId: string,
+	currentPassword: string,
+	newPassword: string
+): Promise<TResult> {
+	try {
+		const sessionResult = await auth.api.getSession({
+			headers: await headers(),
+		});
+
+		if (!sessionResult || sessionResult.user.id !== userId) {
+			return { ok: false, message: 'Unauthorized' };
+		}
+
+		if (!newPassword || newPassword.length < 8) {
+			return { ok: false, message: 'Password update failed' };
+		}
+
+		try {
+			await auth.api.changePassword({
+				body: {
+					currentPassword,
+					newPassword,
+				},
+				headers: await headers(),
+			});
+			return { ok: true };
+		} catch (err) {
+			const message = err instanceof Error ? err.message.toLowerCase() : '';
+			if (message.includes('invalid') || message.includes('current password')) {
+				return { ok: false, message: 'Invalid current password' };
+			}
+			return { ok: false, message: 'Password update failed' };
+		}
+	} catch {
+		return { ok: false, message: 'Password update failed' };
 	}
 }
 
-export async function deleteUserAccount(userId: string) {
-	const userResumes = await resumeFactory.listByUserId(userId);
-
-	for (const resume of userResumes) {
-		await resumeFactory.destroy(resume.id);
-	}
-
+export async function deleteUserAccount(userId: string): Promise<TResult> {
 	try {
-		// TODO: Implement user deletion functionality
-		// await auth.api.deleteUser({
-		//   body: {},
-		//   headers: await headers(),
-		// });
-		console.log('User account deletion not yet implemented');
-	} catch (error) {
-		const errorMessage =
-			error instanceof Error ? error.message : 'Failed to delete user account';
-		throw new Error(`Account deletion failed: ${errorMessage}`);
+		const sessionResult = await auth.api.getSession({
+			headers: await headers(),
+		});
+
+		if (!sessionResult || sessionResult.user.id !== userId) {
+			return { ok: false, message: 'Unauthorized' };
+		}
+
+		const userResumes = await resumeFactory.listByUserId(userId);
+		for (const resume of userResumes) {
+			await resumeFactory.destroy(resume.id);
+		}
+
+		let deletedViaAPI = false;
+		try {
+			await auth.api.deleteUser({
+				body: {},
+				headers: await headers(),
+			});
+			deletedViaAPI = true;
+		} catch {
+			deletedViaAPI = false;
+		}
+
+		if (!deletedViaAPI) {
+			const [uRow] = await db
+				.select({ email: user.email })
+				.from(user)
+				.where(eq(user.id, userId));
+
+			await db.transaction(async (tx) => {
+				if (uRow?.email) {
+					await tx.delete(verification).where(eq(verification.identifier, uRow.email));
+				}
+				await tx.delete(session).where(eq(session.userId, userId));
+				await tx.delete(account).where(eq(account.userId, userId));
+				await tx.delete(user).where(eq(user.id, userId));
+			});
+		}
+
+		await auth.api.signOut({ headers: await headers() });
+		return { ok: true };
+	} catch {
+		return { ok: false, message: 'Account deletion failed' };
 	}
 }
 

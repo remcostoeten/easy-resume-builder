@@ -1,6 +1,7 @@
 'use client';
 
 import type React from 'react';
+import { UserTopBar } from '@/features/auth/components/user-top-bar';
 import {
 	Sidebar,
 	SidebarContent,
@@ -9,7 +10,6 @@ import {
 	SidebarProvider,
 } from '@/shared/components/ui';
 import { SidebarNavigation } from './sidebar-navigation';
-import { UserTopBar } from '@/features/auth/components/user-top-bar';
 
 type TProps = {
 	children: React.ReactNode;

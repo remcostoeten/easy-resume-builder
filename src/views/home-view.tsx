@@ -115,7 +115,7 @@ function HomeView() {
 		});
 	}, [isSplitMode]);
 
-	const handlePreview = useCallback(() => {
+	const _handlePreview = useCallback(() => {
 		console.log('Preview mode:', !isPreviewMode);
 	}, [isPreviewMode]);
 

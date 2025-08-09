@@ -91,7 +91,6 @@ export async function ProfileOverview({ userData: providedUserData }: TProps) {
 								<h3 className='text-xl font-semibold'>{userData.name}</h3>
 								<p className='text-muted-foreground'>{userData.email}</p>
 							</div>
-
 						</div>
 					</div>
 

@@ -38,25 +38,24 @@ export function ChangePasswordForm({ userId, onSuccess, onError }: TProps) {
 
 	function handleSubmit(data: TChangePassword) {
 		startTransition(async () => {
-			try {
-				await changeUserPassword(userId, data.currentPassword, data.newPassword);
+			const result = await changeUserPassword(
+				userId,
+				data.currentPassword,
+				data.newPassword
+			);
 
+			if (result.ok) {
 				toast.success('Password changed', {
 					description: 'Your password has been successfully updated.',
 				});
-
 				form.reset();
 				onSuccess?.();
-			} catch (error) {
-				const errorMessage =
-					error instanceof Error ? error.message : 'Failed to change password';
-
-				toast.error('Password change failed', {
-					description: errorMessage,
-				});
-
-				onError?.(errorMessage);
+				return;
 			}
+
+			const message = result.message ?? 'Password update failed';
+			toast.error('Password change failed', { description: message });
+			onError?.(message);
 		});
 	}
 

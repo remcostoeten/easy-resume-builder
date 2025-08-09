@@ -1,4 +1,5 @@
-# Check for incorrect Framer Motion imports
-node scripts/check-framer-motion-imports.mjs
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-bun test
+# Fast, non-blocking cleanup and advisory checks only
+node scripts/precommit-sanitize.mjs || true

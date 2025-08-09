@@ -72,48 +72,54 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 						<p className='text-muted-foreground text-center py-8'>No recent activity</p>
 					) : (
 						<ol className='space-y-4' aria-label='Recent activity timeline'>
-							{activities.map((activity) => {
-								// Ensure timestamp is a Date object with defensive handling
-								const timestamp = new Date(activity.timestamp);
-								
-								// Skip this activity if timestamp is invalid
-								if (isNaN(timestamp.getTime())) {
-									console.warn('Invalid timestamp for activity:', activity.id, activity.timestamp);
-									return null;
-								}
-								
-								return (
-									<li
-										key={activity.id}
-										className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
-									>
-										<div
-											className='text-xl flex-shrink-0'
-											role='img'
-											aria-label={`${activity.type} activity`}
+							{activities
+								.map((activity) => {
+									// Ensure timestamp is a Date object with defensive handling
+									const timestamp = new Date(activity.timestamp);
+
+									// Skip this activity if timestamp is invalid
+									if (Number.isNaN(timestamp.getTime())) {
+										console.warn(
+											'Invalid timestamp for activity:',
+											activity.id,
+											activity.timestamp
+										);
+										return null;
+									}
+
+									return (
+										<li
+											key={activity.id}
+											className='flex items-start space-x-4 p-4 bg-background rounded-lg border hover:bg-muted/50 transition-colors'
 										>
-											{getActivityIcon(activity.type, activity.icon)}
-										</div>
-										<article className='flex-1 min-w-0'>
-											<p className='text-sm'>
-												<span className='font-medium'>
-													{activity.description}
-												</span>{' '}
-												<span className='text-muted-foreground truncate'>
-													{activity.title}
-												</span>
-											</p>
-											<time
-												className='text-xs text-muted-foreground mt-1 block'
-												dateTime={timestamp.toISOString()}
-												title={formatTimestamp(timestamp, locale)}
+											<div
+												className='text-xl flex-shrink-0'
+												role='img'
+												aria-label={`${activity.type} activity`}
 											>
-												{getRelativeTimeString(timestamp, locale)}
-											</time>
-										</article>
-									</li>
-								);
-							}).filter(Boolean)}
+												{getActivityIcon(activity.type, activity.icon)}
+											</div>
+											<article className='flex-1 min-w-0'>
+												<p className='text-sm'>
+													<span className='font-medium'>
+														{activity.description}
+													</span>{' '}
+													<span className='text-muted-foreground truncate'>
+														{activity.title}
+													</span>
+												</p>
+												<time
+													className='text-xs text-muted-foreground mt-1 block'
+													dateTime={timestamp.toISOString()}
+													title={formatTimestamp(timestamp, locale)}
+												>
+													{getRelativeTimeString(timestamp, locale)}
+												</time>
+											</article>
+										</li>
+									);
+								})
+								.filter(Boolean)}
 						</ol>
 					)}
 				</div>

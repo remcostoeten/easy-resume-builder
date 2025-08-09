@@ -1,8 +1,9 @@
 'use client';
 
+import { Pencil, User } from 'lucide-react';
 import { useState } from 'react';
-import { User, Pencil } from 'lucide-react';
 import type { TSession } from '@/features/auth/types';
+import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
 import { Avatar } from '@/shared/components/ui/avatar';
 import {
 	Card,
@@ -11,14 +12,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card';
-import { EditProfileForm } from '@/features/profile/components/edit-profile-form';
 
 type TProps = {
 	user: TSession['user'];
 };
 
 export function ProfileEditProfile({ user }: TProps) {
-	const [isLoading, setIsLoading] = useState(false);
+	const [_isLoading, setIsLoading] = useState(false);
 	const userInitials = user.name
 		.split(' ')
 		.map((n) => n[0])
