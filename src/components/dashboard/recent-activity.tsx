@@ -1,5 +1,4 @@
 import { getRecentActivity } from '@/features/dashboard/server/actions/recent-activity-actions';
-import { AnimatedActivityCount } from './animated-activity-count';
 
 type TProps = {
 	locale?: string;
@@ -64,7 +63,7 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 				<h2 id='recent-activity-heading' className='text-xl font-semibold'>
 					Recent Activity
 				</h2>
-				<AnimatedActivityCount count={activities.length} />
+				{activities.length}
 			</div>
 			<div className='bg-card rounded-lg border'>
 				<div className='p-6'>

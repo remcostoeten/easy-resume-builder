@@ -1,24 +1,14 @@
-import { headers } from 'next/headers';
-import { auth } from '@/features/auth/server/auth';
 import { listUserResumes } from '@/features/resume/server/actions';
 import { ResumeList } from './resume-list';
 
-export async function ResumeListServer() {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+type TProps = { userId: string };
 
-	if (!session?.user?.id) {
-		throw new Error('Unauthorized: User session not found');
-	}
-
+export async function ResumeListServer({ userId }: TProps) {
 	try {
-		const resumes = await listUserResumes(session.user.id);
-
-		return <ResumeList userId={session.user.id} initialResumes={resumes} />;
+		const resumes = await listUserResumes(userId);
+		return <ResumeList userId={userId} initialResumes={resumes} />;
 	} catch (error) {
 		console.error('Failed to fetch resumes:', error);
-
 		return (
 			<div className='space-y-6'>
 				<div className='flex justify-between items-center mb-4'>

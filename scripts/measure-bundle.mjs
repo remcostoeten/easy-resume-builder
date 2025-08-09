@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, existsSync, appendFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, appendFileSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 const TARGET_FIRST_LOAD_JS = 200; // KB
@@ -164,7 +164,10 @@ function suggestOptimizations(bundleData) {
 function main() {
 	console.log('📦 Starting bundle size measurement...\n');
 	
-	// Initialize CSV if it doesn't exist
+	// Ensure perf directory exists and initialize CSV if needed
+	if (!existsSync('./perf')) {
+		mkdirSync('./perf', { recursive: true });
+	}
 	if (!existsSync('./perf/history.csv')) {
 		const headers = 'timestamp,commit_hash,first_load_js_kb,total_bundle_kb,notes\n';
 		writeFileSync('./perf/history.csv', headers);

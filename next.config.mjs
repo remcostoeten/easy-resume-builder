@@ -9,7 +9,8 @@ const nextConfig = {
 	// Enable available experimental features
 	experimental: {
 		// Only include features that are actually available in Next.js 15
-		optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react', '@number-flow/react'],
+		optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+		reactCompiler: true,
 	},
 
 	webpack: (config, { dev, isServer }) => {
@@ -44,8 +45,7 @@ const nextConfig = {
 	transpilePackages: [
 		'@dnd-kit/core', 
 		'@dnd-kit/sortable', 
-		'@dnd-kit/utilities',
-		'@number-flow/react'
+		'@dnd-kit/utilities'
 	],
 
 	// Strict mode for better development experience

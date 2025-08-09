@@ -1,0 +1,8 @@
+timestamp,commit_hash,first_load_js_kb,total_bundle_kb,notes
+2025-08-09T15:48:24.215Z,3f09f4d,304,466563,after upgrading to React 19 + Compiler
+2025-08-09T15:50:45.800Z,3f09f4d,0,0,40,1140,25476,0.059,55,React 19 + Compiler baseline
+2025-08-09T15:53:41.896Z,3f09f4d,306,567998,After lazy-loading widgets on dashboard
+2025-08-09T15:55:04.023Z,3f09f4d,306,566351,After client wrappers for animated widgets
+2025-08-09T15:57:07.043Z,3f09f4d,304,677329,After removing @number-flow/react + animations
+2025-08-09T15:58:47.345Z,3f09f4d,304,676696,After dropping animated counts and NumberFlow entirely
+2025-08-09T15:59:47.334Z,3f09f4d,101,596566,45,1060,25062,0,56,After optimizations

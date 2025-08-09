@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, existsSync, appendFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, appendFileSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 const TARGET_FIRST_LOAD_JS = 200; // KB
@@ -172,6 +172,7 @@ function logToHistory(bundleData, lighthouseData, notes = '') {
 		notes
 	].join(',');
 	
+	if (!existsSync('./perf')) { mkdirSync('./perf', { recursive: true }); }
 	appendFileSync('./perf/history.csv', csvLine + '\n');
 	
 	console.log('\n📊 Performance metrics logged:');

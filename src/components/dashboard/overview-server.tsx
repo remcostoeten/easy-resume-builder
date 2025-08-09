@@ -1,18 +1,9 @@
-import { headers } from 'next/headers';
-import { auth } from '@/features/auth/server/auth';
 import { getDashboardOverview } from '@/features/dashboard/server/actions/overview-actions';
 import { Overview } from './overview';
 
-export async function OverviewServer() {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+type TProps = { userId: string };
 
-	if (!session?.user?.id) {
-		throw new Error('Unauthorized: User session not found');
-	}
-
-	const overviewData = await getDashboardOverview(session.user.id);
-
+export async function OverviewServer({ userId }: TProps) {
+	const overviewData = await getDashboardOverview(userId);
 	return <Overview {...overviewData} />;
 }

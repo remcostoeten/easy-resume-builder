@@ -38,7 +38,7 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, LoadingButtonProps>(
 			>
 				{loading ? (
 					<div className='flex items-center justify-center'>
-						<div className='w-4 h-4 border-2 border-current border-t-transparent rounded-full' />
+						<div className='animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full' />
 					</div>
 				) : (
 					children

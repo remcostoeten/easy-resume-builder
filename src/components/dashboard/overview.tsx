@@ -1,5 +1,4 @@
 import { formatDistanceToNow } from 'date-fns';
-import { AnimatedActivityCount } from './animated-activity-count';
 import { StatCard } from './stat-card';
 
 type TProps = {
@@ -28,7 +27,7 @@ export function Overview(props: TProps) {
 		const year = dateObj.getFullYear();
 		return (
 			<>
-				<AnimatedActivityCount count={day} /> {month} {year}
+				{day} {month} {year}
 			</>
 		);
 	}
@@ -50,17 +49,17 @@ export function Overview(props: TProps) {
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
 					<StatCard
 						title='Total Resumes'
-						value={<AnimatedActivityCount count={totalResumes} />}
+						value={totalResumes}
 						description={`${totalResumes === 1 ? 'resume' : 'resumes'} created`}
 					/>
 					<StatCard
 						title='Active Applications'
-						value={<AnimatedActivityCount count={activeApplications} />}
+						value={activeApplications}
 						description='Coming soon'
 					/>
 					<StatCard
 						title='Interviews Scheduled'
-						value={<AnimatedActivityCount count={interviewsScheduled} />}
+						value={interviewsScheduled}
 						description='Coming soon'
 					/>
 					<StatCard

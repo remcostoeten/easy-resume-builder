@@ -1,7 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { getQuickStats } from '../server/actions/stats-actions';
-import AnimatedNumber from './animated-number';
 
 type TProps = {
 	className?: string;
@@ -45,7 +44,7 @@ export async function QuickStats({ className }: TProps) {
 					</CardHeader>
 					<CardContent>
 						<div className='text-2xl font-bold'>
-							<AnimatedNumber value={stats.totalResumes} />
+						{stats.totalResumes}
 						</div>
 						<p className='text-xs text-muted-foreground'>
 							Active resume{stats.totalResumes !== 1 ? 's' : ''} in your account
@@ -73,10 +72,7 @@ export async function QuickStats({ className }: TProps) {
 					</CardHeader>
 					<CardContent>
 						<div className='text-2xl font-bold'>
-							<AnimatedNumber
-								value={stats.profileCompletionPercentage}
-								format={{ style: 'percent', maximumFractionDigits: 0 }}
-							/>
+							{new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 0 }).format(stats.profileCompletionPercentage)}
 						</div>
 						<p className='text-xs text-muted-foreground'>Resume sections completed</p>
 					</CardContent>

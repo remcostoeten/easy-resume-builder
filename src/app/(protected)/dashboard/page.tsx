@@ -1,4 +1,6 @@
 import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { auth } from '@/features/auth/server/auth';
 
 // Force dynamic rendering - this page requires authentication
 export const dynamic = 'force-dynamic';
@@ -74,26 +76,33 @@ function ResumeListSkeleton() {
 }
 
 export default async function DashboardPage() {
-	// Get profile data separately since it might be used immediately
+	// Get session once and pass userId down to avoid duplicated lookups
+	const session = await auth.api.getSession({ headers: await headers() });
+	if (!session?.user?.id) {
+		throw new Error('Unauthorized: User session not found');
+	}
+	const userId = session.user.id;
+
+	// Fetch profile data in parallel with component streaming
 	const profileData = await getUserProfileOverview();
 
 	return (
 		<div className='space-y-8'>
 			{/* Overview section with immediate loading */}
-			<Suspense fallback={<OverviewSkeleton />}>
-				<OverviewServer />
+			<Suspense fallback={<OverviewSkeleton />}> 
+				<OverviewServer userId={userId} />
 			</Suspense>
 
 			{/* Quick stats with separate loading */}
-			<Suspense fallback={<QuickStatsSkeleton />}>
+			<Suspense fallback={<QuickStatsSkeleton />}> 
 				<QuickStats />
 			</Suspense>
 
 			{/* Main content grid */}
 			<div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
 				<div className='lg:col-span-2'>
-					<Suspense fallback={<ResumeListSkeleton />}>
-						<ResumeListServer />
+					<Suspense fallback={<ResumeListSkeleton />}> 
+						<ResumeListServer userId={userId} />
 					</Suspense>
 				</div>
 				<div className='lg:col-span-1'>
