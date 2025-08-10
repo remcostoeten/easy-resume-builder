@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, Save, Trash2, Upload, User } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
+import { AutoSaveIndicator } from '@/components/dashboard/auto-save-indicator';
 import { personalInfoSchema, type TPersonalInfoForm } from '@/features/resume-schemas';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
 import { Button } from '@/shared/components/ui/button';

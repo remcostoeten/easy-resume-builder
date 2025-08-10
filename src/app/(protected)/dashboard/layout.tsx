@@ -18,7 +18,7 @@ export default function DashboardLayoutPage({ children }: TProps) {
 	}
 
 	if (!session) {
-		return null; // useRequireAuth handles the redirect
+		return null;
 	}
 
 	return (

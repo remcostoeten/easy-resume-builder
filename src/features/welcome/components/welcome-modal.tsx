@@ -1,7 +1,8 @@
 'use client';
 
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
 import { FEATURES, TIPS } from '../data';
 import '@/styles/modal-transitions.css';
@@ -14,11 +15,7 @@ type TProps = {
 	onGetStartedExitComplete?: () => void;
 };
 
-function FeatureCard({
-	feature,
-}: {
-	feature: (typeof FEATURES)[number];
-}) {
+function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
 	return (
 		<article className='border border-border/50 bg-card/50 backdrop-blur-sm cursor-default rounded-lg'>
 			<div className='p-4 text-center h-full flex flex-col'>
@@ -109,12 +106,15 @@ export function WelcomeModal({
 		}
 	}
 
-	function handleDocumentKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			exitReasonRef.current = 'close';
-			onClose();
-		}
-	}
+	const handleDocumentKeyDown = useCallback(
+		function handleDocumentKeyDown(event: KeyboardEvent) {
+			if (event.key === 'Escape') {
+				exitReasonRef.current = 'close';
+				onClose();
+			}
+		},
+		[onClose]
+	);
 
 	function handleFocusScopeKeyDown(event: React.KeyboardEvent) {
 		if (event.key === 'Enter' && event.target === event.currentTarget) {
@@ -176,7 +176,6 @@ export function WelcomeModal({
 		},
 		[isOpen, handleDocumentKeyDown]
 	);
-
 
 	if (!isOpen) return null;
 
@@ -251,9 +250,14 @@ export function WelcomeModal({
 										<div>
 											<h3 className='text-xs font-semibold text-foreground flex items-center gap-2'>
 												Unlock Premium Features
-												<span className='inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium'>Premium</span>
+												<span className='inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium'>
+													Premium
+												</span>
 											</h3>
-											<p className='text-[11px] leading-snug text-muted-foreground'>Get the most out of Resume Builder with a free account</p>
+											<p className='text-[11px] leading-snug text-muted-foreground'>
+												Get the most out of Resume Builder with a free
+												account
+											</p>
 										</div>
 									</div>
 
@@ -262,31 +266,41 @@ export function WelcomeModal({
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Cloud Storage</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Cloud Storage
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Multiple Resumes</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Multiple Resumes
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Share Links</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Share Links
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>AI Assistance</span>
+											<span className='text-[11px] text-muted-foreground'>
+												AI Assistance
+											</span>
 										</div>
 									</div>
 								</div>
 
 								<div className='bg-muted/20 rounded-lg p-3'>
-									<h3 className='text-xs font-medium text-muted-foreground mb-2'>Quick Tips</h3>
+									<h3 className='text-xs font-medium text-muted-foreground mb-2'>
+										Quick Tips
+									</h3>
 									<div className='grid grid-cols-1 md:grid-cols-2 gap-1.5'>
 										{TIPS.map(function mapTip(tip, index) {
 											return <TipItem key={`tip-${index}`} tip={tip} />;

@@ -3,6 +3,7 @@
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 import type * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from 'utilities';
 import '@/styles/modal-transitions.css';
@@ -67,7 +68,7 @@ function SheetContent({
 					)}
 				>
 					{children}
-							<SheetPrimitive.Close className='ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:outline-hidden disabled:pointer-events-none'>
+					<SheetPrimitive.Close className='ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:outline-hidden disabled:pointer-events-none'>
 						<XIcon className='size-4' />
 						<span className='sr-only'>Close</span>
 					</SheetPrimitive.Close>
@@ -75,6 +76,50 @@ function SheetContent({
 			</SheetPrimitive.Content>
 		</SheetPortal>
 	);
+}
+
+function SheetInlinePlaceholder() {
+	return (
+		<div className='flex items-center justify-center gap-2 p-4'>
+			<div className='size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent' />
+			<span className='text-muted-foreground text-sm'>Loading…</span>
+		</div>
+	);
+}
+
+type TSheetLazyProps = {
+	load: () => Promise<{ default: React.ComponentType<any> }>;
+	componentProps?: Record<string, unknown>;
+	placeholder?: React.ReactNode;
+};
+
+function SheetLazyContent({ load, componentProps, placeholder }: TSheetLazyProps) {
+	const [Loaded, setLoaded] = useState<React.ComponentType<any> | null>(null);
+	const [started, setStarted] = useState(false);
+
+	useEffect(
+		function startLoading() {
+			if (started) {
+				return;
+			}
+			setStarted(true);
+			let mounted = true;
+			load().then(function onResolve(mod) {
+				if (mounted) {
+					setLoaded(() => mod.default);
+				}
+			});
+			return function onCleanup() {
+				mounted = false;
+			};
+		},
+		[load, started]
+	);
+
+	if (!Loaded) {
+		return placeholder ? placeholder : <SheetInlinePlaceholder />;
+	}
+	return <Loaded {...(componentProps || {})} />;
 }
 
 function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
@@ -129,4 +174,5 @@ export {
 	SheetFooter,
 	SheetTitle,
 	SheetDescription,
+	SheetLazyContent,
 };

@@ -4,7 +4,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FocusScope } from '@radix-ui/react-focus-scope';
 import { XIcon } from 'lucide-react';
 import type * as React from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from 'utilities';
 import '@/styles/modal-transitions.css';
@@ -112,6 +112,50 @@ function DialogContent({
 	);
 }
 
+function DialogInlinePlaceholder() {
+	return (
+		<div className='flex items-center justify-center gap-2 py-6'>
+			<div className='size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent' />
+			<span className='text-muted-foreground text-sm'>Loading…</span>
+		</div>
+	);
+}
+
+type TDialogLazyProps = {
+	load: () => Promise<{ default: React.ComponentType<any> }>;
+	componentProps?: Record<string, unknown>;
+	placeholder?: React.ReactNode;
+};
+
+function DialogLazyContent({ load, componentProps, placeholder }: TDialogLazyProps) {
+	const [Loaded, setLoaded] = useState<React.ComponentType<any> | null>(null);
+	const [started, setStarted] = useState(false);
+
+	useEffect(
+		function startLoading() {
+			if (started) {
+				return;
+			}
+			setStarted(true);
+			let mounted = true;
+			load().then(function onResolve(mod) {
+				if (mounted) {
+					setLoaded(() => mod.default);
+				}
+			});
+			return function onCleanup() {
+				mounted = false;
+			};
+		},
+		[load, started]
+	);
+
+	if (!Loaded) {
+		return placeholder ? placeholder : <DialogInlinePlaceholder />;
+	}
+	return <Loaded {...(componentProps || {})} />;
+}
+
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
@@ -168,4 +212,5 @@ export {
 	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
+	DialogLazyContent,
 };

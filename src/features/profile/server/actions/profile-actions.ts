@@ -4,8 +4,8 @@ import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
-import { account, user } from '@/features/auth/server/schemas';
 import { session, verification } from '@/features/auth/server/better-auth-schema';
+import { account, user } from '@/features/auth/server/schemas';
 import { createResumeFactory } from '@/features/resume/server/factories';
 import { db } from '@/server/db';
 
@@ -16,11 +16,6 @@ type TUpdateProfileData = {
 	bio?: string;
 	location?: string;
 	website?: string;
-};
-
-type TPasswordChangeData = {
-	currentPassword: string;
-	newPassword: string;
 };
 
 type TOAuthProvider = 'google' | 'github';
@@ -180,8 +175,6 @@ export async function linkOAuthAccount(_provider: TOAuthProvider) {
 		if (!sessionResult) {
 			throw new Error('No active session found');
 		}
-
-		const { user } = sessionResult;
 
 		// TODO: Implement OAuth linking functionality
 		// const result = await auth.api.linkSocial({

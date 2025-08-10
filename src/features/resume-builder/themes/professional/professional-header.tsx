@@ -2,7 +2,7 @@
 
 import { Download, Edit, Eye, EyeOff, Moon, RotateCcw, Split, Sun, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { AutoSaveIndicator } from '@/components/effects/auto-save-indicator';
+import { AutoSaveIndicator } from '@/components/dashboard/auto-save-indicator';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { resetStore, setResumeDraft } from '@/store/resume-store';

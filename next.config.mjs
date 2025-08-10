@@ -1,15 +1,13 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
-import bundleAnalyzer from '@next/bundle-analyzer';
-import selected from './perf/opi/packages.json' assert { type: 'json' };
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const selected = require('./perf/opi/packages.json');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const ANALYZE_FLAG =
-  process.env.ANALYZE === 'true' ||
-  process.env.ANALYZE === '1' ||
-  process.env.ANALYZE_BUILD === '1';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -54,10 +52,10 @@ const nextConfig = {
 
 	// Strict mode for better development experience
 	eslint: {
-		ignoreDuringBuilds: ANALYZE_FLAG,
+		ignoreDuringBuilds: false,
 	},
 	typescript: {
-		ignoreBuildErrors: ANALYZE_FLAG,
+		ignoreBuildErrors: false,
 	},
 
 	// Advanced image optimization
@@ -96,6 +94,4 @@ const nextConfig = {
 	},
 };
 
-const withBundleAnalyzer = bundleAnalyzer({ enabled: ANALYZE_FLAG });
-
-export default withBundleAnalyzer(nextConfig);
+export default nextConfig;

@@ -128,7 +128,7 @@ export function ProfileTabs({ user, session, oauthAccounts }: TProps) {
 
 					<Tabs.Content value='danger-zone'>
 						<Suspense fallback={<TabSkeleton />}>
-							<ProfileDangerZone user={user} session={session} />
+							<ProfileDangerZone user={user} />
 						</Suspense>
 					</Tabs.Content>
 				</CardContent>

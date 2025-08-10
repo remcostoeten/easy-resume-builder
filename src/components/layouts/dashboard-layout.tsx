@@ -1,5 +1,5 @@
 import type React from 'react';
-import { UserTopBar } from '@/features/auth/components/user-top-bar';
+import { UserDropdown } from '@/features/auth/components/user-dropdown';
 
 type TProps = {
 	children: React.ReactNode;
@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: TProps) {
 					<div className='flex items-center justify-between'>
 						<h1 className='text-2xl font-bold'>Dashboard</h1>
 						<div className='flex items-center space-x-6'>
-							<nav className='flex items-center space-x-4'>
+							<nav className='flex items-center space-x-4' aria-label='Primary'>
 								<a href='/dashboard' className='text-foreground hover:text-primary'>
 									Overview
 								</a>
@@ -30,7 +30,7 @@ export function DashboardLayout({ children }: TProps) {
 									Settings
 								</a>
 							</nav>
-							<UserTopBar />
+							<UserDropdown />
 						</div>
 					</div>
 				</div>

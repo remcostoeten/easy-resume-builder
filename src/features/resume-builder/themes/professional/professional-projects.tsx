@@ -4,10 +4,10 @@ import { Calendar, Code, ExternalLink, FolderOpen, Plus, Save, X } from 'lucide-
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
-import { EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { EmptyState } from '@/shared/components/ui/empty-state';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { Textarea } from '@/shared/components/ui/textarea';

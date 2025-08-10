@@ -1,8 +1,6 @@
 'use client';
 
-import { useAtomValue } from 'jotai/react';
-import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useAtomValue } from 'jotai';
 import {
 	lazy,
 	memo,
@@ -12,18 +10,16 @@ import {
 	useState,
 	useTransition,
 } from 'react';
-import { authClient } from '@/features/auth/client/auth-client';
-import { LoginButton } from '@/features/auth/components/login-button';
-import { useSession } from '@/features/auth/hooks/hooks';
+import { UserDropdown } from '@/features/auth/components/user-dropdown';
 import { PerformanceMonitor } from '@/shared/components/performance-monitor';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/shared/components/ui';
-import { Avatar } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
 import { LoadingSkeleton } from '@/shared/components/ui/loading-skeleton';
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover';
-import { Separator } from '@/shared/components/ui/separator';
-import type { Mutable } from '@/store/resume-store';
-import { resumeAtom, setResumeDraft } from '@/store/resume-store';
+import {
+	ResizableHandle,
+	ResizablePanel,
+	ResizablePanelGroup,
+} from '@/shared/components/ui/resizable-panels';
+import { type Mutable, resumeAtom, setResumeDraft } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 
 const ProfessionalSidebar = lazy(() =>
@@ -38,11 +34,13 @@ const ProfessionalEditingArea = lazy(() =>
 		})
 	)
 );
-const ProfessionalPreview = lazy(() =>
-	import('../features/resume-builder/themes/professional/professional-preview').then((m) => ({
-		default: m.ProfessionalPreview,
-	}))
-);
+const ProfessionalPreview = lazy(function lazyProfessionalPreview() {
+	return import('../features/resume-builder/themes/professional/professional-preview').then(
+		function map(m) {
+			return { default: m.ProfessionalPreview };
+		}
+	);
+});
 
 function HomeView() {
 	const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -50,14 +48,9 @@ function HomeView() {
 	const [isSplitMode, setIsSplitMode] = useState(true);
 	const [isPending, startTransition] = useTransition();
 
-	const { data: session, isLoading } = useSession();
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-	const [isSigningOut, setIsSigningOut] = useState(false);
-	const router = useRouter();
 	const resumeData: Mutable<TResumeData> = useAtomValue(resumeAtom);
 	const deferredResumeData = useDeferredValue(resumeData);
 
-	// Memoize expensive operations with useCallback
 	const handleToggleSection = useCallback(
 		(sectionId: string) => {
 			startTransition(() => {
@@ -125,36 +118,6 @@ function HomeView() {
 			window.print();
 		}
 	}, []);
-
-	// Auth-related functions
-	function getInitials(name?: string | null) {
-		if (!name) return 'U';
-		return name
-			.split(' ')
-			.map((n) => n[0])
-			.join('')
-			.toUpperCase()
-			.slice(0, 2);
-	}
-
-	async function handleSignOut() {
-		setIsSigningOut(true);
-		setIsUserMenuOpen(false);
-
-		try {
-			await authClient.signOut();
-			router.push('/login');
-		} catch (error) {
-			console.error('Sign out failed:', error);
-		} finally {
-			setIsSigningOut(false);
-		}
-	}
-
-	function handleProfileClick() {
-		setIsUserMenuOpen(false);
-		router.push('/profile');
-	}
 
 	const sidebarSize = isPreviewMode ? 0 : 20;
 	const editingSize = isPreviewMode ? 0 : isSplitMode ? 50 : isEditMode ? 80 : 0;
@@ -227,64 +190,7 @@ function HomeView() {
 							<div className='h-6 w-px bg-border hidden md:block' />
 
 							{/* Auth Section */}
-							{isLoading ? (
-								<div className='flex items-center gap-2 px-3 py-2 h-auto opacity-50 pointer-events-none'>
-									<div className='w-8 h-8 bg-muted rounded-full animate-pulse' />
-									<div className='hidden sm:block w-20 h-4 bg-muted rounded animate-pulse' />
-									<div className='w-4 h-4 bg-muted rounded animate-pulse' />
-								</div>
-							) : session ? (
-								<Popover open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
-									<PopoverTrigger asChild>
-										<Button
-											variant='ghost'
-											className='flex items-center gap-2 px-3 py-2 h-auto hover:bg-accent'
-										>
-											<Avatar
-												src={session.user.image || undefined}
-												alt={session.user.name}
-												fallback={getInitials(session.user.name)}
-												size='sm'
-											/>
-											<span className='hidden sm:block text-sm font-medium'>
-												{session.user.name}
-											</span>
-											<ChevronDownIcon className='h-4 w-4 text-muted-foreground' />
-										</Button>
-									</PopoverTrigger>
-
-									<PopoverContent className='w-56 p-2' align='end'>
-										<div className='flex flex-col space-y-1'>
-											<div className='px-2 py-1.5 text-sm text-muted-foreground'>
-												{session.user.email}
-											</div>
-
-											<Button
-												variant='ghost'
-												className='justify-start h-9 px-2'
-												onClick={handleProfileClick}
-											>
-												<UserIcon className='mr-2 h-4 w-4' />
-												Profile
-											</Button>
-
-											<Separator className='my-1' />
-
-											<Button
-												variant='ghost'
-												className='justify-start h-9 px-2 text-red-600 hover:text-red-600 hover:bg-red-50'
-												onClick={handleSignOut}
-												disabled={isSigningOut}
-											>
-												<LogOutIcon className='mr-2 h-4 w-4' />
-												{isSigningOut ? 'Signing out...' : 'Sign out'}
-											</Button>
-										</div>
-									</PopoverContent>
-								</Popover>
-							) : (
-								<LoginButton useModal />
-							)}
+							<UserDropdown />
 						</div>
 					</div>
 				</header>
@@ -335,15 +241,7 @@ function HomeView() {
 											/>
 										}
 									>
-										<ProfessionalEditingArea
-											sections={
-												(deferredResumeData?.sections ||
-													[]) as unknown as readonly TResumeSection[]
-											}
-											resumeData={
-												deferredResumeData as unknown as TResumeData
-											}
-										/>
+										<ProfessionalEditingArea />
 									</Suspense>
 								</ResizablePanel>
 								{isSplitMode && <ResizableHandle withHandle />}

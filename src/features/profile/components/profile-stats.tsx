@@ -1,6 +1,5 @@
 'use client';
 
-
 type TProps = {
 	lastLoginTime: Date | null;
 	createdAt: Date;
@@ -72,7 +71,8 @@ export function ProfileStats({ lastLoginTime, createdAt }: TProps) {
 			<div>
 				<dt className='text-sm font-medium text-muted-foreground mb-2'>Member Since</dt>
 				<dd className='text-base'>
-					span className='font-mono'{day}/span {monthLabel} span className='font-mono inline-block'{year}/span
+					span className='font-mono'{day}/span {monthLabel} span className='font-mono
+					inline-block'{year}/span
 				</dd>
 			</div>
 		</dl>

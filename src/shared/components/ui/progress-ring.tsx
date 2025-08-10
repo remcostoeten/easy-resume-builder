@@ -1,7 +1,7 @@
 'use client';
 
-import { m as motion } from 'framer-motion';
 import { cn } from 'utilities';
+import { Motion } from '@/shared/utilities/dynamic-motion';
 export type TProgressRingProps = {
 	readonly progress: number;
 	readonly size?: number;
@@ -34,20 +34,40 @@ export function ProgressRing({
 					fill='transparent'
 					className='text-muted/20'
 				/>
-				<motion.circle
-					cx={size / 2}
-					cy={size / 2}
-					r={radius}
-					stroke='url(#gradient)'
-					strokeWidth={strokeWidth}
-					fill='transparent'
-					strokeDasharray={strokeDasharray}
-					strokeDashoffset={strokeDashoffset}
-					strokeLinecap='round'
-					initial={{ strokeDashoffset: circumference }}
-					animate={{ strokeDashoffset }}
-					transition={{ duration: 1, ease: 'easeInOut' }}
-				/>
+				<Motion
+					fallback={
+						<circle
+							cx={size / 2}
+							cy={size / 2}
+							r={radius}
+							stroke='url(#gradient)'
+							strokeWidth={strokeWidth}
+							fill='transparent'
+							strokeDasharray={strokeDasharray}
+							strokeDashoffset={strokeDashoffset}
+							strokeLinecap='round'
+						/>
+					}
+				>
+					{function render(m) {
+						return (
+							<m.m.circle
+								cx={size / 2}
+								cy={size / 2}
+								r={radius}
+								stroke='url(#gradient)'
+								strokeWidth={strokeWidth}
+								fill='transparent'
+								strokeDasharray={strokeDasharray}
+								strokeDashoffset={strokeDashoffset}
+								strokeLinecap='round'
+								initial={{ strokeDashoffset: circumference }}
+								animate={{ strokeDashoffset }}
+								transition={{ duration: 1, ease: 'easeInOut' }}
+							/>
+						);
+					}}
+				</Motion>
 				<defs>
 					<linearGradient id='gradient' x1='0%' y1='0%' x2='100%' y2='100%'>
 						<stop offset='0%' stopColor='#3B82F6' />
@@ -57,14 +77,24 @@ export function ProgressRing({
 			</svg>
 			{showPercentage && (
 				<div className='absolute inset-0 flex items-center justify-center'>
-					<motion.span
-						className='text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'
-						initial={{ opacity: 0, scale: 0.5 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ delay: 0.5 }}
+					<Motion
+						fallback={
+							<span className='text-2xl font-bold'>{Math.round(progress)}%</span>
+						}
 					>
-						{Math.round(progress)}%
-					</motion.span>
+						{function render(m) {
+							return (
+								<m.m.span
+									className='text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'
+									initial={{ opacity: 0, scale: 0.5 }}
+									animate={{ opacity: 1, scale: 1 }}
+									transition={{ delay: 0.5 }}
+								>
+									{Math.round(progress)}%
+								</m.m.span>
+							);
+						}}
+					</Motion>
 				</div>
 			)}
 		</div>

@@ -10,7 +10,6 @@ export async function RecentActivity({ locale = 'en-US' }: TProps) {
 	const activities = await getRecentActivity();
 
 	function getActivityIcon(type: TActivityType, providedIcon?: string) {
-		// Use the icon from the database if available, otherwise fallback to type-based icons
 		if (providedIcon) return providedIcon;
 
 		switch (type) {

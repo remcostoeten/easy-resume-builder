@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../shared/components/ui/AnimatedBackground.css";
 @import "../styles/modal-transitions.css";
 
 @custom-variant dark (&:is(.dark *));

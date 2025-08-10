@@ -1,4 +1,5 @@
-import { cn } from 'utilities';
+import Image from 'next/image';
+import { cn } from '@/shared/utilities';
 
 type TProps = {
 	src?: string;
@@ -25,12 +26,22 @@ function Avatar({
 		xl: 'h-16 w-16 text-xl',
 		'2xl': 'h-20 w-20 text-2xl',
 	};
+	const sizePixels: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl', number> = {
+		xs: 24,
+		sm: 32,
+		md: 40,
+		lg: 48,
+		xl: 64,
+		'2xl': 80,
+	};
 
 	if (src) {
 		return (
-			<img
+			<Image
 				src={src}
 				alt={alt || 'User avatar'}
+				width={sizePixels[size]}
+				height={sizePixels[size]}
 				className={cn(
 					'inline-block rounded-full object-cover',
 					sizeClasses[size],

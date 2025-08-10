@@ -1,8 +1,14 @@
-import { atom, getDefaultStore } from 'jotai';
 import { produce } from 'immer';
+import { atom, getDefaultStore } from 'jotai';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
 import type { TPersonalInfoForm } from '@/features/resume-schemas/resume-schemas';
-import type { TResumeData, TResumeSection, TSkillCategory, TWorkItem, TEducationItem } from '@/types/resume';
+import type {
+	TEducationItem,
+	TResumeData,
+	TResumeSection,
+	TSkillCategory,
+	TWorkItem,
+} from '@/types/resume';
 
 // ---------------------- Jotai store ----------------------
 
@@ -176,7 +182,9 @@ export function removeEducation(id: string): void {
 	store.set(resumeAtom, (current) =>
 		produce(current, (draft) => {
 			if (!draft.education) draft.education = [] as unknown as Mutable<TEducationItem>[];
-			draft.education = draft.education.filter((item) => item.id !== id) as unknown as Mutable<TEducationItem>[];
+			draft.education = draft.education.filter(
+				(item) => item.id !== id
+			) as unknown as Mutable<TEducationItem>[];
 		})
 	);
 }

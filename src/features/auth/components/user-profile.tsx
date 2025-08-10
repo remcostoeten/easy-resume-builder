@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/features/auth/client/auth-client';
@@ -53,9 +54,11 @@ export function UserProfile({ session, className, onSignOut }: TProps) {
 			<CardHeader className='text-center space-y-4'>
 				<div className='flex justify-center'>
 					{user.image ? (
-						<img
+						<Image
 							src={user.image}
 							alt={user.name || 'User avatar'}
+							width={64}
+							height={64}
 							className='w-16 h-16 rounded-full object-cover'
 						/>
 					) : (

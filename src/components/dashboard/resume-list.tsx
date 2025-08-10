@@ -4,14 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { deleteUserResume } from '@/features/resume/server/actions';
 import type { TResume } from '@/features/resume/server/schemas';
-import { AnimatedActivityCount } from './animated-activity-count';
 
 type TProps = {
-	userId: string;
 	initialResumes: TResume[];
 };
 
-export function ResumeList({ userId, initialResumes }: TProps) {
+export function ResumeList({ initialResumes }: TProps) {
 	const [resumes, setResumes] = useState(initialResumes);
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
@@ -55,6 +53,7 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 				<div className='flex justify-between items-center mb-4'>
 					<h2 className='text-xl font-semibold'>Resume List</h2>
 					<button
+						type='button'
 						onClick={handleCreateResume}
 						disabled={isPending}
 						className='px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50'
@@ -70,6 +69,7 @@ export function ResumeList({ userId, initialResumes }: TProps) {
 						Get started by creating your first resume
 					</p>
 					<button
+						type='button'
 						onClick={handleCreateResume}
 						disabled={isPending}
 						className='px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50'

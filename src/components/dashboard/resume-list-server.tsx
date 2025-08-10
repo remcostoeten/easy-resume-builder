@@ -6,7 +6,7 @@ type TProps = { userId: string };
 export async function ResumeListServer({ userId }: TProps) {
 	try {
 		const resumes = await listUserResumes(userId);
-		return <ResumeList userId={userId} initialResumes={resumes} />;
+		return <ResumeList initialResumes={resumes} />;
 	} catch (error) {
 		console.error('Failed to fetch resumes:', error);
 		return (

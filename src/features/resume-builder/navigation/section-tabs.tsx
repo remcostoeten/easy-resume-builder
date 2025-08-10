@@ -1,6 +1,5 @@
 'use client';
 
-import { m as motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
@@ -12,6 +11,7 @@ import {
 	TooltipTrigger,
 } from '@/shared/components/ui/tooltip';
 import { cn } from '@/shared/utilities';
+import { Motion } from '@/shared/utilities/dynamic-motion';
 import type { TResumeSection } from '@/types/resume';
 
 type TProps = {
@@ -217,16 +217,29 @@ export function SectionTabs({ sections, activeSection, onSectionChange }: TProps
 												</span>
 
 												{isActive && (
-													<motion.div
-														className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
-														layoutId='activeTab'
-														transition={{
-															type: 'spring',
-															stiffness: 500,
-															damping: 30,
+													<Motion
+														fallback={
+															<div
+																className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
+																aria-hidden='true'
+															/>
+														}
+													>
+														{function render(m) {
+															return (
+																<m.m.div
+																	className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary'
+																	layoutId='activeTab'
+																	transition={{
+																		type: 'spring',
+																		stiffness: 500,
+																		damping: 30,
+																	}}
+																	aria-hidden='true'
+																/>
+															);
 														}}
-														aria-hidden='true'
-													/>
+													</Motion>
 												)}
 											</button>
 										</TooltipTrigger>

@@ -1,20 +1,35 @@
 'use client';
 
-import { AnimatePresence } from 'framer-motion';
-import { Briefcase, Building, Calendar, MapPin, Plus } from 'lucide-react';
+import { Briefcase, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import { EmptyState } from '@/shared/components/ui';
-import { Badge } from '@/shared/components/ui/badge';
+import { CardSkeleton } from '@/shared/components/fallbacks/card-skeleton';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
+import { EmptyState } from '@/shared/components/ui/empty-state';
 import { formatDateRange } from '@/shared/utilities/date-utils';
+import { AnimatePresenceLazy } from '@/shared/utilities/dynamic-motion';
 import {
 	addWorkExperience,
 	removeWorkExperience,
 	updateWorkExperience,
 } from '@/store/resume-store';
 import type { TWorkItem } from '@/types/resume';
-import { WorkExperienceForm } from '../../sections/work-experience-form';
+
+function importWorkExperienceForm() {
+	return import('../../sections/work-experience-form').then(function map(mod) {
+		return mod.WorkExperienceForm;
+	});
+}
+
+function renderWorkExperienceSkeleton() {
+	return CardSkeleton({ lines: 4 });
+}
+
+const WorkExperienceFormLazy = dynamic(importWorkExperienceForm, {
+	ssr: false,
+	loading: renderWorkExperienceSkeleton,
+});
 
 export type TProfessionalWorkExperienceProps = {
 	readonly data: readonly TWorkItem[];
@@ -29,7 +44,7 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 		setEditingItem(null);
 	}
 
-	function handleEdit(item: TWorkItem) {
+	function _handleEdit(item: TWorkItem) {
 		setEditingItem(item);
 		setIsAddingNew(false);
 	}
@@ -79,10 +94,10 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 				)}
 			</div>
 
-			<AnimatePresence>
+			<AnimatePresenceLazy>
 				{isFormVisible && (
 					<div>
-						<WorkExperienceForm
+						<WorkExperienceFormLazy
 							workItem={editingItem || undefined}
 							onSave={handleSave}
 							onCancel={handleCancel}
@@ -90,92 +105,36 @@ export function ProfessionalWorkExperience({ data }: TProfessionalWorkExperience
 						/>
 					</div>
 				)}
-			</AnimatePresence>
+			</AnimatePresenceLazy>
 
 			{!isFormVisible && (
 				<div className='space-y-4'>
-					<AnimatePresence>
-						{data.map((item, _index) => (
-							<div key={item.id}>
-								<Card
-									className='hover:shadow-sm transition-shadow cursor-pointer'
-									onClick={() => handleEdit(item)}
-								>
-									<CardContent className='p-6'>
-										<div className='space-y-4'>
-											<div className='flex items-start justify-between'>
-												<div className='space-y-2'>
-													<div className='flex items-center gap-2'>
-														<h3 className='text-lg font-semibold'>
-															{item.position}
-														</h3>
-														{item.dateRange.isCurrentPosition && (
-															<Badge
-																variant='secondary'
-																className='text-xs'
-															>
-																Current Position
-															</Badge>
-														)}
-													</div>
-
-													<div className='flex items-center gap-4 text-sm text-muted-foreground'>
-														<div className='flex items-center gap-1'>
-															<Building className='h-4 w-4' />
-															<span>{item.company}</span>
-														</div>
-														<div className='flex items-center gap-1'>
-															<MapPin className='h-4 w-4' />
-															<span>{item.location}</span>
-														</div>
-														<div className='flex items-center gap-1'>
-															<Calendar className='h-4 w-4' />
-															<span>
-																{formatDateRange(item.dateRange)}
-															</span>
-														</div>
-													</div>
-												</div>
+					{data.map(function render(item) {
+						return (
+							<Card key={item.id} className='hover:shadow-sm transition-shadow'>
+								<CardContent className='p-6'>
+									<div className='flex items-start justify-between'>
+										<div className='space-y-1'>
+											<h3 className='text-lg font-semibold'>
+												{item.position}
+											</h3>
+											<div className='text-sm text-muted-foreground'>
+												{item.company} • {item.location}
 											</div>
-
-											<p className='text-sm text-muted-foreground leading-relaxed'>
-												{item.description}
-											</p>
-
-											{item.achievements.length > 0 && (
-												<div className='space-y-2'>
-													<h4 className='text-sm font-medium'>
-														Key Achievements:
-													</h4>
-													<ul className='space-y-1'>
-														{item.achievements
-															.slice(0, 3)
-															.map((achievement, idx) => (
-																<li
-																	key={idx}
-																	className='flex items-start gap-2 text-sm text-muted-foreground'
-																>
-																	<span className='text-primary mt-1.5 text-xs'>
-																		•
-																	</span>
-																	<span>{achievement}</span>
-																</li>
-															))}
-														{item.achievements.length > 3 && (
-															<li className='text-xs text-muted-foreground ml-3'>
-																+{item.achievements.length - 3} more
-																achievements
-															</li>
-														)}
-													</ul>
-												</div>
-											)}
 										</div>
-									</CardContent>
-								</Card>
-							</div>
-						))}
-					</AnimatePresence>
+										<div className='text-sm text-muted-foreground'>
+											{formatDateRange(item.dateRange)}
+										</div>
+									</div>
+									{item.description && (
+										<p className='mt-3 text-sm text-muted-foreground'>
+											{item.description}
+										</p>
+									)}
+								</CardContent>
+							</Card>
+						);
+					})}
 
 					{data.length === 0 && (
 						<EmptyState

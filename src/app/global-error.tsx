@@ -18,7 +18,7 @@ export default function GlobalError({ error, reset }: TProps) {
 	}
 
 	return (
-		<html>
+		<html lang='en'>
 			<body className='bg-gradient-to-br from-background via-background/95 to-destructive/5'>
 				<div className='min-h-screen flex items-center justify-center relative overflow-hidden p-4'>
 					<div className='absolute inset-0 bg-grid-white/5 bg-[size:20px_20px] [mask-image:radial-gradient(white,transparent_85%)]' />
@@ -61,6 +61,7 @@ export default function GlobalError({ error, reset }: TProps) {
 								<div className='space-y-4'>
 									<div className='flex flex-col sm:flex-row gap-3'>
 										<button
+											type='button'
 											onClick={reset}
 											className='flex-1 group inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground rounded-lg transition-all hover:scale-105 hover:shadow-lg font-medium'
 										>

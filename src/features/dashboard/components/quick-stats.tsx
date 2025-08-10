@@ -7,7 +7,7 @@ type TProps = {
 };
 
 export async function QuickStats({ className }: TProps) {
-	let stats;
+	let stats: Awaited<ReturnType<typeof getQuickStats>>;
 
 	try {
 		stats = await getQuickStats();
@@ -43,9 +43,7 @@ export async function QuickStats({ className }: TProps) {
 						<CardTitle className='text-sm font-medium'>Total Resumes</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<div className='text-2xl font-bold'>
-						{stats.totalResumes}
-						</div>
+						<div className='text-2xl font-bold'>{stats.totalResumes}</div>
 						<p className='text-xs text-muted-foreground'>
 							Active resume{stats.totalResumes !== 1 ? 's' : ''} in your account
 						</p>
@@ -72,7 +70,10 @@ export async function QuickStats({ className }: TProps) {
 					</CardHeader>
 					<CardContent>
 						<div className='text-2xl font-bold'>
-							{new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 0 }).format(stats.profileCompletionPercentage)}
+							{new Intl.NumberFormat(undefined, {
+								style: 'percent',
+								maximumFractionDigits: 0,
+							}).format(stats.profileCompletionPercentage)}
 						</div>
 						<p className='text-xs text-muted-foreground'>Resume sections completed</p>
 					</CardContent>

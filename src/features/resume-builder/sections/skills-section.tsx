@@ -1,17 +1,30 @@
 'use client';
 
-import { AnimatePresence } from 'framer-motion';
 import { Code, Edit, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { CardSkeleton } from '@/shared/components/fallbacks/card-skeleton';
 import { EmptyState } from '@/shared/components/ui';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Progress } from '@/shared/components/ui/progress';
+import { AnimatePresenceLazy } from '@/shared/utilities/dynamic-motion';
 import { addSkillCategory, removeSkillCategory, updateSkillCategory } from '@/store/resume-store';
 import type { TSkillCategory } from '@/types/resume';
 import { FormSection } from '../form/form-section';
-import { SkillsForm } from './skills-form';
+
+function importSkillsForm() {
+	return import('./skills-form').then(function map(mod) {
+		return mod.SkillsForm;
+	});
+}
+
+function renderSkillsFormSkeleton() {
+	return CardSkeleton({ lines: 3 });
+}
+
+const SkillsFormLazy = dynamic(importSkillsForm, { ssr: false, loading: renderSkillsFormSkeleton });
 
 type TProps = {
 	readonly data: readonly TSkillCategory[];
@@ -92,10 +105,10 @@ export function SkillsSection({ data }: TProps) {
 	return (
 		<FormSection title='Skills' icon={<Code className='h-5 w-5' />}>
 			<div className='space-y-6'>
-				<AnimatePresence>
+				<AnimatePresenceLazy>
 					{isFormVisible && (
 						<div>
-							<SkillsForm
+							<SkillsFormLazy
 								skillCategory={editingCategory || undefined}
 								onSave={handleSave}
 								onCancel={handleCancel}
@@ -103,11 +116,11 @@ export function SkillsSection({ data }: TProps) {
 							/>
 						</div>
 					)}
-				</AnimatePresence>
+				</AnimatePresenceLazy>
 
 				{!isFormVisible && (
 					<div className='space-y-4'>
-						<AnimatePresence>
+						<AnimatePresenceLazy>
 							{data.map((category, _index) => (
 								<div key={category.id}>
 									<Card className='hover:shadow-md transition-shadow cursor-pointer group'>
@@ -154,7 +167,7 @@ export function SkillsSection({ data }: TProps) {
 									</Card>
 								</div>
 							))}
-						</AnimatePresence>
+						</AnimatePresenceLazy>
 
 						{data.length === 0 && (
 							<EmptyState

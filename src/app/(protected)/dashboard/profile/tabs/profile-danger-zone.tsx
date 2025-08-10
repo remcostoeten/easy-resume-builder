@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertTriangle, Database, LogOut, UserX } from 'lucide-react';
-import type { TSession } from '@/features/auth/types';
 import { useRouter } from 'next/navigation';
+import type { TSession } from '@/features/auth/types';
 import { DeleteAccountPanel } from '@/features/profile/components/delete-account-panel';
 import {
 	AlertDialog,
@@ -27,10 +27,9 @@ import {
 
 type TProps = {
 	user: TSession['user'];
-	session: TSession['session'];
 };
 
-export function ProfileDangerZone({ user, session }: TProps) {
+export function ProfileDangerZone({ user }: TProps) {
 	const router = useRouter();
 	return (
 		<div className='space-y-6'>

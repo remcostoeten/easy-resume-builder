@@ -2,6 +2,7 @@
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import type * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from 'utilities';
 
@@ -54,4 +55,48 @@ function TooltipContent({
 	);
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+function TooltipInlinePlaceholder() {
+	return (
+		<div className='flex items-center justify-center gap-1 px-2 py-1'>
+			<div className='size-2 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent' />
+			<span className='text-muted-foreground text-[10px]'>Loading…</span>
+		</div>
+	);
+}
+
+type TTooltipLazyProps = {
+	load: () => Promise<{ default: React.ComponentType<any> }>;
+	componentProps?: Record<string, unknown>;
+	placeholder?: React.ReactNode;
+};
+
+function TooltipLazyContent({ load, componentProps, placeholder }: TTooltipLazyProps) {
+	const [Loaded, setLoaded] = useState<React.ComponentType<any> | null>(null);
+	const [started, setStarted] = useState(false);
+
+	useEffect(
+		function startLoading() {
+			if (started) {
+				return;
+			}
+			setStarted(true);
+			let mounted = true;
+			load().then(function onResolve(mod) {
+				if (mounted) {
+					setLoaded(() => mod.default);
+				}
+			});
+			return function onCleanup() {
+				mounted = false;
+			};
+		},
+		[load, started]
+	);
+
+	if (!Loaded) {
+		return placeholder ? placeholder : <TooltipInlinePlaceholder />;
+	}
+	return <Loaded {...(componentProps || {})} />;
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, TooltipLazyContent };
