@@ -1,16 +1,20 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import bundleAnalyzer from '@next/bundle-analyzer';
+import selected from './perf/opi/packages.json' assert { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const ANALYZE_FLAG =
+  process.env.ANALYZE === 'true' ||
+  process.env.ANALYZE === '1' ||
+  process.env.ANALYZE_BUILD === '1';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	// Enable available experimental features
 	experimental: {
-		// Only include features that are actually available in Next.js 15
-		optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-		reactCompiler: true,
+		optimizePackageImports: selected,
 	},
 
 	webpack: (config, { dev, isServer }) => {
@@ -50,10 +54,10 @@ const nextConfig = {
 
 	// Strict mode for better development experience
 	eslint: {
-		ignoreDuringBuilds: false,
+		ignoreDuringBuilds: ANALYZE_FLAG,
 	},
 	typescript: {
-		ignoreBuildErrors: false,
+		ignoreBuildErrors: ANALYZE_FLAG,
 	},
 
 	// Advanced image optimization
@@ -92,4 +96,6 @@ const nextConfig = {
 	},
 };
 
-export default nextConfig;
+const withBundleAnalyzer = bundleAnalyzer({ enabled: ANALYZE_FLAG });
+
+export default withBundleAnalyzer(nextConfig);
