@@ -4,8 +4,8 @@ import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
-import { account, user } from '@/features/auth/server/schemas';
 import { session, verification } from '@/features/auth/server/better-auth-schema';
+import { account, user } from '@/features/auth/server/schemas';
 import { createResumeFactory } from '@/features/resume/server/factories';
 import { db } from '@/server/db';
 
@@ -16,11 +16,7 @@ type TUpdateProfileData = {
 	bio?: string;
 	location?: string;
 	website?: string;
-};
-
-type TPasswordChangeData = {
-	currentPassword: string;
-	newPassword: string;
+	admin?: boolean;
 };
 
 type TOAuthProvider = 'google' | 'github';
@@ -41,6 +37,7 @@ type TUserProfileOverviewData = {
 	verificationStatus: boolean;
 	image?: string | null;
 	createdAt: Date;
+	admin: boolean;
 };
 
 const resumeFactory = createResumeFactory();
@@ -181,8 +178,6 @@ export async function linkOAuthAccount(_provider: TOAuthProvider) {
 			throw new Error('No active session found');
 		}
 
-		const { user } = sessionResult;
-
 		// TODO: Implement OAuth linking functionality
 		// const result = await auth.api.linkSocial({
 		//   body: {
@@ -235,16 +230,24 @@ export async function getUserProfileOverview(): Promise<TUserProfileOverviewData
 			return null;
 		}
 
-		const { user, session } = sessionResult;
+		const { user: sessionUser, session } = sessionResult;
 
-		return {
-			name: user.name,
-			email: user.email,
-			lastLoginTime: session.createdAt,
-			verificationStatus: user.emailVerified,
-			image: user.image,
-			createdAt: user.createdAt,
-		};
+		// Fetch admin field from database since better-auth session may not include it
+		const userFromDb = await db
+			.select({ admin: user.admin })
+			.from(user)
+			.where(eq(user.id, sessionUser.id))
+			.limit(1);
+
+	return {
+		name: sessionUser.name,
+		email: sessionUser.email,
+		lastLoginTime: session.createdAt,
+		verificationStatus: sessionUser.emailVerified,
+		image: sessionUser.image,
+		createdAt: sessionUser.createdAt,
+		admin: userFromDb[0]?.admin ?? false,
+	};
 	} catch (error) {
 		console.error('Failed to fetch user profile overview data:', error);
 		return null;

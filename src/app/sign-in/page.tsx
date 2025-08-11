@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { SignInForm } from '@/features/auth/components';
+import { RedirectGuard, SignInForm } from '@/features/auth/components';
 
 export default function SignInPage() {
 	return (
-		<div className='min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-muted/20 to-background'>
+		<RedirectGuard>
+			<div className='min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-muted/20 to-background'>
 			<div className='w-full max-w-md space-y-6'>
 				<div className='text-center space-y-2'>
 					<div className='flex justify-center mb-4'>
@@ -42,6 +43,7 @@ export default function SignInPage() {
 					</div>
 				</div>
 			</div>
-		</div>
+			</div>
+		</RedirectGuard>
 	);
 }

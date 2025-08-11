@@ -1,8 +1,10 @@
 'use client';
 
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
+import { AuthModal } from '@/features/auth/components/auth-modal';
 import { FEATURES, TIPS } from '../data';
 import '@/styles/modal-transitions.css';
 
@@ -14,11 +16,7 @@ type TProps = {
 	onGetStartedExitComplete?: () => void;
 };
 
-function FeatureCard({
-	feature,
-}: {
-	feature: (typeof FEATURES)[number];
-}) {
+function FeatureCard({ feature }: { feature: (typeof FEATURES)[number] }) {
 	return (
 		<article className='border border-border/50 bg-card/50 backdrop-blur-sm cursor-default rounded-lg'>
 			<div className='p-4 text-center h-full flex flex-col'>
@@ -58,6 +56,8 @@ export function WelcomeModal({
 }: TProps) {
 	const firstButtonRef = useRef<HTMLButtonElement>(null);
 	const exitReasonRef = useRef<'close' | 'get-started'>('close');
+	const [authModalOpen, setAuthModalOpen] = useState(false);
+	const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
 	function handleMountAutoFocus(event: Event) {
 		event.preventDefault();
@@ -100,21 +100,24 @@ export function WelcomeModal({
 		setStorageOnBlur();
 	}
 
-	function handleAuthAction(action: 'register' | 'login') {
-		try {
-			const url = `/${action}`;
-			window.open(url, '_blank', 'noopener,noreferrer');
-		} catch (error) {
-			console.error(`Failed to open ${action} page:`, error);
-		}
+	function handleAuthClick(mode: 'signin' | 'signup') {
+		setAuthMode(mode);
+		setAuthModalOpen(true);
 	}
 
-	function handleDocumentKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			exitReasonRef.current = 'close';
-			onClose();
-		}
+	function handleAuthModalClose() {
+		setAuthModalOpen(false);
 	}
+
+	const handleDocumentKeyDown = useCallback(
+		function handleDocumentKeyDown(event: KeyboardEvent) {
+			if (event.key === 'Escape') {
+				exitReasonRef.current = 'close';
+				onClose();
+			}
+		},
+		[onClose]
+	);
 
 	function handleFocusScopeKeyDown(event: React.KeyboardEvent) {
 		if (event.key === 'Enter' && event.target === event.currentTarget) {
@@ -152,13 +155,6 @@ export function WelcomeModal({
 		}
 	}
 
-	function handleRegisterClick() {
-		return handleAuthAction('register');
-	}
-
-	function handleLoginClick() {
-		return handleAuthAction('login');
-	}
 
 	useEffect(
 		function setupModalEffects() {
@@ -176,7 +172,6 @@ export function WelcomeModal({
 		},
 		[isOpen, handleDocumentKeyDown]
 	);
-
 
 	if (!isOpen) return null;
 
@@ -251,9 +246,14 @@ export function WelcomeModal({
 										<div>
 											<h3 className='text-xs font-semibold text-foreground flex items-center gap-2'>
 												Unlock Premium Features
-												<span className='inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium'>Premium</span>
+												<span className='inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium'>
+													Premium
+												</span>
 											</h3>
-											<p className='text-[11px] leading-snug text-muted-foreground'>Get the most out of Resume Builder with a free account</p>
+											<p className='text-[11px] leading-snug text-muted-foreground'>
+												Get the most out of Resume Builder with a free
+												account
+											</p>
 										</div>
 									</div>
 
@@ -262,31 +262,41 @@ export function WelcomeModal({
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Cloud Storage</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Cloud Storage
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Multiple Resumes</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Multiple Resumes
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>Share Links</span>
+											<span className='text-[11px] text-muted-foreground'>
+												Share Links
+											</span>
 										</div>
 										<div className='flex items-center gap-1.5'>
 											<div className='w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center'>
 												<span className='text-primary text-[10px]'>✓</span>
 											</div>
-											<span className='text-[11px] text-muted-foreground'>AI Assistance</span>
+											<span className='text-[11px] text-muted-foreground'>
+												AI Assistance
+											</span>
 										</div>
 									</div>
 								</div>
 
 								<div className='bg-muted/20 rounded-lg p-3'>
-									<h3 className='text-xs font-medium text-muted-foreground mb-2'>Quick Tips</h3>
+									<h3 className='text-xs font-medium text-muted-foreground mb-2'>
+										Quick Tips
+									</h3>
 									<div className='grid grid-cols-1 md:grid-cols-2 gap-1.5'>
 										{TIPS.map(function mapTip(tip, index) {
 											return <TipItem key={`tip-${index}`} tip={tip} />;
@@ -340,24 +350,14 @@ export function WelcomeModal({
 											<p className='text-xs text-muted-foreground mb-3'>
 												Unlock premium features
 											</p>
-											<div className='flex gap-2'>
-												<button
-													type='button'
-													className='flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary'
-													onClick={handleRegisterClick}
-													aria-label='Create a new account'
-												>
-													Register
-												</button>
-												<button
-													type='button'
-													className='flex-1 border border-border hover:bg-muted px-3 py-2 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary'
-													onClick={handleLoginClick}
-													aria-label='Sign in to your account'
-												>
-													Sign In
-												</button>
-											</div>
+											<button
+												type='button'
+												className='w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary'
+												onClick={() => handleAuthClick('signin')}
+												aria-label='Sign in or create account'
+											>
+												Sign In
+											</button>
 										</div>
 									</div>
 
@@ -403,6 +403,13 @@ export function WelcomeModal({
 					</div>
 				</FocusScope>
 			</div>
+
+			<AuthModal 
+				isOpen={authModalOpen} 
+				onClose={handleAuthModalClose} 
+				initialMode={authMode} 
+				onSuccess={handleAuthModalClose} 
+			/>
 		</div>
 	);
 }

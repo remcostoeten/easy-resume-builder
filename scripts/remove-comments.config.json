@@ -1,3 +1,0 @@
-{
-	"excludedPaths": ["!node_modules/**", "!.next/**"]
-}

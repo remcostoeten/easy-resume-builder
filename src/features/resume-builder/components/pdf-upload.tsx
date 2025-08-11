@@ -157,7 +157,8 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 					</div>
 
 					{!selectedFile && (
-						<div
+						<button
+							type='button'
 							className={`
 								upload-drop-zone border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer
 								${
@@ -170,7 +171,11 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 							onDragLeave={handleDrag}
 							onDragOver={handleDrag}
 							onDrop={handleDrop}
-							onClick={() => document.getElementById('pdf-upload')?.click()}
+							onClick={() =>
+								(
+									document.getElementById('pdf-upload') as HTMLInputElement | null
+								)?.click()
+							}
 						>
 							<Upload className='h-12 w-12 mx-auto mb-4 text-muted-foreground' />
 							<div className='space-y-2'>
@@ -190,7 +195,7 @@ export function PdfUpload({ onDataExtracted, onError }: TProps) {
 								onChange={handleFileSelect}
 								className='hidden'
 							/>
-						</div>
+						</button>
 					)}
 
 					{selectedFile && (

@@ -2,10 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useSession } from '@/hooks';
 import { Button } from '@/shared/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
-import { SignInForm } from './sign-in-form';
-import { useSession } from '@/features/auth/hooks/hooks';
+import { AuthModal } from './auth-modal';
 
 type TProps = {
 	useModal?: boolean;
@@ -16,7 +15,12 @@ type TProps = {
 function LoginButton({ useModal = false, className, children }: TProps) {
 	const router = useRouter();
 	const { data: session } = useSession();
-	const isLoggedIn = useMemo(function computeIsLoggedIn() { return Boolean(session); }, [session]);
+	const isLoggedIn = useMemo(
+		function computeIsLoggedIn() {
+			return Boolean(session);
+		},
+		[session]
+	);
 	const [isOpen, setIsOpen] = useState(false);
 
 	function handleClick() {
@@ -31,33 +35,36 @@ function LoginButton({ useModal = false, className, children }: TProps) {
 		setIsOpen(false);
 	}
 
-	useEffect(function attachShortcut() {
-		function isEditableTarget(target: EventTarget | null) {
-			if (!(target instanceof HTMLElement)) return false;
-			const tag = target.tagName.toLowerCase();
-			const editable = target.isContentEditable;
-			return editable || tag === 'input' || tag === 'textarea' || tag === 'select';
-		}
+	useEffect(
+		function attachShortcut() {
+			function isEditableTarget(target: EventTarget | null) {
+				if (!(target instanceof HTMLElement)) return false;
+				const tag = target.tagName.toLowerCase();
+				const editable = target.isContentEditable;
+				return editable || tag === 'input' || tag === 'textarea' || tag === 'select';
+			}
 
-		function onKeyDown(e: KeyboardEvent) {
-			if (isLoggedIn) return;
-			if (isEditableTarget(e.target)) return;
-			const key = e.key;
-			if (e.shiftKey && (key === 'L' || key === 'l')) {
-				e.preventDefault();
-				if (useModal) {
-					setIsOpen(true);
-				} else {
-					router.push('/login');
+			function onKeyDown(e: KeyboardEvent) {
+				if (isLoggedIn) return;
+				if (isEditableTarget(e.target)) return;
+				const key = e.key;
+				if (e.shiftKey && (key === 'L' || key === 'l')) {
+					e.preventDefault();
+					if (useModal) {
+						setIsOpen(true);
+					} else {
+						router.push('/login');
+					}
 				}
 			}
-		}
 
-		window.addEventListener('keydown', onKeyDown);
-		return function cleanup() {
-			window.removeEventListener('keydown', onKeyDown);
-		};
-	}, [isLoggedIn, router, useModal]);
+			window.addEventListener('keydown', onKeyDown);
+			return function cleanup() {
+				window.removeEventListener('keydown', onKeyDown);
+			};
+		},
+		[isLoggedIn, router, useModal]
+	);
 
 	return (
 		<>
@@ -66,7 +73,7 @@ function LoginButton({ useModal = false, className, children }: TProps) {
 				{!isLoggedIn && (
 					<span
 						aria-hidden='true'
-						className='ml-2 rounded-sm border border-border/60 bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground'
+						className='ml-2 rounded-sm border border-primary-foreground/20 bg-primary-foreground/20 px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground'
 					>
 						Shift+L
 					</span>
@@ -74,14 +81,12 @@ function LoginButton({ useModal = false, className, children }: TProps) {
 			</Button>
 
 			{useModal && (
-				<Dialog open={isOpen} onOpenChange={setIsOpen}>
-					<DialogContent className='w-full max-w-sm mx-auto'>
-						<DialogHeader>
-							<DialogTitle>Sign In</DialogTitle>
-						</DialogHeader>
-						<SignInForm onSuccess={handleModalSuccess} />
-					</DialogContent>
-				</Dialog>
+				<AuthModal 
+					isOpen={isOpen} 
+					onClose={() => setIsOpen(false)} 
+					initialMode='signin' 
+					onSuccess={handleModalSuccess} 
+				/>
 			)}
 		</>
 	);

@@ -1,10 +1,10 @@
 'use client';
 
 import { GraduationCap } from 'lucide-react';
-import { EmptyState } from '@/shared/components/ui';
-import type { TEducationItem } from '@/types/resume';
-import { addEducation } from '@/store/resume-store';
 import { nanoid } from 'nanoid';
+import { EmptyState } from '@/shared/components/ui';
+import { addEducation } from '@/store/resume-store';
+import type { TEducationItem } from '@/types/resume';
 import { FormSection } from '../form/form-section';
 
 type TProps = {

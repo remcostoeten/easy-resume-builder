@@ -1,7 +1,7 @@
 'use client';
 
 import { ExternalLink, Github, Unlink } from 'lucide-react';
-import { startTransition, useEffect, useState } from 'react';
+import { startTransition, useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { authClient } from '@/features/auth/client/auth-client';
 import {
@@ -44,22 +44,25 @@ export function OAuthLinkingPanel({
 	const [accounts, setAccounts] = useState<TOAuthAccount[]>(initialAccounts);
 	const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({});
 
+	const loadAccounts = useCallback(
+		function loadAccounts() {
+			startTransition(async () => {
+				try {
+					const accountList = await listOAuthAccounts(userId);
+					setAccounts(accountList);
+				} catch (error) {
+					const errorMessage =
+						error instanceof Error ? error.message : 'Failed to load accounts';
+					onError?.(errorMessage);
+				}
+			});
+		},
+		[userId, onError]
+	);
+
 	useEffect(() => {
 		loadAccounts();
 	}, [loadAccounts]);
-
-	function loadAccounts() {
-		startTransition(async () => {
-			try {
-				const accountList = await listOAuthAccounts(userId);
-				setAccounts(accountList);
-			} catch (error) {
-				const errorMessage =
-					error instanceof Error ? error.message : 'Failed to load accounts';
-				onError?.(errorMessage);
-			}
-		});
-	}
 
 	function isLinked(provider: string) {
 		return accounts.some((account) => account.providerId === provider);

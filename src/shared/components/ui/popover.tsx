@@ -2,6 +2,7 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import type * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from 'utilities';
 
@@ -39,4 +40,48 @@ function PopoverContent({
 	);
 }
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+function PopoverInlinePlaceholder() {
+	return (
+		<div className='flex items-center justify-center gap-2 p-2'>
+			<div className='size-3 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent' />
+			<span className='text-muted-foreground text-xs'>Loading…</span>
+		</div>
+	);
+}
+
+type TPopoverLazyProps = {
+	load: () => Promise<{ default: React.ComponentType<any> }>;
+	componentProps?: Record<string, unknown>;
+	placeholder?: React.ReactNode;
+};
+
+function PopoverLazyContent({ load, componentProps, placeholder }: TPopoverLazyProps) {
+	const [Loaded, setLoaded] = useState<React.ComponentType<any> | null>(null);
+	const [started, setStarted] = useState(false);
+
+	useEffect(
+		function startLoading() {
+			if (started) {
+				return;
+			}
+			setStarted(true);
+			let mounted = true;
+			load().then(function onResolve(mod) {
+				if (mounted) {
+					setLoaded(() => mod.default);
+				}
+			});
+			return function onCleanup() {
+				mounted = false;
+			};
+		},
+		[load, started]
+	);
+
+	if (!Loaded) {
+		return placeholder ? placeholder : <PopoverInlinePlaceholder />;
+	}
+	return <Loaded {...(componentProps || {})} />;
+}
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverLazyContent };

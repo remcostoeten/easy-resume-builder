@@ -1,17 +1,43 @@
 'use client';
 
 import { Eye, Maximize2, Printer } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
+import { ErrorBoundary } from '@/shared/components/boundaries/error-boundary';
 import { Button } from '@/shared/components/ui/button';
 import { Card } from '@/shared/components/ui/card';
-import { ResumePreview } from '../../preview/resume-preview';
+import { usePrefetchOnVisible } from '@/hooks';
+import { ResumePreviewSkeleton } from '../../preview/resume-preview.skeleton';
+
+function importResumePreview() {
+	return import('../../preview/resume-preview').then(function map(mod) {
+		return mod.ResumePreview;
+	});
+}
+
+function renderResumePreviewSkeleton() {
+	return ResumePreviewSkeleton({});
+}
+
+const ResumePreviewLazy = dynamic(importResumePreview, {
+	ssr: false,
+	loading: renderResumePreviewSkeleton,
+});
 
 export function ProfessionalPreview() {
-	function _handleDownload() {
-		console.log('Download resume as PDF');
-	}
-
 	function handlePrint() {
 		window.print();
+	}
+
+	const importOnVisible = useMemo(function create() {
+		return function run() {
+			void importResumePreview();
+		};
+	}, []);
+	const prefetchRef = usePrefetchOnVisible({ onVisible: importOnVisible });
+
+	function handlePrefetch() {
+		void importResumePreview();
 	}
 
 	return (
@@ -29,7 +55,13 @@ export function ProfessionalPreview() {
 				</p>
 
 				<div className='flex gap-2'>
-					<Button size='sm' variant='outline' className='gap-2 bg-transparent'>
+					<Button
+						size='sm'
+						variant='outline'
+						className='gap-2 bg-transparent'
+						onPointerEnter={handlePrefetch}
+						onFocus={handlePrefetch}
+					>
 						<Maximize2 className='h-3 w-3' />
 						Fullscreen
 					</Button>
@@ -46,9 +78,11 @@ export function ProfessionalPreview() {
 			</div>
 
 			<div className='flex-1 overflow-auto p-6'>
-				<div className='max-w-[8.5in] mx-auto'>
+				<div className='max-w-[8.5in] mx-auto' ref={prefetchRef}>
 					<Card className='shadow-lg bg-white text-black'>
-						<ResumePreview />
+						<ErrorBoundary>
+							<ResumePreviewLazy />
+						</ErrorBoundary>
 					</Card>
 				</div>
 

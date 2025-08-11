@@ -18,7 +18,6 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AnimatePresence } from 'framer-motion';
 import { GripVertical, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { SECTION_CONFIGS } from '@/core/config/section-configs';
@@ -26,6 +25,7 @@ import { ClientOnly } from '@/shared/components/client-only';
 import { Button } from '@/shared/components/ui/button';
 import { Switch } from '@/shared/components/ui/switch';
 import { cn } from '@/shared/utilities';
+import { AnimatePresenceLazy } from '@/shared/utilities/dynamic-motion';
 import type { TResumeSection } from '@/types/resume';
 
 type TProps = {
@@ -220,7 +220,7 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 							items={sortedSections.map((s) => s.id)}
 							strategy={verticalListSortingStrategy}
 						>
-							<AnimatePresence>
+							<AnimatePresenceLazy>
 								{sortedSections.map((section) => (
 									<div key={section.id}>
 										<SortableSectionItem
@@ -229,7 +229,7 @@ export function ProfessionalSidebar({ sections, onToggleSection, onReorderSectio
 										/>
 									</div>
 								))}
-							</AnimatePresence>
+							</AnimatePresenceLazy>
 						</SortableContext>
 					</DndContext>
 				</ClientOnly>

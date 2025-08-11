@@ -110,7 +110,11 @@ export function EditProfileForm({
 						<FormItem>
 							<FormLabel>Name</FormLabel>
 							<FormControl>
-								<Input placeholder='Enter your name' disabled={isSubmitting} {...field} />
+								<Input
+									placeholder='Enter your name'
+									disabled={isSubmitting}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -124,7 +128,12 @@ export function EditProfileForm({
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<Input type='email' placeholder='Enter your email' disabled={isSubmitting} {...field} />
+								<Input
+									type='email'
+									placeholder='Enter your email'
+									disabled={isSubmitting}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -141,11 +150,11 @@ export function EditProfileForm({
 						<FormItem>
 							<FormLabel>Bio</FormLabel>
 							<FormControl>
-								<Textarea 
-									placeholder='Tell us about yourself...' 
+								<Textarea
+									placeholder='Tell us about yourself...'
 									rows={3}
 									disabled={isSubmitting}
-									{...field} 
+									{...field}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -161,7 +170,11 @@ export function EditProfileForm({
 							<FormItem>
 								<FormLabel>Location</FormLabel>
 								<FormControl>
-									<Input placeholder='City, Country' disabled={isSubmitting} {...field} />
+									<Input
+										placeholder='City, Country'
+										disabled={isSubmitting}
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -175,7 +188,12 @@ export function EditProfileForm({
 							<FormItem>
 								<FormLabel>Website</FormLabel>
 								<FormControl>
-									<Input type='url' placeholder='https://yourwebsite.com' disabled={isSubmitting} {...field} />
+									<Input
+										type='url'
+										placeholder='https://yourwebsite.com'
+										disabled={isSubmitting}
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -184,24 +202,20 @@ export function EditProfileForm({
 				</div>
 
 				<div className='flex gap-4'>
-					<Button 
-						type='button' 
-						variant='outline' 
+					<Button
+						type='button'
+						variant='outline'
 						className='flex-1'
 						disabled={isSubmitting}
 						onClick={handleCancel}
 					>
 						Cancel
 					</Button>
-					<Button 
-						type='submit' 
-						className='flex-1'
-						disabled={isSubmitting}
-					>
+					<Button type='submit' className='flex-1' disabled={isSubmitting}>
 						{isSubmitting ? 'Updating...' : 'Save Changes'}
 					</Button>
 				</div>
 			</form>
-	</Form>
-	)
+		</Form>
+	);
 }

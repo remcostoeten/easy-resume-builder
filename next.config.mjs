@@ -1,16 +1,18 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const selected = require('./perf/opi/packages.json');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	// Enable available experimental features
 	experimental: {
-		// Only include features that are actually available in Next.js 15
-		optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-		reactCompiler: true,
+		optimizePackageImports: selected,
 	},
 
 	webpack: (config, { dev, isServer }) => {

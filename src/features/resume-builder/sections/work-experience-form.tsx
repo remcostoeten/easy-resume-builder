@@ -18,7 +18,7 @@ import {
 } from '@/shared/components/ui/select';
 import { Switch } from '@/shared/components/ui/switch';
 import { Textarea } from '@/shared/components/ui/textarea';
-import { useSmartForm } from '@/shared/utilities/';
+import { useSmartForm } from '@/hooks';
 import { createEntity } from '@/shared/utilities/entity';
 import type { TWorkItem } from '@/types/resume';
 import { removeFormData } from '@/utils/storage/form-storage';

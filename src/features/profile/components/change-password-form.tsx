@@ -38,11 +38,7 @@ export function ChangePasswordForm({ userId, onSuccess, onError }: TProps) {
 
 	function handleSubmit(data: TChangePassword) {
 		startTransition(async () => {
-			const result = await changeUserPassword(
-				userId,
-				data.currentPassword,
-				data.newPassword
-			);
+			const result = await changeUserPassword(userId, data.currentPassword, data.newPassword);
 
 			if (result.ok) {
 				toast.success('Password changed', {
