@@ -167,7 +167,7 @@ export function UserDropdown({ className }: TProps) {
 					<Separator />
 					<div className='p-1'>
 						<MenuItem href='/dashboard/profile'>Profile</MenuItem>
-						<MenuItem href='/settings'>Settings</MenuItem>
+						<MenuItem href='/dashboard'>Dashboard</MenuItem>
 						<button
 							type='button'
 							className='flex w-full items-center justify-between text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md'
