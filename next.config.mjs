@@ -3,8 +3,15 @@ import { dirname, resolve } from 'path';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-const selected = require('./perf/opi/packages.json');
-
+let selected = [];
+try {
+  const data = require('./perf/opi/packages.json');
+  selected = Array.isArray(data) ? data.filter((x) => typeof x === 'string') : [];
+} catch (e) {
+  // eslint-disable-next-line no-console
+  console.warn('optimizePackageImports: packages.json not found or invalid, defaulting to []');
+  selected = [];
+}
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
