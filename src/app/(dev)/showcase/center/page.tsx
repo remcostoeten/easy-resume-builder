@@ -7,21 +7,9 @@ import { Switch } from '@/shared/components/ui/switch';
 import { Badge } from '@/shared/components/ui/badge';
 import { ToggleGroup, ToggleGroupItem } from '@/shared/components/ui/toggle-group';
 import { Card, CardContent, CardHeader, CardTitle, CardAction } from '@/shared/components/ui/card';
+import { DemoBox } from '@/app/(dev)/showcase/_components';
 
-type TProps = {
-  label: string;
-  className?: string;
-};
-
-export function DemoBox({ label, className }: TProps) {
-  return (
-    <div className={`h-24 w-40 rounded-md border flex items-center justify-center ${className ?? ''}`}>
-      {label}
-    </div>
-  );
-}
-
-export default function CenterDemoView() {
+export default function CenterPage() {
   const [showFixed, setShowFixed] = React.useState(false);
   const [axis, setAxis] = React.useState<'both' | 'x' | 'y'>('both');
   const [strategy, setStrategy] = React.useState<'grid' | 'flex'>('grid');

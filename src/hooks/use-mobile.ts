@@ -12,13 +12,10 @@ export function useIsMobile() {
 			setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
 		}
 
-		// Set initial value
 		handleResize();
 
-		// Add event listener
 		window.addEventListener('resize', handleResize);
 
-		// Cleanup
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 

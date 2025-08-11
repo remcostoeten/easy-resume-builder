@@ -1,6 +1,7 @@
 'use client';
 
-import { ErrorBoundary } from '@/shared/components/error-boundary';
+import { ErrorBoundary } from '@/shared/system';
+
 
 type TProps = {
 	error: Error & { digest?: string };

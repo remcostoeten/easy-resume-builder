@@ -16,6 +16,7 @@ type TUpdateProfileData = {
 	bio?: string;
 	location?: string;
 	website?: string;
+	admin?: boolean;
 };
 
 type TOAuthProvider = 'google' | 'github';
@@ -36,6 +37,7 @@ type TUserProfileOverviewData = {
 	verificationStatus: boolean;
 	image?: string | null;
 	createdAt: Date;
+	admin: boolean;
 };
 
 const resumeFactory = createResumeFactory();
@@ -228,16 +230,24 @@ export async function getUserProfileOverview(): Promise<TUserProfileOverviewData
 			return null;
 		}
 
-		const { user, session } = sessionResult;
+		const { user: sessionUser, session } = sessionResult;
 
-		return {
-			name: user.name,
-			email: user.email,
-			lastLoginTime: session.createdAt,
-			verificationStatus: user.emailVerified,
-			image: user.image,
-			createdAt: user.createdAt,
-		};
+		// Fetch admin field from database since better-auth session may not include it
+		const userFromDb = await db
+			.select({ admin: user.admin })
+			.from(user)
+			.where(eq(user.id, sessionUser.id))
+			.limit(1);
+
+	return {
+		name: sessionUser.name,
+		email: sessionUser.email,
+		lastLoginTime: session.createdAt,
+		verificationStatus: sessionUser.emailVerified,
+		image: sessionUser.image,
+		createdAt: sessionUser.createdAt,
+		admin: userFromDb[0]?.admin ?? false,
+	};
 	} catch (error) {
 		console.error('Failed to fetch user profile overview data:', error);
 		return null;

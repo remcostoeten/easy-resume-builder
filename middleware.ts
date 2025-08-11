@@ -1,8 +1,6 @@
-import { NextResponse } from 'next/server';
+import { auth } from '@/features/auth/server/auth';
 
-export function middleware() {
-  return NextResponse.next();
-}
+export const middleware = auth.handler;
 
 export const config = {
   matcher: ['/((?!_next|.*\..*).*)'],

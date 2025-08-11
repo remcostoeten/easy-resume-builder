@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { DashboardLayout } from '@/components/layouts/dashboard-layout';
-import { useRequireAuth } from '@/features/auth/hooks/hooks';
+import { useRequireAuth } from '@/hooks';
 import { DashboardSkeleton } from '@/features/dashboard/components/dashboard-skeleton';
 import { WithErrorBoundary } from '@/shared/components/with-error-boundary';
 

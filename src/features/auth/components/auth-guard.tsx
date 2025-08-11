@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useSession } from '@/features/auth/hooks/hooks';
+import { useSession } from '@/hooks';
 import { SignInForm } from './sign-in-form';
 
 type TProps = {

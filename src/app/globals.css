@@ -241,3 +241,8 @@ ss
 .clip-polygon:hover {
 	clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
+
+/* Reusable KBD component style */
+.kbd {
+  @apply inline-flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground;
+}

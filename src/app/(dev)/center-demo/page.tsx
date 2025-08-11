@@ -1,6 +1,6 @@
-import CenterDemoView from "@/views/center-demo-view";
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-  return <CenterDemoView />;
+  redirect('/showcase/center');
 }
 

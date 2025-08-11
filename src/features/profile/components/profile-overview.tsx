@@ -1,5 +1,8 @@
+import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { auth } from '@/features/auth/server/auth';
+import { user } from '@/features/auth/server/schemas';
+import { db } from '@/server/db';
 import { Avatar } from '@/shared/components/ui/avatar';
 import { Card } from '@/shared/components/ui/card';
 import { ProfileStats } from './profile-stats';
@@ -10,6 +13,7 @@ type TUserProfileData = {
 	lastLoginTime: Date | null;
 	image?: string | null;
 	createdAt: Date;
+	admin?: boolean;
 };
 
 type TProps = {
@@ -26,15 +30,23 @@ async function getUserProfileData(): Promise<TUserProfileData | null> {
 			return null;
 		}
 
-		const { user, session } = sessionResult;
+		const { user: sessionUser, session } = sessionResult;
 
-		return {
-			name: user.name,
-			email: user.email,
-			lastLoginTime: session.createdAt,
-			image: user.image,
-			createdAt: user.createdAt,
-		};
+		// Fetch admin field from database since better-auth session may not include it
+		const userFromDb = await db
+			.select({ admin: user.admin })
+			.from(user)
+			.where(eq(user.id, sessionUser.id))
+			.limit(1);
+
+	return {
+		name: sessionUser.name,
+		email: sessionUser.email,
+		lastLoginTime: session.createdAt,
+		image: sessionUser.image,
+		createdAt: sessionUser.createdAt,
+		admin: userFromDb[0]?.admin ?? false,
+	};
 	} catch (error) {
 		console.error('Failed to fetch user profile data:', error);
 		return null;

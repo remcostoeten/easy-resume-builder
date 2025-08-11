@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '@/features/auth/client/auth-client';
-import { LoginButton } from '@/features/auth/components/login-button';
-import { useSession } from '@/features/auth/hooks/hooks';
+import { AuthModal } from '@/features/auth/components/auth-modal';
+import { useSession } from '@/hooks';
 import { Avatar } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
 
@@ -57,6 +57,7 @@ function Separator() {
 export function UserDropdown({ className }: TProps) {
 	const { data: session, isLoading } = useSession();
 	const [open, setOpen] = useState(false);
+	const [authModalOpen, setAuthModalOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
 
 	const handleSignOut = useCallback(async function handleSignOut() {
@@ -103,6 +104,32 @@ export function UserDropdown({ className }: TProps) {
 		[open, handleSignOut]
 	);
 
+	useEffect(
+		function setupAuthShortcut() {
+			if (session) return;
+			function isEditableTarget(target: EventTarget | null) {
+				if (!(target instanceof HTMLElement)) return false;
+				const tag = target.tagName.toLowerCase();
+				const editable = target.isContentEditable;
+				return editable || tag === 'input' || tag === 'textarea' || tag === 'select';
+			}
+
+			function onKeyDown(e: KeyboardEvent) {
+				if (isEditableTarget(e.target)) return;
+				if (e.shiftKey && (e.key === 'L' || e.key === 'l')) {
+					e.preventDefault();
+					setAuthModalOpen(true);
+				}
+			}
+
+			window.addEventListener('keydown', onKeyDown);
+			return function cleanup() {
+				window.removeEventListener('keydown', onKeyDown);
+			};
+		},
+		[session]
+	);
+
 	if (isLoading) {
 		return (
 			<div className={className}>
@@ -122,16 +149,30 @@ export function UserDropdown({ className }: TProps) {
 
 	if (!session) {
 		return (
-			<div className={className}>
-				<div className='flex items-center gap-2'>
-					<LoginButton useModal>{'Sign in'}</LoginButton>
-					<Link href='/register'>
-						<Button size='sm' aria-label='Sign up'>
-							Sign up
-						</Button>
-					</Link>
+			<>
+				<div className={className}>
+					<Button 
+						size='sm' 
+						onClick={() => setAuthModalOpen(true)}
+						aria-label='Sign in or create account'
+					>
+						Sign In
+						<span
+							aria-hidden='true'
+							className='ml-2 rounded-sm border border-border/60 bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground'
+						>
+							Shift+L
+						</span>
+					</Button>
 				</div>
-			</div>
+
+				<AuthModal 
+					isOpen={authModalOpen} 
+					onClose={() => setAuthModalOpen(false)} 
+					initialMode='signin' 
+					onSuccess={() => setAuthModalOpen(false)} 
+				/>
+			</>
 		);
 	}
 

@@ -1,5 +1,5 @@
-import { ResumeCreateView } from '@/views/resume-create-view';
+import { redirect } from 'next/navigation';
 
 export default function CreateResumePage() {
-	return <ResumeCreateView />;
+	redirect('/');
 }

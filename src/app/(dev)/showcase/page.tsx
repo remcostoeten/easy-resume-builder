@@ -3,10 +3,22 @@ import Link from 'next/link';
 export default function ShowcasePage() {
   const showcases = [
     {
+      title: 'Center Primitive Demo',
+      description: 'Interactive demonstration of the Center positioning primitive',
+      href: '/showcase/center',
+      tags: ['Layout', 'Primitive', 'UI']
+    },
+    {
       title: 'Theme Toggle Animations',
       description: 'Various animated theme toggle button styles and effects',
-      href: '/showcase/theme-toggle-demo',
+      href: '/showcase/theme-toggle',
       tags: ['Animation', 'Theme', 'UI']
+    },
+    {
+      title: 'PDF Resume Parser',
+      description: 'Test PDF resume parsing functionality and data extraction',
+      href: '/showcase/pdf-parser',
+      tags: ['PDF', 'Parser', 'Resume', 'Demo']
     }
   ];
 

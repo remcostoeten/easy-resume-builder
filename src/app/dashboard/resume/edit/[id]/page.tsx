@@ -1,5 +1,9 @@
-import { ResumeEditView } from '@/views/resume-edit-view';
+import { redirect } from 'next/navigation';
 
-export default function EditResumePage({ params }: any) {
-	return <ResumeEditView id={params.id} />;
+type TProps = {
+	params: Promise<{ id: string }>;
+};
+
+export default function EditResumePage({ params }: TProps) {
+	redirect('/');
 }

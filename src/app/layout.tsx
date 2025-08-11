@@ -5,7 +5,7 @@ import { Providers } from '../components/providers/providers';
 import { nunito } from '../core/config/fonts';
 import { metadata } from '../core/config/metadata-home';
 import { cn } from '../shared/utilities/cn';
-import { DevRouteNav } from '../components/dev/dev-route-nav';
+import { AdminDevRouteNav } from '../components/dev/admin-dev-route-nav';
 
 export { metadata };
 
@@ -15,9 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<body className='dark font-sans antialiased bg-background text-foreground'>
 				<Providers>
 					{children}
-					{process.env.NODE_ENV === 'development' ? (
-						<DevRouteNav />
-					) : null}
+					<AdminDevRouteNav />
 				</Providers>
 			</body>
 		</html>

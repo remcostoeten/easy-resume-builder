@@ -1,17 +1,17 @@
 'use client';
 
+import { useKeyboardShortcut } from '@/hooks';
 import Link from 'next/link';
 import React from 'react';
-import { useKeyboardShortcut } from '../../shared/hooks/use-keyboard-shortcut';
 
 type TProps = {};
 
 export function DevRouteNav({}: TProps): React.ReactElement {
   const [state, setState] = React.useState<{ open: boolean; routes: string[] }>({ open: false, routes: [] });
 
-  function handleToggle(): void {
-    setState({ ...state, open: !state.open });
-  }
+  const handleToggle = React.useCallback(function handleToggle(): void {
+    setState((prevState) => ({ ...prevState, open: !prevState.open }));
+  }, []);
 
 
   async function loadRoutes(): Promise<void> {
@@ -19,9 +19,9 @@ export function DevRouteNav({}: TProps): React.ReactElement {
       const res = await fetch('/api/dev/routes', { cache: 'no-store' });
       const data = await res.json();
       const list: string[] = Array.isArray(data.routes) ? data.routes : [];
-      setState({ ...state, routes: list });
+      setState((prevState) => ({ ...prevState, routes: list }));
     } catch {
-      setState({ ...state, routes: [] });
+      setState((prevState) => ({ ...prevState, routes: [] }));
     }
   }
 
@@ -64,9 +64,14 @@ export function DevRouteNav({}: TProps): React.ReactElement {
         <button
           type="button"
           onClick={handleToggle}
-          className="rounded-full bg-primary px-4 py-2 text-primary-foreground shadow hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-primary-foreground shadow hover:opacity-90"
         >
-          {state.open ? 'Close Routes' : 'Routes'}
+          <span>{state.open ? 'Close' : 'Routes'}</span>
+          {!state.open && (
+            <kbd className="ml-2 rounded-sm border border-border/60 bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              Shift+/
+            </kbd>
+          )}
         </button>
       </div>
     </div>

@@ -3,8 +3,7 @@
 import { AlertTriangle, Bug, Check, Copy, Home, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } from 'ui';
 
 type TProps = {
 	error: Error & { digest?: string };

@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { ErrorBoundary } from '@/shared/components/boundaries/error-boundary';
 import { Button } from '@/shared/components/ui/button';
 import { Card } from '@/shared/components/ui/card';
-import { usePrefetchOnVisible } from '@/shared/hooks/use-prefetch-on-visible';
+import { usePrefetchOnVisible } from '@/hooks';
 import { ResumePreviewSkeleton } from '../../preview/resume-preview.skeleton';
 
 function importResumePreview() {
