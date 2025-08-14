@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { AutoSaveIndicator } from '@/components/dashboard/auto-save-indicator';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
 import { resetStore, setResumeDraft } from '@/store/resume-store';
 import { clearAllFormData } from '@/utils/storage/form-storage';
 
@@ -58,9 +59,7 @@ export function ProfessionalHeader({
 			setShowRestartConfirm(false);
 			console.log('🔄 Resume data cleared completely');
 		} else {
-			// First click - show confirmation
 			setShowRestartConfirm(true);
-			// Auto-hide confirmation after 3 seconds
 			setTimeout(() => {
 				setShowRestartConfirm(false);
 			}, 3000);

@@ -3,16 +3,21 @@
 import { useKeyboardShortcut } from '@/hooks';
 import Link from 'next/link';
 import React from 'react';
+import { useViewTransitionStyle } from '@/shared/contexts/view-transition-style';
 
 type TProps = {};
 
 export function DevRouteNav({}: TProps): React.ReactElement {
+  const [style, dispatch] = useViewTransitionStyle();
   const [state, setState] = React.useState<{ open: boolean; routes: string[] }>({ open: false, routes: [] });
 
   const handleToggle = React.useCallback(function handleToggle(): void {
     setState((prevState) => ({ ...prevState, open: !prevState.open }));
   }, []);
 
+  function handleNextStyle(): void {
+    dispatch({ type: 'next' });
+  }
 
   async function loadRoutes(): Promise<void> {
     try {
@@ -43,7 +48,17 @@ export function DevRouteNav({}: TProps): React.ReactElement {
       <div className="flex flex-col items-end gap-2">
         {state.open ? (
           <div className="max-h-[60vh] w-64 overflow-auto rounded-lg border border-border bg-background/95 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/75">
-            <div className="mb-2 text-sm font-semibold">Routes</div>
+            <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+              <span>Routes</span>
+              <button
+                type="button"
+                onClick={handleNextStyle}
+                className="inline-flex items-center gap-1 rounded bg-muted px-2 py-1 text-xs font-normal text-foreground hover:bg-muted/80"
+              >
+                <span>Style:</span>
+                <span className="font-medium">{style}</span>
+              </button>
+            </div>
             <ul className="space-y-1 text-sm">
               {state.routes
                 .filter(function filterStaticRoutes(route) {
@@ -67,6 +82,7 @@ export function DevRouteNav({}: TProps): React.ReactElement {
           className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-primary-foreground shadow hover:opacity-90"
         >
           <span>{state.open ? 'Close' : 'Routes'}</span>
+          <span className="opacity-80">{style}</span>
           {!state.open && (
             <kbd className="ml-2 rounded-sm border border-border/60 bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               Shift+/

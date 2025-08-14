@@ -37,6 +37,8 @@ function SheetOverlay({
 			<div
 				data-slot='sheet-overlay'
 				data-open='true'
+				data-vt='modal'
+				style={{ viewTransitionName: 'modal' } as any}
 				className={cn('modal-overlay fixed inset-0 z-50', className)}
 			/>
 		</SheetPrimitive.Overlay>
@@ -58,6 +60,8 @@ function SheetContent({
 				<div
 					data-slot='sheet-content'
 					data-open='true'
+					data-vt='modal'
+					style={{ viewTransitionName: 'modal' } as any}
 					className={cn(
 						`sheet-${side} bg-background fixed z-50 flex flex-col gap-4 shadow-lg`,
 						side === 'right' && 'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',

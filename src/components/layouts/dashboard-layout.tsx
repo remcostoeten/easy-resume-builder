@@ -1,5 +1,6 @@
 import type React from 'react';
 import { UserDropdown } from '@/features/auth/components/user-dropdown';
+import { ThemeToggleButton } from '@/app/(dev)/showcase/_components';
 
 type TProps = {
 	children: React.ReactNode;
@@ -30,6 +31,7 @@ export function DashboardLayout({ children }: TProps) {
 									Settings
 								</a>
 							</nav>
+<ThemeToggleButton theme="light" onClick={() => {}}/>							<UserDropdown />
 							<UserDropdown />
 						</div>
 					</div>

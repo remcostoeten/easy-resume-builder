@@ -19,6 +19,7 @@ import {
 	ResizablePanel,
 	ResizablePanelGroup,
 } from '@/shared/components/ui/resizable-panels';
+import { TooltipButton } from '@/shared/components/ui';
 import { type Mutable, resumeAtom, setResumeDraft } from '@/store/resume-store';
 import type { TResumeData, TResumeSection } from '@/types/resume';
 
@@ -156,10 +157,8 @@ function HomeView() {
 						<div className='flex items-center gap-4'>
 							{/* Quick Actions */}
 							<nav className='hidden md:flex items-center gap-1'>
-								<Button variant='ghost' size='sm' onClick={handleDownload}>
-									Export PDF
-								</Button>
-								<Button
+								<TooltipButton label='Export PDF' onClick={handleDownload}>This is still being built!</TooltipButton>
+									<Button
 									variant={
 										isEditMode && !isPreviewMode && !isSplitMode
 											? 'default'
@@ -189,13 +188,12 @@ function HomeView() {
 							{/* Separator */}
 							<div className='h-6 w-px bg-border hidden md:block' />
 
-							{/* Auth Section */}
+							{/* <HeaderThemeToggle /> */}
 							<UserDropdown />
 						</div>
 					</div>
 				</header>
 
-				{/* Main Content Area */}
 				<main className='flex-1 min-h-0'>
 					<ResizablePanelGroup direction='horizontal' className='h-full'>
 						{!isPreviewMode && (

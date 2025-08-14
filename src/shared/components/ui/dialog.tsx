@@ -8,10 +8,20 @@ import { useEffect, useRef, useState } from 'react';
 
 import { cn } from 'utilities';
 import '@/styles/modal-transitions.css';
+import { start } from '../../utilities/view-transition';
 
-function Dialog({ open, children, ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+function Dialog({ open, children, onOpenChange, ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+	function handleOpenChange(next: boolean) {
+		if (typeof onOpenChange !== 'function') {
+			return;
+		}
+		void start(function run() {
+			onOpenChange(next);
+		});
+	}
+
 	return (
-		<DialogPrimitive.Root data-slot='dialog' open={open} {...props}>
+		<DialogPrimitive.Root data-slot='dialog' open={open} onOpenChange={handleOpenChange} {...props}>
 			{children}
 		</DialogPrimitive.Root>
 	);
@@ -34,13 +44,15 @@ function DialogOverlay({
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
 	return (
-		<DialogPrimitive.Overlay asChild {...props}>
-			<div
-				data-slot='dialog-overlay'
-				data-open='true'
-				className={cn('modal-overlay fixed inset-0 z-50', className)}
-			/>
-		</DialogPrimitive.Overlay>
+			<DialogPrimitive.Overlay asChild {...props}>
+				<div
+					data-slot='dialog-overlay'
+					data-open='true'
+					data-vt='modal'
+					style={{ viewTransitionName: 'modal' } as any}
+					className={cn('modal-overlay fixed inset-0 z-50', className)}
+				/>
+			</DialogPrimitive.Overlay>
 	);
 }
 
@@ -78,6 +90,8 @@ function DialogContent({
 				<div
 					data-slot='dialog-content'
 					data-open='true'
+					data-vt='modal'
+					style={{ viewTransitionName: 'modal' } as any}
 					role='dialog'
 					aria-modal='true'
 					aria-labelledby='dialog-title'
