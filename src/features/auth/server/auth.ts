@@ -4,7 +4,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/server/db';
 import { env } from '@/server/env';
 
-import { authConfig } from './auth.config';
+import { buildSocialProviders } from './auth.config';
 import { account, session, user, verification } from './better-auth-schema';
 
 export const auth = betterAuth({
@@ -23,19 +23,7 @@ export const auth = betterAuth({
     autoSignIn: true,
   },
   socialProviders: {
-    ...authConfig.providers,
-    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? {
-      google: {
-        clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET,
-        redirectURI: `${env.DOMAIN}/api/auth/callback/google`,
-      },
-    } : {}),
-    github: {
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-      redirectURI: `${env.DOMAIN}/api/auth/callback/github`,
-    },
+    ...buildSocialProviders(env.DOMAIN),
   },
 	secret: env.BA_SECRET,
 	baseURL: env.DOMAIN,

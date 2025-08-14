@@ -4,6 +4,7 @@ type TProviderConfig = {
   clientId: string;
   clientSecret: string;
   redirectURI: string;
+  clientKey?: string;
 };
 
 export function buildSocialProviders(domain: string): Record<string, TProviderConfig | any> {
@@ -76,3 +77,7 @@ export function buildSocialProviders(domain: string): Record<string, TProviderCo
 
   return providers;
 }
+
+export const authConfig = {
+  providers: buildSocialProviders(env.DOMAIN),
+};
