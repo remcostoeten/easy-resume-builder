@@ -13,6 +13,7 @@ const __dirname = dirname(__filename);
 const nextConfig = {
 	experimental: {
 		optimizePackageImports: selected,
+		viewTransition: true,
 	},
 
 	webpack: (config, { dev, isServer }) => {
