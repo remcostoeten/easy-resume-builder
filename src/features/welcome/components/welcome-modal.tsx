@@ -4,7 +4,7 @@ import { FocusScope } from '@radix-ui/react-focus-scope';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { setStorageOnBlur } from '@/utils/storage';
-import { AuthModal } from '@/features/auth/components/auth-modal';
+import { AuthModal } from '@/features/auth/components';
 import { FEATURES, TIPS } from '../data';
 import '@/styles/modal-transitions.css';
 

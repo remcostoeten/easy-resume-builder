@@ -13,7 +13,7 @@
 
 import { eq, or } from 'drizzle-orm';
 import { db } from '../src/server/db';
-import { user } from '../src/features/auth/server/better-auth-schema';
+import { user } from '../src/lib/db/schema';
 
 type TAdminUser = {
   id?: string;
@@ -64,7 +64,7 @@ async function seedAdmins() {
       
       const existingUser = existingUsers[0];
       
-      if (existingUser.admin) {
+      if (existingUser.role === 'admin') {
         console.log(`✅ User already admin: ${existingUser.email}`);
         results.push({ 
           identifier: existingUser.email, 
@@ -76,7 +76,7 @@ async function seedAdmins() {
       const [updatedUser] = await db
         .update(user)
         .set({ 
-          admin: true,
+          role: 'admin',
           updatedAt: new Date()
         })
         .where(whereCondition)

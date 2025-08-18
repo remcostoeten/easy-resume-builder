@@ -10,7 +10,7 @@ import {
 	useState,
 	useTransition,
 } from 'react';
-import { UserDropdown } from '@/features/auth/components/user-dropdown';
+import { UserDropdown } from '@/features/auth/components';
 import { PerformanceMonitor } from '@/shared/components/performance-monitor';
 import { Button } from '@/shared/components/ui/button';
 import { LoadingSkeleton } from '@/shared/components/ui/loading-skeleton';

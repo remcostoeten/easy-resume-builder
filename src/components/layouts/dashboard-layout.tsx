@@ -1,5 +1,5 @@
 import type React from 'react';
-import { UserDropdown } from '@/features/auth/components/user-dropdown';
+import { UserDropdown } from '@/features/auth/components';
 import { ThemeToggleButton } from '@/app/(dev)/showcase/_components';
 
 type TProps = {

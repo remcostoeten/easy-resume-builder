@@ -9,6 +9,7 @@ import { ViewTransitionStyleProvider, useViewTransitionStyle } from '../../share
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { WelcomeModal } from '../../features/welcome/components/welcome-modal';
 import { hasSeenWelcomeModal, setStorageOnClick } from '@/utils/storage';
+import { AuthProvider } from '@/features/auth/providers/auth-provider';
 
 type TProps = { children: React.ReactNode };
 
@@ -89,9 +90,10 @@ function Welcome({ children }: TProps) {
 
 export function Providers({ children }: TProps) {
 	if (process.env.NODE_ENV === 'development') {
-		return (
-			<JotaiProvider>
-				<NextThemesProvider attribute="data-theme" defaultTheme="dark" disableTransitionOnChange={false}>
+	return (
+		<JotaiProvider>
+			<NextThemesProvider attribute="data-theme" defaultTheme="dark" disableTransitionOnChange={false}>
+				<AuthProvider>
 					<SettingsProvider>
 						<ViewTransitionStyleProvider>
 							<Welcome>
@@ -103,22 +105,25 @@ export function Providers({ children }: TProps) {
 							</Welcome>
 						</ViewTransitionStyleProvider>
 					</SettingsProvider>
-				</NextThemesProvider>
-			</JotaiProvider>
-		);
+				</AuthProvider>
+			</NextThemesProvider>
+		</JotaiProvider>
+	);
 	}
 
 	return (
 		<JotaiProvider>
 			<NextThemesProvider attribute="data-theme" defaultTheme="dark" disableTransitionOnChange={false}>
-				<SettingsProvider>
-					<ViewTransitionStyleProvider>
-						<Welcome>
-							<VTStyleMirror />
-							{children}
-						</Welcome>
-					</ViewTransitionStyleProvider>
-				</SettingsProvider>
+				<AuthProvider>
+					<SettingsProvider>
+						<ViewTransitionStyleProvider>
+							<Welcome>
+								<VTStyleMirror />
+								{children}
+							</Welcome>
+						</ViewTransitionStyleProvider>
+					</SettingsProvider>
+				</AuthProvider>
 			</NextThemesProvider>
 		</JotaiProvider>
 	);

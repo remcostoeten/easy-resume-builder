@@ -5,7 +5,7 @@
  */
 
 // Better Auth schemas for migrations
-export * from '@/features/auth/server/better-auth-schema';
+export * from '@/lib/db/schema';
 
 // Resume schemas
 export * from '@/features/resume/server/schemas';
