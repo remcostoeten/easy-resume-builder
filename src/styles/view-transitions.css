@@ -1,0 +1,124 @@
+[data-vt="modal"],
+[data-vt="auth-form"] {
+  view-transition-name: vt-shared;
+}
+
+[data-vt-style="crossfade"]::view-transition-old(root) {
+  animation-name: vt-crossfade-out;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-vt-style="crossfade"]::view-transition-new(root) {
+  animation-name: vt-crossfade-in;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-vt-style="crossfade"]::view-transition-old(vt-shared) {
+  animation-name: vt-shared-crossfade-out;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-vt-style="crossfade"]::view-transition-new(vt-shared) {
+  animation-name: vt-shared-crossfade-in;
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vt-crossfade-in { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes vt-crossfade-out { from { opacity: 1 } to { opacity: 0 } }
+  @keyframes vt-shared-crossfade-in { from { opacity: 0; transform: translateY(4px) } to { opacity: 1; transform: translateY(0) } }
+  @keyframes vt-shared-crossfade-out { from { opacity: 1; transform: translateY(0) } to { opacity: 0; transform: translateY(4px) } }
+}
+
+[data-vt-style="morph"]::view-transition-old(root) {
+  animation: replace 0.3s ease;
+  animation-direction: reverse;
+}
+[data-vt-style="morph"]::view-transition-new(root) {
+  animation: replace 0.3s ease;
+}
+
+[data-vt-style="morph"]::view-transition-old(vt-shared) {
+  animation-name: vt-morph-shared-out;
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-vt-style="morph"]::view-transition-new(vt-shared) {
+  animation-name: vt-morph-shared-in;
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes replace { from { opacity: 0; transform: scale(0.985); clip-path: inset(0 round 12px) } to { opacity: 1; transform: scale(1); clip-path: inset(0 round 0) } }
+  @keyframes vt-morph-shared-in { from { opacity: 0; transform: scale(0.96) translateY(6px); filter: blur(2px) } to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0) } }
+  @keyframes vt-morph-shared-out { from { opacity: 1; transform: scale(1) translateY(0); filter: blur(0) } to { opacity: 0; transform: scale(1.04) translateY(6px); filter: blur(2px) } }
+}
+
+[data-vt-style="ease-slow"]::view-transition-old(root) {
+  animation-name: vt-ease-slow-out;
+  animation-duration: 600ms;
+  animation-timing-function: ease-in-out;
+}
+[data-vt-style="ease-slow"]::view-transition-new(root) {
+  animation-name: vt-ease-slow-in;
+  animation-duration: 600ms;
+  animation-timing-function: ease-in-out;
+}
+
+[data-vt-style="ease-slow"]::view-transition-old(vt-shared) {
+  animation-name: vt-ease-slow-shared-out;
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-vt-style="ease-slow"]::view-transition-new(vt-shared) {
+  animation-name: vt-ease-slow-shared-in;
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vt-ease-slow-in { 0% { opacity: 0; transform: translateY(8px) } 100% { opacity: 1; transform: translateY(0) } }
+  @keyframes vt-ease-slow-out { 0% { opacity: 1; transform: translateY(0) } 100% { opacity: 0; transform: translateY(-8px) } }
+  @keyframes vt-ease-slow-shared-in { 0% { opacity: 0; transform: translateY(10px) scale(0.98) } 100% { opacity: 1; transform: translateY(0) scale(1) } }
+  @keyframes vt-ease-slow-shared-out { 0% { opacity: 1; transform: translateY(0) scale(1) } 100% { opacity: 0; transform: translateY(-10px) scale(0.98) } }
+}
+
+/* THEME RADIAL WIPE TRANSITION */
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme-transition="radial"]::view-transition-old(root) {
+    animation-name: theme-wipe-out;
+    animation-duration: 450ms;
+    animation-timing-function: var(--ease);
+  }
+  [data-theme-transition="radial"]::view-transition-new(root) {
+    animation-name: theme-wipe-in;
+    animation-duration: 450ms;
+    animation-timing-function: var(--ease);
+  }
+
+  @keyframes theme-wipe-in {
+    0% { clip-path: circle(0 at var(--mouseX) var(--mouseY)); }
+    100% { clip-path: circle(150vmax at var(--mouseX) var(--mouseY)); }
+  }
+  @keyframes theme-wipe-out {
+    0% { clip-path: circle(150vmax at var(--mouseX) var(--mouseY)); filter: brightness(1); }
+    100% { clip-path: circle(0 at var(--mouseX) var(--mouseY)); filter: brightness(0.98); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(vt-shared),
+  ::view-transition-new(vt-shared) {
+    animation: none !important;
+  }
+  [data-theme-transition]::view-transition-old(root),
+  [data-theme-transition]::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+

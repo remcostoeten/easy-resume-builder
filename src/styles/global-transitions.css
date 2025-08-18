@@ -1,0 +1,6 @@
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition: color .25s ease, background-color .25s ease, border-color .25s ease;
+  }
+}
+

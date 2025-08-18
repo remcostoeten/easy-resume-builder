@@ -1,0 +1,128 @@
+/* Modal/Dialog Transitions - CSS-based animations */
+
+/* Base modal styles */
+.modal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.modal[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Modal overlay styles */
+.modal-overlay {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  background-color: transparent;
+  transition: opacity 0.2s ease, backdrop-filter 0.2s ease, background-color 0.2s ease;
+}
+
+.modal-overlay[data-open="true"] {
+  opacity: 1;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Sheet/Drawer specific transitions */
+.sheet-right {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sheet-right[data-open="true"] {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sheet-left {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sheet-left[data-open="true"] {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sheet-top {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sheet-top[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sheet-bottom {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sheet-bottom[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Alert dialog specific styles */
+.alert-dialog {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.alert-dialog[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Prefers reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal-overlay,
+  .sheet-right,
+  .sheet-left,
+  .sheet-top,
+  .sheet-bottom,
+  .alert-dialog {
+    transition: none;
+  }
+  
+  .modal,
+  .modal[data-open="true"] {
+    opacity: 1;
+    transform: none;
+  }
+  
+  .modal-overlay,
+  .modal-overlay[data-open="true"] {
+    opacity: 1;
+    backdrop-filter: none;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .sheet-right,
+  .sheet-right[data-open="true"],
+  .sheet-left,
+  .sheet-left[data-open="true"],
+  .sheet-top,
+  .sheet-top[data-open="true"],
+  .sheet-bottom,
+  .sheet-bottom[data-open="true"] {
+    opacity: 1;
+    transform: none;
+  }
+  
+  .alert-dialog,
+  .alert-dialog[data-open="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}

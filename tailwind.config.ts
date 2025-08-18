@@ -1,98 +1,51 @@
 import type { Config } from "tailwindcss";
 
-// all in fixtures is set to tailwind v3 as interims solutions
-
 const config: Config = {
-    darkMode: ["class"],
-    content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "*.{js,ts,jsx,tsx,mdx}"
+  content: [
+    "./src/**/*.{ts,tsx}",
   ],
   theme: {
-  	extend: {
-  		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
-  			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
-  			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
-  			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
-  			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			},
-  			sidebar: {
-  				DEFAULT: 'hsl(var(--sidebar-background))',
-  				foreground: 'hsl(var(--sidebar-foreground))',
-  				primary: 'hsl(var(--sidebar-primary))',
-  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-  				accent: 'hsl(var(--sidebar-accent))',
-  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-  				border: 'hsl(var(--sidebar-border))',
-  				ring: 'hsl(var(--sidebar-ring))'
-  			}
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
-  		keyframes: {
-  			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
-  			},
-  			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
-  			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
-  	}
+    extend: {
+      colors: {
+        background: "oklch(var(--color-background) / <alpha-value>)",
+        foreground: "oklch(var(--color-foreground) / <alpha-value>)",
+        card: "oklch(var(--color-card) / <alpha-value>)",
+        'card-foreground': "oklch(var(--color-card-foreground) / <alpha-value>)",
+        popover: "oklch(var(--color-popover) / <alpha-value>)",
+        'popover-foreground': "oklch(var(--color-popover-foreground) / <alpha-value>)",
+        primary: "oklch(var(--color-primary) / <alpha-value>)",
+        'primary-foreground': "oklch(var(--color-primary-foreground) / <alpha-value>)",
+        secondary: "oklch(var(--color-secondary) / <alpha-value>)",
+        'secondary-foreground': "oklch(var(--color-secondary-foreground) / <alpha-value>)",
+        muted: "oklch(var(--color-muted) / <alpha-value>)",
+        'muted-foreground': "oklch(var(--color-muted-foreground) / <alpha-value>)",
+        accent: "oklch(var(--color-accent) / <alpha-value>)",
+        'accent-foreground': "oklch(var(--color-accent-foreground) / <alpha-value>)",
+        destructive: "oklch(var(--color-destructive) / <alpha-value>)",
+        'destructive-foreground': "oklch(var(--color-destructive-foreground) / <alpha-value>)",
+        border: "oklch(var(--color-border) / <alpha-value>)",
+        input: "oklch(var(--color-input) / <alpha-value>)",
+        ring: "oklch(var(--color-ring) / <alpha-value>)",
+        // Sidebar tokens
+        sidebar: "oklch(var(--color-sidebar) / <alpha-value>)",
+        'sidebar-foreground': "oklch(var(--color-sidebar-foreground) / <alpha-value>)",
+        'sidebar-primary': "oklch(var(--color-sidebar-primary) / <alpha-value>)",
+        'sidebar-primary-foreground': "oklch(var(--color-sidebar-primary-foreground) / <alpha-value>)",
+        'sidebar-accent': "oklch(var(--color-sidebar-accent) / <alpha-value>)",
+        'sidebar-accent-foreground': "oklch(var(--color-sidebar-accent-foreground) / <alpha-value>)",
+        'sidebar-border': "oklch(var(--color-sidebar-border) / <alpha-value>)",
+        'sidebar-ring': "oklch(var(--color-sidebar-ring) / <alpha-value>)",
+      },
+      borderRadius: {
+        sm: "var(--radius-sm)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+      },
+    },
   },
-  plugins: [require("tailwindcss-animate")],
+  darkMode: ["class", "[data-theme=dark]"]
 };
+
 export default config;
+
