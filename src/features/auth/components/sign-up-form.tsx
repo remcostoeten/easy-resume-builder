@@ -39,6 +39,7 @@ type TProps = {
 
 export function SignUpForm({ onSuccess, className }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string>('');
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof signUpSchema>>({
@@ -53,6 +54,7 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 
 	async function handleSubmit(values: z.infer<typeof signUpSchema>) {
 		setIsLoading(true);
+		setError(''); // Clear previous errors
 
 		try {
 			const result = await authClient.signUp.email({
@@ -60,6 +62,9 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 				email: values.email,
 				password: values.password,
 			});
+
+			// Debug logging
+			console.log('Sign up result:', result);
 
 			if (result.data) {
 				toast.success('Account created successfully!', {
@@ -75,14 +80,29 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 					}, 100);
 				}
 			} else {
+				const errorMessage = result.error?.message || 'Please check your information and try again.';
+				console.log('Sign up error:', result.error);
+				setError(errorMessage);
 				toast.error('Failed to create account', {
-					description:
-						result.error?.message || 'Please check your information and try again.',
+					description: errorMessage,
 				});
 			}
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : 'An unexpected error occurred';
+			console.error('Sign up exception:', error);
+			let errorMessage = 'An unexpected error occurred';
+			
+			if (error instanceof Error) {
+				// Handle specific error types
+				if (error.message.includes('fetch') || error.message.includes('network')) {
+					errorMessage = 'Network error. Please check your connection and try again.';
+				} else if (error.message.includes('timeout')) {
+					errorMessage = 'Request timed out. Please try again.';
+				} else {
+					errorMessage = error.message;
+				}
+			}
+			
+			setError(errorMessage);
 			toast.error('Failed to create account', {
 				description: errorMessage,
 			});
@@ -97,6 +117,11 @@ export function SignUpForm({ onSuccess, className }: TProps) {
 				<CardTitle>Create Account</CardTitle>
 			</CardHeader>
 			<CardContent>
+				{error && (
+					<div className="mb-4 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+						{error}
+					</div>
+				)}
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
 						<FormField

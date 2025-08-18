@@ -37,6 +37,7 @@ type TProps = {
 export function SignInForm({ onSuccess, className }: TProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+	const [error, setError] = useState<string>('');
 	const router = useRouter();
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
@@ -49,6 +50,7 @@ export function SignInForm({ onSuccess, className }: TProps) {
 
 	async function handleSubmit(values: z.infer<typeof signInSchema>) {
 		setIsLoading(true);
+		setError(''); // Clear previous errors
 
 		try {
 			const result = await authClient.signIn.email({
@@ -56,6 +58,9 @@ export function SignInForm({ onSuccess, className }: TProps) {
 				password: values.password,
 				rememberMe: values.rememberMe ?? true,
 			});
+
+			// Debug logging
+			console.log('Sign in result:', result);
 
 			if (result.data) {
 				toast.success('Successfully signed in!', {
@@ -68,14 +73,29 @@ export function SignInForm({ onSuccess, className }: TProps) {
 					router.push('/dashboard');
 				}
 			} else {
+				const errorMessage = result.error?.message || 'Please check your credentials and try again.';
+				console.log('Sign in error:', result.error);
+				setError(errorMessage);
 				toast.error('Sign in failed', {
-					description:
-						result.error?.message || 'Please check your credentials and try again.',
+					description: errorMessage,
 				});
 			}
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : 'An unexpected error occurred';
+			console.error('Sign in exception:', error);
+			let errorMessage = 'An unexpected error occurred';
+			
+			if (error instanceof Error) {
+				// Handle specific error types
+				if (error.message.includes('fetch') || error.message.includes('network')) {
+					errorMessage = 'Network error. Please check your connection and try again.';
+				} else if (error.message.includes('timeout')) {
+					errorMessage = 'Request timed out. Please try again.';
+				} else {
+					errorMessage = error.message;
+				}
+			}
+			
+			setError(errorMessage);
 			toast.error('Sign in failed', {
 				description: errorMessage,
 			});
@@ -90,6 +110,11 @@ export function SignInForm({ onSuccess, className }: TProps) {
 				<CardTitle>Sign In</CardTitle>
 			</CardHeader>
 			<CardContent>
+				{error && (
+					<div className="mb-4 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+						{error}
+					</div>
+				)}
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
 						<FormField
