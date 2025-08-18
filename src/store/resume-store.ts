@@ -87,6 +87,18 @@ export function clearStore(): void {
 
 // ---------------------- New Jotai helper functions ----------------------
 
+// Check if personal info has been filled out
+export function hasPersonalInfo(data: TPersonalInfoForm | any): boolean {
+	return Boolean(
+		data.firstName?.trim() ||
+		data.lastName?.trim() ||
+		data.email?.trim() ||
+		data.phone?.trim() ||
+		data.location?.trim() ||
+		data.summary?.trim()
+	);
+}
+
 // Update personal info using the new atom
 export function updatePersonalInfo(data: TPersonalInfoForm): void {
 	const store = getDefaultStore();

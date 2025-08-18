@@ -33,13 +33,15 @@ function AlertDialogOverlay({
 	...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
 	return (
-		<AlertDialogPrimitive.Overlay asChild {...props}>
-			<div
-				data-slot='alert-dialog-overlay'
-				data-open='true'
-				className={cn('modal-overlay fixed inset-0 z-50', className)}
-			/>
-		</AlertDialogPrimitive.Overlay>
+			<AlertDialogPrimitive.Overlay asChild {...props}>
+				<div
+					data-slot='alert-dialog-overlay'
+					data-open='true'
+					data-vt='modal'
+					style={{ viewTransitionName: 'modal' }}
+					className={cn('modal-overlay fixed inset-0 z-50', className)}
+				/>
+			</AlertDialogPrimitive.Overlay>
 	);
 }
 
@@ -54,6 +56,8 @@ function AlertDialogContent({
 				<div
 					data-slot='alert-dialog-content'
 					data-open='true'
+					data-vt='modal'
+					style={{ viewTransitionName: 'modal' }}
 					role='alertdialog'
 					aria-modal='true'
 					aria-labelledby='alert-dialog-title'

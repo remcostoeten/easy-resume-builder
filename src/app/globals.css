@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../styles/modal-transitions.css";
+@import "../styles/view-transitions.css";
+@import "../styles/global-transitions.css";
 
 @custom-variant dark (&:is(.dark *));
 

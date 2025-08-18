@@ -31,3 +31,4 @@ export * from './toggle-group';
 export * from './toggle-group';
 export * from './tooltip';
 export * from './tooltip';
+export * from './tooltip-button';

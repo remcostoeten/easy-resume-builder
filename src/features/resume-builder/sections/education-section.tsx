@@ -3,9 +3,9 @@
 import { GraduationCap } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { EmptyState } from '@/shared/components/ui';
+import { Card, CardContent } from '@/shared/components/ui/card';
 import { addEducation } from '@/store/resume-store';
 import type { TEducationItem } from '@/types/resume';
-import { FormSection } from '../form/form-section';
 
 type TProps = {
 	readonly data: readonly TEducationItem[];
@@ -13,7 +13,19 @@ type TProps = {
 
 export function EducationSection({ data }: TProps) {
 	return (
-		<FormSection title='Education' icon={<GraduationCap className='h-5 w-5' />}>
+		<div className='max-w-4xl mx-auto p-8 space-y-8'>
+			<div className='flex items-center gap-3 mb-6'>
+				<div className='w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center'>
+					<GraduationCap className='h-5 w-5 text-primary' />
+				</div>
+				<div>
+					<h1 className='text-2xl font-semibold text-foreground'>Education</h1>
+					<p className='text-muted-foreground'>
+						Showcase your academic background and achievements
+					</p>
+				</div>
+			</div>
+
 			<div className='space-y-4'>
 				{data.length === 0 ? (
 					<EmptyState
@@ -37,14 +49,16 @@ export function EducationSection({ data }: TProps) {
 				) : (
 					<div className='space-y-4'>
 						{data.map((item) => (
-							<div key={item.id} className='p-4 border rounded-lg'>
-								<h4 className='font-medium'>{item.degree}</h4>
-								<p className='text-muted-foreground'>{item.institution}</p>
-							</div>
+							<Card key={item.id} className='hover:shadow-sm transition-shadow'>
+								<CardContent className='p-6'>
+									<h4 className='font-semibold text-lg'>{item.degree}</h4>
+									<p className='text-muted-foreground'>{item.institution}</p>
+								</CardContent>
+							</Card>
 						))}
 					</div>
 				)}
 			</div>
-		</FormSection>
+		</div>
 	);
 }

@@ -11,7 +11,7 @@ export default function ShowcasePage() {
     {
       title: 'Theme Toggle Animations',
       description: 'Various animated theme toggle button styles and effects',
-      href: '/showcase/theme-toggle',
+      href: '/showcase/theme-switcher',
       tags: ['Animation', 'Theme', 'UI']
     },
     {

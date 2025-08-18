@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/compo
 import { Button } from '@/shared/components/ui/button';
 import { SignInForm } from './sign-in-form';
 import { SignUpForm } from './sign-up-form';
+import { start } from '@/shared/utilities/view-transition';
 
 type TAuthMode = 'signin' | 'signup';
 
@@ -50,8 +51,10 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin', onSuccess }
 		}
 	}
 
-	function handleModeChange(newMode: TAuthMode) {
-		setMode(newMode);
+function handleModeChange(newMode: TAuthMode) {
+		start(function run() {
+			setMode(newMode);
+		});
 	}
 
 	return (
@@ -66,39 +69,41 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin', onSuccess }
 				<AuthModeToggle currentMode={mode} onModeChange={handleModeChange} />
 
 				<div className='px-2'>
-					{mode === 'signin' ? (
-						<>
-							<SignInForm onSuccess={handleSuccess} className='border-0 shadow-none p-0' />
-							<div className='mt-4 text-center'>
-								<p className='text-sm text-muted-foreground'>
-									Don't have an account?{' '}
-									<button
-										type='button'
-										onClick={() => setMode('signup')}
-										className='text-primary hover:underline font-medium'
-									>
-										Create one here
-									</button>
-								</p>
-							</div>
-						</>
-					) : (
-						<>
-							<SignUpForm onSuccess={handleSuccess} className='border-0 shadow-none p-0' />
-							<div className='mt-4 text-center'>
-								<p className='text-sm text-muted-foreground'>
-									Already have an account?{' '}
-									<button
-										type='button'
-										onClick={() => setMode('signin')}
-										className='text-primary hover:underline font-medium'
-									>
-										Sign in here
-									</button>
-								</p>
-							</div>
-						</>
-					)}
+					<div key={mode} data-vt='auth-form'>
+						{mode === 'signin' ? (
+							<>
+								<SignInForm onSuccess={handleSuccess} className='border-0 shadow-none p-0' />
+								<div className='mt-4 text-center'>
+									<p className='text-sm text-muted-foreground'>
+										Don't have an account?{' '}
+										<button
+											type='button'
+											onClick={() => start(function run() { setMode('signup'); })}
+											className='text-primary hover:underline font-medium'
+										>
+											Create one here
+										</button>
+									</p>
+								</div>
+							</>
+						) : (
+							<>
+								<SignUpForm onSuccess={handleSuccess} className='border-0 shadow-none p-0' />
+								<div className='mt-4 text-center'>
+									<p className='text-sm text-muted-foreground'>
+										Already have an account?{' '}
+										<button
+											type='button'
+											onClick={() => start(function run() { setMode('signin'); })}
+											className='text-primary hover:underline font-medium'
+										>
+											Sign in here
+										</button>
+									</p>
+								</div>
+							</>
+						)}
+					</div>
 				</div>
 			</DialogContent>
 		</Dialog>

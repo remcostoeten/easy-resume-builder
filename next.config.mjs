@@ -13,6 +13,7 @@ const __dirname = dirname(__filename);
 const nextConfig = {
 	experimental: {
 		optimizePackageImports: selected,
+		viewTransition: true,
 	},
 
 	webpack: (config, { dev, isServer }) => {
@@ -67,7 +68,14 @@ const nextConfig = {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-		domains: [],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'avatars.githubusercontent.com',
+				port: '',
+				pathname: '/u/**',
+			},
+		],
 	},
 
 	// Security headers
