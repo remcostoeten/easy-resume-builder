@@ -14,7 +14,7 @@ type TProps = {
 export function TooltipButton({ label, onClick, children }: TProps) {
   return (
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         <Button onClick={onClick}>{label}</Button>
       </TooltipTrigger>
       <TooltipContent>{children}</TooltipContent>
