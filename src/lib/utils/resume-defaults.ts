@@ -1,5 +1,5 @@
-import type { Resume, ResumeSection } from "../types/resume"
-import { defaultSchemas, createEmptySectionContent } from "../schemas/default-schemas"
+import type { Resume, ResumeSection } from "@/lib/types/resume"
+import { defaultSchemas, createEmptySectionContent } from "@/lib/schemas/default-schemas"
 
 export function createDefaultResume(): Resume {
   const sections: ResumeSection[] = defaultSchemas.map((schema, index) => ({

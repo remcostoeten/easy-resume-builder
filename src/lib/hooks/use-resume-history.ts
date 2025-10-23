@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import type { Resume } from "../types/resume"
+import type { Resume } from "@/lib/types/resume"
 
 const MAX_HISTORY = 50
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import type { Resume, SavedResume } from "../types/resume"
+import type { Resume, SavedResume } from "@/lib/types/resume"
 import { toast } from "sonner"
 
 const DRAFT_KEY = "resume-draft"

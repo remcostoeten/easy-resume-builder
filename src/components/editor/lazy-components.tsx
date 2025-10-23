@@ -52,7 +52,7 @@ export const DiffView = lazy(() =>
 
 // Theme Components - Lazy loaded as they're only used in dialogs
 export const ThemePicker = lazy(() =>
-  import('../theme-picker').then(module => ({
+  import('@/components/theme-picker').then(module => ({
     default: module.ThemePicker
   }))
 )
@@ -199,7 +199,7 @@ export function preloadComponent(componentName: string) {
       import('./field-manager')
       break
     case 'ThemePicker':
-      import('../theme-picker')
+      import('@/components/theme-picker')
       break
     case 'SectionAIAssistant':
       import('./section-ai-assistant')
@@ -218,7 +218,7 @@ export function preloadHighPriorityComponents() {
   Promise.all([
     import('./style-panel'),
     import('./field-manager'),
-    import('../theme-picker'),
+    import('@/components/theme-picker'),
     import('./diff-view')
   ]).catch(console.error)
 }

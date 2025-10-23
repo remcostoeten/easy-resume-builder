@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  turbopack: {
+    resolveAlias: {
+      '@': './src',
+    },
+  },
 }
 
 export default nextConfig

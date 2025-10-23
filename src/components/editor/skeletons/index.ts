@@ -25,4 +25,4 @@ export {
   LayersPanelItemSuspense,
   EntryItemSuspense,
   FieldSuspense
-} from '../suspense-wrappers'
+} from '@/components/editor/suspense-wrappers'

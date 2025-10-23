@@ -1,4 +1,4 @@
-import type { SectionSchema } from "../types/resume"
+import type { SectionSchema } from "@/lib/types/resume"
 
 // Header schema
 export const headerSchema: SectionSchema = {

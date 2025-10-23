@@ -33,10 +33,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { exportToPDF } from "../../lib/utils/pdf-export"
-import type { Resume, SavedResume } from "../../lib/types/resume"
+import { exportToPDF } from "@/lib/utils/pdf-export"
+import type { Resume, SavedResume } from "@/lib/types/resume"
 import { toast } from "sonner"
-import { resumeTemplates } from "../../lib/utils/resume-templates"
+import { resumeTemplates } from "@/lib/utils/resume-templates"
 import {
   DropdownMenu,
   DropdownMenuContent,

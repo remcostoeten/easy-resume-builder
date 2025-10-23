@@ -1,11 +1,17 @@
 import {
   EditorSkeleton,
-  LayersPanelSkeleton,
+  EditModeSkeleton,
+  PreviewModeSkeleton,
+  SplitModeSkeleton,
+  MobileSkeleton
+} from '@/components/editor/skeletons/editor-skeleton'
+import { LayersPanelSkeleton } from '@/components/editor/skeletons/layers-panel-skeleton'
+import {
   SectionEditorSkeleton,
   SkillsEditorSkeleton,
   HeaderEditorSkeleton,
   EntryListSkeleton
-} from '@/components/editor/skeletons'
+} from '@/components/editor/skeletons/section-editor-skeleton'
 
 export default function SkeletonTestPage() {
   return (

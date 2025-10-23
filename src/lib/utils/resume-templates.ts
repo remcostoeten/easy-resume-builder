@@ -1,4 +1,4 @@
-import type { Resume, ResumeSection } from "../types/resume"
+import type { Resume, ResumeSection } from "@/lib/types/resume"
 
 export interface ResumeTemplate {
   id: string
