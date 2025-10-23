@@ -1,24 +1,19 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { generateText } from "ai"
+import { geminiKeyManager, executeWithRetry } from "@/lib/gemini-key-manager"
 
-// Check if API key is configured
-const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const isAIEnabled = !!API_KEY && API_KEY !== 'your-api-key-here'
-
-// Only initialize AI if API key is available
-const google = isAIEnabled ? createGoogleGenerativeAI({
-  apiKey: API_KEY,
-}) : null
+// Check if AI is enabled
+const isAIEnabled = geminiKeyManager.isAIEnabled()
 
 export async function POST(req: Request) {
   try {
     // Check if AI is enabled
-    if (!isAIEnabled || !google) {
+    if (!isAIEnabled) {
       return Response.json(
         {
           error: "AI features are currently unavailable",
           message: "The AI assistant is not configured. Please add a Google Generative AI API key to enable this feature.",
-          fallback: "For better section content, consider adding specific achievements, quantifying results with numbers, and using action verbs to describe your experience. Review each section for clarity, consistency, and impact on your overall resume narrative."
+          fallback: "For better section content, consider adding specific achievements, quantifying results with numbers, and using action verbs to describe your experience. Review each section for clarity, consistency, and impact on your overall resume narrative.",
+          keyStatus: geminiKeyManager.getKeyStatus()
         },
         { status: 503 },
       )
@@ -146,10 +141,12 @@ Only include fields that should be changed based on the user's request.`
         return Response.json({ error: "Invalid operation" }, { status: 400 })
     }
 
-    const { text: result } = await generateText({
-      model: google("gemini-2.0-flash-exp"),
-      prompt,
-      maxOutputTokens: 2000,
+    const { text: result } = await executeWithRetry(async (client, keyIndex) => {
+      return generateText({
+        model: client("gemini-2.5-flash"),
+        prompt,
+        maxOutputTokens: 2000,
+      })
     })
 
     console.log("[v0] AI response received:", result.substring(0, 200))
@@ -187,6 +184,31 @@ Only include fields that should be changed based on the user's request.`
     }
   } catch (error: any) {
     console.error("[v0] AI section assist error:", error)
-    return Response.json({ error: error.message || "An unexpected error occurred" }, { status: 500 })
+
+    const keyStatus = geminiKeyManager.getKeyStatus()
+    const errorMessage = error?.message?.toLowerCase() || ''
+
+    // Check if all keys are rate limited
+    if (errorMessage.includes("all gemini api keys are currently rate limited") || keyStatus.availableKeys === 0) {
+      const earliestReset = keyStatus.keyStatuses
+        .filter(ks => ks.rateLimitResetTime)
+        .map(ks => new Date(ks.rateLimitResetTime!).getTime())
+        .sort((a, b) => a - b)[0]
+
+      const retryAfter = earliestReset ? Math.ceil((earliestReset - Date.now()) / 1000) : 60
+
+      return Response.json({
+        error: "All API keys rate limited",
+        message: "All Gemini API keys have reached their rate limits. Please wait before trying again.",
+        retryAfter: Math.max(retryAfter, 1),
+        keyStatus: keyStatus,
+        suggestion: `Try again in ${retryAfter} seconds when rate limits reset.`
+      }, { status: 429 })
+    }
+
+    return Response.json({
+      error: error.message || "An unexpected error occurred",
+      keyStatus: keyStatus
+    }, { status: 500 })
   }
 }

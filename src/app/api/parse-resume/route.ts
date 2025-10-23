@@ -1,15 +1,9 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { generateObject } from "ai"
 import { z } from "zod"
+import { geminiKeyManager, executeWithRetry } from "@/lib/gemini-key-manager"
 
-// Check if API key is configured and valid
-const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const isAIEnabled = !!API_KEY && API_KEY !== 'your-api-key-here' && API_KEY.length > 10
-
-// Only initialize AI if API key is available
-const google = isAIEnabled ? createGoogleGenerativeAI({
-  apiKey: API_KEY,
-}) : null
+// Check if AI is enabled
+const isAIEnabled = geminiKeyManager.isAIEnabled()
 
 const resumeDataSchema = z.object({
   personalInfo: z.object({
@@ -73,12 +67,13 @@ const resumeDataSchema = z.object({
 export async function POST(req: Request) {
   try {
     // Check if AI is enabled
-    if (!isAIEnabled || !google) {
+    if (!isAIEnabled) {
       return Response.json(
         {
           error: "PDF parsing is currently unavailable",
           message: "The AI-powered PDF parser is not configured. Please add a valid Google Generative AI API key to enable this feature.",
-          suggestion: "Contact the administrator to set up the GOOGLE_GENERATIVE_AI_API_KEY environment variable."
+          suggestion: "Contact the administrator to set up the GOOGLE_GENERATIVE_AI_API_KEY environment variable.",
+          keyStatus: geminiKeyManager.getKeyStatus()
         },
         { status: 503 },
       )
@@ -143,25 +138,27 @@ export async function POST(req: Request) {
 
     let object
     try {
-      const result = await generateObject({
-        model: google("gemini-2.5-pro"),
-        schema: resumeDataSchema,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Extract all resume information from this PDF. Parse dates carefully and extract all relevant details including work experience, education, skills, projects, and certifications. If a section is not present, omit it rather than creating empty data.",
-              },
-              {
-                type: "file",
-                data: file.data,
-                mediaType: file.mediaType || file.mimeType || "application/pdf",
-              },
-            ],
-          },
-        ],
+      const result = await executeWithRetry(async (client, keyIndex) => {
+        return generateObject({
+          model: client("gemini-2.5-flash"),
+          schema: resumeDataSchema,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: "Extract all resume information from this PDF. Parse dates carefully and extract all relevant details including work experience, education, skills, projects, and certifications. If a section is not present, omit it rather than creating empty data.",
+                },
+                {
+                  type: "file",
+                  data: file.data,
+                  mediaType: file.mediaType || file.mimeType || "application/pdf",
+                },
+              ],
+            },
+          ],
+        })
       })
       object = result.object
     } catch (aiError) {
@@ -170,20 +167,33 @@ export async function POST(req: Request) {
       // Handle specific AI errors
       if (aiError instanceof Error) {
         const errorMessage = aiError.message.toLowerCase()
-        if (errorMessage.includes("rate limit")) {
+        const keyStatus = geminiKeyManager.getKeyStatus()
+
+        // Check if all keys are rate limited
+        if (errorMessage.includes("all gemini api keys are currently rate limited") || keyStatus.availableKeys === 0) {
+          const earliestReset = keyStatus.keyStatuses
+            .filter(ks => ks.rateLimitResetTime)
+            .map(ks => new Date(ks.rateLimitResetTime!).getTime())
+            .sort((a, b) => a - b)[0]
+
+          const retryAfter = earliestReset ? Math.ceil((earliestReset - Date.now()) / 1000) : 60
+
           return Response.json({
-            error: "Rate limit exceeded",
-            message: "Too many requests. Please wait a moment before trying again.",
-            retryAfter: 60
+            error: "All API keys rate limited",
+            message: "All Gemini API keys have reached their rate limits. Please wait before trying again.",
+            retryAfter: Math.max(retryAfter, 1),
+            keyStatus: keyStatus,
+            suggestion: `Try again in ${retryAfter} seconds when rate limits reset.`
           }, { status: 429 })
         }
 
-        if (errorMessage.includes("quota")) {
+        if (errorMessage.includes("rate limit") || errorMessage.includes("quota")) {
           return Response.json({
-            error: "AI service quota exceeded",
-            message: "The AI service has reached its usage limit. Please try again later.",
-            suggestion: "Contact support if this issue persists."
-          }, { status: 503 })
+            error: "Rate limit exceeded",
+            message: "Too many requests. Please wait a moment before trying again.",
+            retryAfter: 60,
+            keyStatus: keyStatus
+          }, { status: 429 })
         }
 
         // Network errors
@@ -191,7 +201,8 @@ export async function POST(req: Request) {
           return Response.json({
             error: "Network error",
             message: "Unable to connect to the AI service. Please check your internet connection.",
-            suggestion: "Try again in a moment or contact support if the issue persists."
+            suggestion: "Try again in a moment or contact support if the issue persists.",
+            keyStatus: keyStatus
           }, { status: 503 })
         }
 
@@ -200,7 +211,8 @@ export async function POST(req: Request) {
           return Response.json({
             error: "Request timeout",
             message: "The PDF processing took too long. Please try with a smaller file or try again.",
-            suggestion: "Consider compressing your PDF or splitting it into smaller sections."
+            suggestion: "Consider compressing your PDF or splitting it into smaller sections.",
+            keyStatus: keyStatus
           }, { status: 408 })
         }
       }
@@ -209,7 +221,8 @@ export async function POST(req: Request) {
         error: "AI parsing failed",
         message: "Unable to process the PDF with AI. The file may be corrupted or contain unsupported content.",
         suggestion: "Try uploading a different PDF or ensure the file contains readable text.",
-        details: process.env.NODE_ENV === 'development' ? (aiError instanceof Error ? aiError.message : String(aiError)) : undefined
+        details: process.env.NODE_ENV === 'development' ? (aiError instanceof Error ? aiError.message : String(aiError)) : undefined,
+        keyStatus: geminiKeyManager.getKeyStatus()
       }, { status: 422 })
     }
 
@@ -280,14 +293,16 @@ export async function POST(req: Request) {
         error: "Parsing failed",
         message: "An error occurred while processing your resume.",
         suggestion: "Please try again or contact support if this continues.",
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        keyStatus: geminiKeyManager.getKeyStatus()
       }, { status: 500 })
     }
 
     return Response.json({
       error: "Unexpected error",
       message: "An unexpected error occurred while processing your resume.",
-      suggestion: "Please try again or contact support."
+      suggestion: "Please try again or contact support.",
+      keyStatus: geminiKeyManager.getKeyStatus()
     }, { status: 500 })
   }
 }
