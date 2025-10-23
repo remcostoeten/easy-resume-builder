@@ -115,7 +115,7 @@ export function EditorLayout({ resume, onChange, viewMode, resumeStyle, autoFocu
     })
   }
 
-  const handleEntrySelect = (sectionId: string, entryId: string) => {
+  function handleEntrySelect(sectionId: string, entryId: string) {
     setSelectedSectionId(sectionId)
     setSelectedEntryId(entryId)
 
@@ -123,6 +123,19 @@ export function EditorLayout({ resume, onChange, viewMode, resumeStyle, autoFocu
       const entryElement = document.querySelector(`[data-entry-id="${entryId}"]`)
       if (entryElement) {
         entryElement.scrollIntoView({ behavior: "smooth", block: "center" })
+      }
+    }, 100)
+  }
+
+  function handleSectionSelect(sectionId: string) {
+    setSelectedSectionId(sectionId)
+    setSelectedEntryId(null)
+
+    // Scroll to the section editor
+    setTimeout(() => {
+      const sectionElement = document.querySelector(`[data-section-id="${sectionId}"]`)
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: "smooth", block: "start" })
       }
     }, 100)
   }
@@ -202,7 +215,7 @@ export function EditorLayout({ resume, onChange, viewMode, resumeStyle, autoFocu
                   sections={resume.sections || []}
                   selectedSectionId={selectedSectionId}
                   selectedEntryId={selectedEntryId}
-                  onSectionSelect={setSelectedSectionId}
+                  onSectionSelect={handleSectionSelect}
                   onSectionToggle={handleSectionToggle}
                   onSectionDelete={handleSectionDelete}
                   onSectionUpdate={handleSectionPartialUpdate}

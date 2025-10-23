@@ -12,98 +12,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Upload, Loader2, FileText, AlertCircle, CheckCircle, Clock, Brain, FileCheck, UploadCloud } from "lucide-react"
+import { Upload, Loader2, FileText, AlertCircle, CheckCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Progress } from "@/components/ui/progress"
 import type { Resume } from "@/lib/types/resume"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useResumeStorage } from "@/lib/hooks/use-resume-storage"
 
-type UploadStage = 'idle' | 'reading' | 'uploading' | 'parsing' | 'processing' | 'completed' | 'error'
-
-interface StageInfo {
-  title: string
-  description: string
-  estimatedTime: string
-  icon: React.ReactNode
-}
+type UploadStatus = 'idle' | 'uploading' | 'completed' | 'error'
 
 export function PdfUploadDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [uploadStage, setUploadStage] = useState<UploadStage>('idle')
-  const [progress, setProgress] = useState(0)
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle')
   const router = useRouter()
   const { saveToAccount } = useResumeStorage()
 
-  const getStageInfo = (stage: UploadStage): StageInfo => {
-    switch (stage) {
-      case 'reading':
-        return {
-          title: 'Reading PDF',
-          description: 'Extracting text content from your resume file...',
-          estimatedTime: '~5 seconds',
-          icon: <FileText className="h-5 w-5 text-blue-500" />
-        }
-      case 'uploading':
-        return {
-          title: 'Uploading to Server',
-          description: 'Sending your resume for AI analysis...',
-          estimatedTime: '~10 seconds',
-          icon: <UploadCloud className="h-5 w-5 text-blue-500" />
-        }
-      case 'parsing':
-        return {
-          title: 'AI Analysis',
-          description: 'Using AI to extract structured information...',
-          estimatedTime: '~30-45 seconds',
-          icon: <Brain className="h-5 w-5 text-purple-500" />
-        }
-      case 'processing':
-        return {
-          title: 'Processing Results',
-          description: 'Formatting and organizing your resume data...',
-          estimatedTime: '~5 seconds',
-          icon: <FileCheck className="h-5 w-5 text-green-500" />
-        }
-      case 'completed':
-        return {
-          title: 'Complete!',
-          description: 'Resume imported successfully',
-          estimatedTime: '',
-          icon: <CheckCircle className="h-5 w-5 text-green-500" />
-        }
-      case 'error':
-        return {
-          title: 'Error',
-          description: 'Something went wrong',
-          estimatedTime: '',
-          icon: <AlertCircle className="h-5 w-5 text-red-500" />
-        }
-      default:
-        return {
-          title: '',
-          description: '',
-          estimatedTime: '',
-          icon: null
-        }
-    }
-  }
-
-  const getProgressPercentage = (stage: UploadStage): number => {
-    switch (stage) {
-      case 'reading': return 15
-      case 'uploading': return 30
-      case 'parsing': return 80
-      case 'processing': return 95
-      case 'completed': return 100
-      default: return 0
-    }
-  }
-
+  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
@@ -168,8 +95,7 @@ export function PdfUploadDialog() {
 
       setFile(selectedFile)
       setError(null)
-      setUploadStage('idle')
-      setProgress(0)
+      setUploadStatus('idle')
     }
   }
 
@@ -178,8 +104,7 @@ export function PdfUploadDialog() {
 
     setIsUploading(true)
     setError(null)
-    setUploadStage('reading')
-    setProgress(0)
+    setUploadStatus('uploading')
 
     try {
       // Convert PDF to base64 with timeout and better error handling
@@ -222,15 +147,9 @@ export function PdfUploadDialog() {
       reader.readAsDataURL(file)
       const base64Data = await base64Promise
 
-      setUploadStage('uploading')
-      setProgress(getProgressPercentage('uploading'))
-
       // Call API to parse resume with timeout
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 60000) // 60 second timeout
-
-      setUploadStage('parsing')
-      setProgress(getProgressPercentage('parsing'))
 
       const response = await fetch("/api/parse-resume", {
         method: "POST",
@@ -267,9 +186,6 @@ export function PdfUploadDialog() {
         throw new Error(errorMessage)
       }
 
-      setUploadStage('processing')
-      setProgress(getProgressPercentage('processing'))
-
       const responseData = await response.json()
 
       if (!responseData || !responseData.resumeData) {
@@ -279,13 +195,33 @@ export function PdfUploadDialog() {
       const resumeData = responseData.resumeData
 
       if (!resumeData || !resumeData.personalInfo || !resumeData.personalInfo.name) {
-        throw new Error("Could not extract basic personal information from the PDF. Please ensure the resume contains your name and contact details.")
+        throw new Error("Could not extract basic personal information from the PDF. Please ensure the resume contains your name contact details.")
       }
 
       // Convert parsed data to our Resume format
+      const baseName = `${resumeData.personalInfo.name}'s Resume`
+      // Ensure unique name by checking existing resumes
+      let resumeName = baseName
+      let counter = 1
+
+      // Check if we have access to saved resumes to avoid duplicates
+      try {
+        const savedResumesData = localStorage.getItem("saved-resumes")
+        if (savedResumesData) {
+          const savedResumes = JSON.parse(savedResumesData)
+          while (savedResumes.some((r: any) => r.name === resumeName)) {
+            resumeName = `${baseName} (${counter})`
+            counter++
+          }
+        }
+      } catch (error) {
+        // If we can't check existing names, just add a timestamp to ensure uniqueness
+        resumeName = `${baseName} - ${new Date().toLocaleDateString()}`
+      }
+
       const newResume: Resume = {
         id: crypto.randomUUID(),
-        name: `${resumeData.personalInfo.name}'s Resume`, // Fixed to use 'name' instead of 'title'
+        name: resumeName,
         sections: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -484,11 +420,10 @@ export function PdfUploadDialog() {
       if (Array.isArray(resumeData.certifications) && resumeData.certifications.length > 0) extractedSections.push(`${resumeData.certifications.length} certifications`)
 
       // Save the new resume using the storage hook
-      const success = saveToAccount(newResume, newResume.name)
+      const success = saveToAccount(newResume, resumeName)
 
       if (success) {
-        setUploadStage('completed')
-        setProgress(100)
+        setUploadStatus('completed')
 
         toast.success("Resume imported successfully!", {
           description: `Extracted ${extractedSections.join(", ")}. Please review and edit for accuracy.`,
@@ -504,7 +439,7 @@ export function PdfUploadDialog() {
       }
     } catch (error) {
       console.error("Failed to parse resume:", error)
-      setUploadStage('error')
+      setUploadStatus('error')
       const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
       setError(errorMessage)
       toast.error("Failed to import resume", {
@@ -515,78 +450,26 @@ export function PdfUploadDialog() {
     }
   }
 
-  // Enhanced progress indicator component
-  const ProgressIndicator = () => {
-    if (!isUploading && uploadStage === 'idle') return null
-
-    const stageInfo = getStageInfo(uploadStage)
-    const progressPercentage = getProgressPercentage(uploadStage)
+  // Simple status indicator
+  const StatusIndicator = () => {
+    if (uploadStatus === 'idle') return null
 
     return (
-      <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
-        {/* Progress bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Upload Progress</span>
-            <span className="text-sm text-muted-foreground">{progressPercentage}%</span>
+      <div className="flex items-center justify-center p-4 border rounded-lg bg-muted/30">
+        {uploadStatus === 'completed' ? (
+          <div className="flex items-center gap-2 text-green-600">
+            <CheckCircle className="h-5 w-5" />
+            <span className="text-sm font-medium">Resume imported successfully!</span>
           </div>
-          <Progress value={progress} className="w-full" />
-        </div>
-
-        {/* Current stage */}
-        <div className="flex items-center space-x-3">
-          {uploadStage === 'completed' ? (
-            <CheckCircle className="h-6 w-6 text-green-500 animate-pulse" />
-          ) : uploadStage === 'error' ? (
-            <AlertCircle className="h-6 w-6 text-red-500 animate-pulse" />
-          ) : (
-            <Loader2 className="h-6 w-6 animate-spin" />
-          )}
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              {stageInfo.icon}
-              <h4 className="font-medium">{stageInfo.title}</h4>
-              {stageInfo.estimatedTime && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {stageInfo.estimatedTime}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">{stageInfo.description}</p>
+        ) : uploadStatus === 'error' ? (
+          <div className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            <span className="text-sm font-medium">Import failed</span>
           </div>
-        </div>
-
-        {/* Stage timeline */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
-          <div className={`flex items-center gap-1 ${['reading', 'uploading', 'parsing', 'processing', 'completed'].includes(uploadStage) ? 'text-foreground' : ''}`}>
-            <FileText className="h-3 w-3" />
-            Read
-          </div>
-          <div className={`flex items-center gap-1 ${['uploading', 'parsing', 'processing', 'completed'].includes(uploadStage) ? 'text-foreground' : ''}`}>
-            <UploadCloud className="h-3 w-3" />
-            Upload
-          </div>
-          <div className={`flex items-center gap-1 ${['parsing', 'processing', 'completed'].includes(uploadStage) ? 'text-foreground' : ''}`}>
-            <Brain className="h-3 w-3" />
-            Analyze
-          </div>
-          <div className={`flex items-center gap-1 ${['processing', 'completed'].includes(uploadStage) ? 'text-foreground' : ''}`}>
-            <FileCheck className="h-3 w-3" />
-            Process
-          </div>
-          <div className={`flex items-center gap-1 ${uploadStage === 'completed' ? 'text-green-500' : ''}`}>
-            <CheckCircle className="h-3 w-3" />
-            Done
-          </div>
-        </div>
-
-        {/* Helpful tips for long waiting */}
-        {uploadStage === 'parsing' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-            <p className="text-xs text-blue-700">
-              💡 <strong>Tip:</strong> AI parsing typically takes 30-45 seconds. We're carefully analyzing your resume to extract all the important details.
-            </p>
+        ) : (
+          <div className="flex items-center gap-2 text-primary">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span className="text-sm font-medium">Importing resume...</span>
           </div>
         )}
       </div>
@@ -596,8 +479,7 @@ export function PdfUploadDialog() {
   // Reset upload state when dialog is closed
   const handleDialogClose = (open: boolean) => {
     if (!open && !isUploading) {
-      setUploadStage('idle')
-      setProgress(0)
+      setUploadStatus('idle')
       setError(null)
     }
     setIsOpen(open)
@@ -606,8 +488,8 @@ export function PdfUploadDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="lg" className="gap-2 bg-transparent">
-          <Upload className="h-5 w-5" />
+        <Button variant="outline" size="lg" className="gap-2 border-primary/20 hover:bg-primary/10 hover:border-primary/40">
+          <Upload className="h-5 w-5 text-primary" />
           Import from PDF
         </Button>
       </DialogTrigger>
@@ -619,7 +501,7 @@ export function PdfUploadDialog() {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          {error && uploadStage === 'error' && (
+          {error && uploadStatus === 'error' && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
@@ -629,12 +511,12 @@ export function PdfUploadDialog() {
           <div className="flex items-center justify-center w-full">
             <label
               htmlFor="pdf-upload"
-              className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+              className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer hover:bg-primary/5 hover:border-primary/50 transition-colors"
             >
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <FileText className="w-12 h-12 mb-4 text-muted-foreground" />
+                <FileText className="w-12 h-12 mb-4 text-primary" />
                 <p className="mb-2 text-sm text-muted-foreground">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
+                  <span className="font-semibold text-foreground">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-xs text-muted-foreground">PDF files only (max 10MB)</p>
                 {file && <p className="mt-2 text-sm font-medium text-primary">{file.name}</p>}
@@ -651,18 +533,14 @@ export function PdfUploadDialog() {
             </label>
           </div>
 
-          {/* Enhanced progress indicator */}
-          <ProgressIndicator />
+          {/* Simple status indicator */}
+          <StatusIndicator />
 
           <Button onClick={handleUpload} disabled={!file || isUploading} className="w-full">
             {isUploading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {uploadStage === 'reading' && 'Reading PDF...'}
-                {uploadStage === 'uploading' && 'Uploading...'}
-                {uploadStage === 'parsing' && 'AI Analysis in Progress...'}
-                {uploadStage === 'processing' && 'Finalizing...'}
-                {uploadStage === 'completed' && 'Import Complete!'}
+                Importing Resume...
               </>
             ) : (
               "Import Resume"
