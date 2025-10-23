@@ -1,0 +1,279 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Replaced entire theme with amber/orange color scheme */
+:root {
+  --card: #ffffff;
+  --ring: #f59e0b;
+  --input: #e5e7eb;
+  --muted: #f9fafb;
+  --accent: #fffbeb;
+  --border: #e5e7eb;
+  --radius: 0.375rem;
+  --chart-1: #f59e0b;
+  --chart-2: #d97706;
+  --chart-3: #b45309;
+  --chart-4: #92400e;
+  --chart-5: #78350f;
+  --popover: #ffffff;
+  --primary: #f59e0b;
+  --sidebar: #f9fafb;
+  --spacing: 0.25rem;
+  --font-mono: JetBrains Mono, monospace;
+  --font-sans: Inter, sans-serif;
+  --secondary: #f3f4f6;
+  --background: #ffffff;
+  --font-serif: Source Serif 4, serif;
+  --foreground: #262626;
+  --destructive: #ef4444;
+  --shadow-blur: 8px;
+  --shadow-color: hsl(0 0% 0%);
+  --sidebar-ring: #f59e0b;
+  --shadow-spread: -1px;
+  --letter-spacing: 0em;
+  --shadow-opacity: 0.1;
+  --sidebar-accent: #fffbeb;
+  --sidebar-border: #e5e7eb;
+  --card-foreground: #262626;
+  --shadow-offset-x: 0px;
+  --shadow-offset-y: 4px;
+  --sidebar-primary: #f59e0b;
+  --muted-foreground: #6b7280;
+  --accent-foreground: #92400e;
+  --popover-foreground: #262626;
+  --primary-foreground: #000000;
+  --sidebar-foreground: #262626;
+  --secondary-foreground: #4b5563;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #92400e;
+  --sidebar-primary-foreground: #ffffff;
+}
+
+.dark {
+  --card: #262626;
+  --ring: #f59e0b;
+  --input: #404040;
+  --muted: #262626;
+  --accent: #92400e;
+  --border: #404040;
+  --chart-1: #fbbf24;
+  --chart-2: #d97706;
+  --chart-3: #92400e;
+  --chart-4: #b45309;
+  --chart-5: #92400e;
+  --popover: #262626;
+  --primary: #f59e0b;
+  --sidebar: #0f0f0f;
+  --secondary: #262626;
+  --background: #171717;
+  --foreground: #e5e5e5;
+  --destructive: #ef4444;
+  --sidebar-ring: #f59e0b;
+  --sidebar-accent: #92400e;
+  --sidebar-border: #404040;
+  --card-foreground: #e5e5e5;
+  --sidebar-primary: #f59e0b;
+  --muted-foreground: #a3a3a3;
+  --accent-foreground: #fde68a;
+  --popover-foreground: #e5e5e5;
+  --primary-foreground: #000000;
+  --sidebar-foreground: #e5e5e5;
+  --secondary-foreground: #e5e5e5;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #fde68a;
+  --sidebar-primary-foreground: #ffffff;
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-spacing: var(--spacing);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-shadow-blur: var(--shadow-blur);
+  --color-shadow-color: var(--shadow-color);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-shadow-spread: var(--shadow-spread);
+  --color-letter-spacing: var(--letter-spacing);
+  --color-shadow-opacity: var(--shadow-opacity);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-card-foreground: var(--card-foreground);
+  --color-shadow-offset-x: var(--shadow-offset-x);
+  --color-shadow-offset-y: var(--shadow-offset-y);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom minimal scrollbars that fit the amber theme */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #404040 transparent;
+  }
+
+  .dark * {
+    scrollbar-color: #525252 transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #404040;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    background-color: #525252;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #f59e0b;
+  }
+
+  .dark *::-webkit-scrollbar-thumb:hover {
+    background-color: #f59e0b;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* View Transitions API animations */
+  /* Smooth fade and slide animation for view mode changes */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: fade-in;
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Smooth transitions for dark mode toggle */
+  ::view-transition-group(*) {
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Print styles for PDF generation */
+  @media print {
+    #resume-preview {
+      width: 210mm !important;
+      max-width: 210mm !important;
+      min-height: 297mm !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 12mm !important;
+      background: white !important;
+      color: black !important;
+    }
+
+    #resume-preview * {
+      print-color-adjust: exact !important;
+      -webkit-print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* Ensure all text is black for print */
+    #resume-preview,
+    #resume-preview * {
+      color: black !important;
+    }
+
+    /* Hide backgrounds but keep text visible */
+    #resume-preview h1,
+    #resume-preview h2,
+    #resume-preview h3 {
+      color: black !important;
+    }
+
+    /* Ensure proper spacing */
+    #resume-preview .mb-6 { margin-bottom: 1.5rem !important; }
+    #resume-preview .mb-5 { margin-bottom: 1.25rem !important; }
+    #resume-preview .mb-4 { margin-bottom: 1rem !important; }
+    #resume-preview .mb-3 { margin-bottom: 0.75rem !important; }
+    #resume-preview .mb-2 { margin-bottom: 0.5rem !important; }
+    #resume-preview .mb-1 { margin-bottom: 0.25rem !important; }
+    #resume-preview .mt-2 { margin-top: 0.5rem !important; }
+    #resume-preview .mt-1 { margin-top: 0.25rem !important; }
+    #resume-preview .space-y-4 > * + * { margin-top: 1rem !important; }
+    #resume-preview .space-y-2 > * + * { margin-top: 0.5rem !important; }
+    #resume-preview .space-y-1 > * + * { margin-top: 0.25rem !important; }
+
+    /* Ensure proper borders */
+    #resume-preview .border-b-2 { border-bottom: 2px solid black !important; }
+    #resume-preview .border-b { border-bottom: 1px solid black !important; }
+    #resume-preview .border-gray-300 { border-color: #d1d5db !important; }
+  }
+}
