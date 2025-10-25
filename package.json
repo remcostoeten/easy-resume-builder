@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "latest",
+    "@carbon/icons-react": "^11.70.0",
     "@dnd-kit/core": "latest",
     "@dnd-kit/sortable": "latest",
     "@dnd-kit/utilities": "latest",

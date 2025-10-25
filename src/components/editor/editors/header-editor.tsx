@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { SegmentedUrlInput } from "@/components/ui/segmented-url-input"
+import { PhoneAutocomplete } from "@/components/ui/phone-autocomplete"
 import type { HeaderContent } from "@/lib/types/resume"
 
 interface HeaderEditorProps {
@@ -10,28 +12,6 @@ interface HeaderEditorProps {
   onUpdate: (content: HeaderContent) => void
 }
 
-const COUNTRY_CODES = [
-  { code: '+1', country: 'United States/Canada', flag: '🇺🇸' },
-  { code: '+44', country: 'United Kingdom', flag: '🇬🇧' },
-  { code: '+91', country: 'India', flag: '🇮🇳' },
-  { code: '+86', country: 'China', flag: '🇨🇳' },
-  { code: '+49', country: 'Germany', flag: '🇩🇪' },
-  { code: '+33', country: 'France', flag: '🇫🇷' },
-  { code: '+81', country: 'Japan', flag: '🇯🇵' },
-  { code: '+61', country: 'Australia', flag: '🇦🇺' },
-  { code: '+7', country: 'Russia', flag: '🇷🇺' },
-  { code: '+55', country: 'Brazil', flag: '🇧🇷' },
-  { code: '+34', country: 'Spain', flag: '🇪🇸' },
-  { code: '+39', country: 'Italy', flag: '🇮🇹' },
-  { code: '+31', country: 'Netherlands', flag: '🇳🇱' },
-  { code: '+41', country: 'Switzerland', flag: '🇨🇭' },
-  { code: '+46', country: 'Sweden', flag: '🇸🇪' },
-  { code: '+47', country: 'Norway', flag: '🇳🇴' },
-  { code: '+45', country: 'Denmark', flag: '🇩🇰' },
-  { code: '+358', country: 'Finland', flag: '🇫🇮' },
-  { code: '+32', country: 'Belgium', flag: '🇧🇪' },
-  { code: '+43', country: 'Austria', flag: '🇦🇹' },
-]
 
 const EMAIL_DOMAINS = [
   'gmail.com',
@@ -50,14 +30,11 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
   const headerContent = content as HeaderContent
 
   // Autocomplete states
-  const [phoneSuggestions, setPhoneSuggestions] = useState(false)
-  const [selectedPhoneIndex, setSelectedPhoneIndex] = useState(0)
   const [emailSuggestions, setEmailSuggestions] = useState(false)
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0)
   const [filteredEmailDomains, setFilteredEmailDomains] = useState<string[]>([])
 
   // Refs for handling keyboard navigation
-  const phoneInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const linkedinInputRef = useRef<HTMLInputElement>(null)
   const githubInputRef = useRef<HTMLInputElement>(null)
@@ -131,20 +108,6 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
     }
   }
 
-  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-
-    // Show country codes if user types +
-    if (value === '+') {
-      setPhoneSuggestions(true)
-      setSelectedPhoneIndex(0)
-    } else {
-      setPhoneSuggestions(false)
-    }
-
-    handleChange('phone', value)
-  }
-
   function selectEmailDomain(domain: string) {
     const currentValue = headerContent.email || ''
     const atIndex = currentValue.lastIndexOf('@')
@@ -160,44 +123,16 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
     }
   }
 
-  function selectCountryCode(code: string) {
-    handleChange('phone', code + ' ')
-    setPhoneSuggestions(false)
-    // Focus back to input and move cursor to end
-    setTimeout(() => {
-      phoneInputRef.current?.focus()
-      phoneInputRef.current?.setSelectionRange(code.length + 1, code.length + 1)
-    }, 0)
+  function handleLinkedInChange(value: string) {
+    handleChange('linkedin', value)
   }
 
-  function handleLinkedInChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    const parsed = parseLinkedInUrl(value)
-    handleChange('linkedin', parsed)
-  }
-
-  function handleGithubChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    const parsed = parseGithubUrl(value)
-    handleChange('github', parsed)
-  }
-
-  function handleLinkedInPaste(e: React.ClipboardEvent) {
-    e.preventDefault()
-    const pastedText = e.clipboardData.getData('text')
-    const parsed = parseLinkedInUrl(pastedText)
-    handleChange('linkedin', parsed)
-  }
-
-  function handleGithubPaste(e: React.ClipboardEvent) {
-    e.preventDefault()
-    const pastedText = e.clipboardData.getData('text')
-    const parsed = parseGithubUrl(pastedText)
-    handleChange('github', parsed)
+  function handleGithubChange(value: string) {
+    handleChange('github', value)
   }
 
   // Keyboard navigation for suggestions
-  function handleKeyDown(e: React.KeyboardEvent, type: 'email' | 'phone') {
+  function handleKeyDown(e: React.KeyboardEvent, type: 'email') {
     if (type === 'email' && emailSuggestions) {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
@@ -215,31 +150,19 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
       } else if (e.key === 'Escape') {
         setEmailSuggestions(false)
       }
-    } else if (type === 'phone' && phoneSuggestions) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        setSelectedPhoneIndex((prev) =>
-          prev < COUNTRY_CODES.length - 1 ? prev + 1 : 0
-        )
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        setSelectedPhoneIndex((prev) =>
-          prev > 0 ? prev - 1 : COUNTRY_CODES.length - 1
-        )
-      } else if (e.key === 'Enter' || e.key === 'Tab') {
-        e.preventDefault()
-        selectCountryCode(COUNTRY_CODES[selectedPhoneIndex].code)
-      } else if (e.key === 'Escape') {
-        setPhoneSuggestions(false)
-      }
     }
   }
 
   // Close suggestions when clicking outside
   useEffect(() => {
-    const handleClickOutside = () => {
-      setEmailSuggestions(false)
-      setPhoneSuggestions(false)
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      const isEmailInput = emailInputRef.current?.contains(target)
+      const isEmailDropdown = target.closest('.absolute.top-full.left-0.right-0')
+
+      if (!isEmailInput && !isEmailDropdown) {
+        setEmailSuggestions(false)
+      }
     }
 
     document.addEventListener('click', handleClickOutside)
@@ -305,39 +228,15 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
             )}
           </div>
         </div>
-        <div className="space-y-2 relative">
+        <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
-          <div className="relative">
-            <Input
-              ref={phoneInputRef}
-              id="phone"
-              value={headerContent.phone}
-              onChange={handlePhoneChange}
-              onKeyDown={(e) => handleKeyDown(e, 'phone')}
-              placeholder="+1 (555) 123-4567"
-              autoComplete="tel"
-            />
-            {/* Country code suggestions */}
-            {phoneSuggestions && (
-              <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-auto">
-                {COUNTRY_CODES.map((country, index) => (
-                  <div
-                    key={country.code}
-                    className={`px-3 py-2 cursor-pointer text-sm flex items-center gap-2 ${
-                      index === selectedPhoneIndex
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-muted'
-                    }`}
-                    onClick={() => selectCountryCode(country.code)}
-                  >
-                    <span>{country.flag}</span>
-                    <span className="font-medium">{country.code}</span>
-                    <span className="text-muted-foreground">{country.country}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <PhoneAutocomplete
+            id="phone"
+            value={headerContent.phone || ""}
+            onChange={(value) => handleChange('phone', value)}
+            placeholder="+1 (555) 123-4567"
+            autoComplete="tel"
+          />
         </div>
       </div>
 
@@ -365,26 +264,24 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
         </div>
         <div className="space-y-2">
           <Label htmlFor="linkedin">LinkedIn</Label>
-          <Input
-            ref={linkedinInputRef}
+          <SegmentedUrlInput
             id="linkedin"
             value={headerContent.linkedin || ""}
             onChange={handleLinkedInChange}
-            onPaste={handleLinkedInPaste}
-            placeholder="linkedin.com/in/johndoe"
+            placeholder="johndoe"
             autoComplete="url"
+            data-field-name="linkedin"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="github">GitHub</Label>
-          <Input
-            ref={githubInputRef}
+          <SegmentedUrlInput
             id="github"
             value={headerContent.github || ""}
             onChange={handleGithubChange}
-            onPaste={handleGithubPaste}
-            placeholder="github.com/johndoe"
+            placeholder="johndoe"
             autoComplete="url"
+            data-field-name="github"
           />
         </div>
       </div>

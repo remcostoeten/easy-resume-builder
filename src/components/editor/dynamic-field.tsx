@@ -7,12 +7,15 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Plus, X, Upload, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { SimpleRichTextEditor } from "@/components/ui/simple-rich-text-editor"
+import { SegmentedUrlInput } from "@/components/ui/segmented-url-input"
 import type { FieldDefinition, FieldValue, DateValue } from "@/lib/types/resume"
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { FlexibleDatePicker } from "./flexible-date-picker"
 import { validateField, type ValidationResult } from "@/lib/utils/validation"
 import { validateAndProcessImage } from "@/lib/utils/image-upload"
 import { toast } from "sonner"
+import { useDebounce } from "@/lib/hooks/use-performance-optimizations"
 
 interface DynamicFieldProps {
   field: FieldDefinition
@@ -27,30 +30,45 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
   const [listInput, setListInput] = useState("")
   const [validationResult, setValidationResult] = useState<ValidationResult>({ isValid: true })
 
-  const handleBlur = (fieldValue: any) => {
-    const result = validateField(field.type, fieldValue, field.label, {
-      required: field.required,
-      minLength: field.type === "textarea" ? 10 : undefined,
-      maxLength: field.type === "textarea" ? 2000 : field.type === "text" ? 100 : undefined
-    })
+  // Debounce validation to reduce lag during typing
+  const debouncedValue = useDebounce(value, 500)
+
+  // Memoize validation options to prevent unnecessary recreations
+  const validationOptions = useMemo(() => ({
+    required: field.required,
+    minLength: field.type === "textarea" ? 10 : undefined,
+    maxLength: field.type === "textarea" ? 2000 : field.type === "text" ? 100 : undefined
+  }), [field.required, field.type])
+
+  // Memoize validation function
+  const handleBlur = useCallback((fieldValue: any) => {
+    const result = validateField(field.type, fieldValue, field.label, validationOptions)
     setValidationResult(result)
-  }
+  }, [field.type, field.label, validationOptions])
+
+  // Memoize onChange handlers to prevent unnecessary re-renders
+  const handleTextChange = useCallback((newValue: string) => {
+    onChange(newValue)
+    if (!validationResult.isValid) {
+      setValidationResult({ isValid: true })
+    }
+  }, [onChange, validationResult.isValid])
+
+  const handleListValidation = useCallback((inputValue: string) => {
+    return validateField("text", inputValue.trim(), field.label)
+  }, [field.label])
 
   const renderField = () => {
     switch (field.type) {
       case "text":
       case "email":
       case "phone":
-      case "url":
         return (
           <div className="space-y-1">
             <Input
-              type={field.type === "email" ? "email" : field.type === "url" ? "url" : "text"}
+              type={field.type === "email" ? "email" : "text"}
               value={(value as string) || ""}
-              onChange={(e) => {
-                onChange(e.target.value)
-                if (!validationResult.isValid) setValidationResult({ isValid: true })
-              }}
+              onChange={(e) => handleTextChange(e.target.value)}
               onBlur={(e) => handleBlur(e.target.value)}
               placeholder={field.placeholder}
               disabled={disabled}
@@ -69,15 +87,36 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
           </div>
         )
 
+      case "url":
+        return (
+          <div className="space-y-1">
+            <SegmentedUrlInput
+              value={(value as string) || ""}
+              onChange={handleTextChange}
+              onBlur={(e) => handleBlur(e.target.value)}
+              placeholder={field.placeholder}
+              disabled={disabled}
+              required={field.required}
+              className={`flex-1 ${!validationResult.isValid ? 'border-destructive' : ''}`}
+              aria-invalid={!validationResult.isValid}
+              data-section-id={sectionId}
+              data-field-name={fieldName}
+            />
+            {!validationResult.isValid && validationResult.error && (
+              <p className="text-sm text-destructive">{validationResult.error}</p>
+            )}
+            {validationResult.isValid && validationResult.warnings && validationResult.warnings.length > 0 && (
+              <p className="text-sm text-yellow-600">{validationResult.warnings[0]}</p>
+            )}
+          </div>
+        )
+
       case "textarea":
         return (
           <div className="space-y-1">
             <Textarea
               value={(value as string) || ""}
-              onChange={(e) => {
-                onChange(e.target.value)
-                if (!validationResult.isValid) setValidationResult({ isValid: true })
-              }}
+              onChange={(e) => handleTextChange(e.target.value)}
               onBlur={(e) => handleBlur(e.target.value)}
               placeholder={field.placeholder}
               disabled={disabled}
@@ -86,6 +125,25 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
               className={`resize-none ${!validationResult.isValid ? 'border-destructive focus:border-destructive' : ''}`}
               data-section-id={sectionId}
               data-field-name={fieldName}
+            />
+            {!validationResult.isValid && validationResult.error && (
+              <p className="text-sm text-destructive">{validationResult.error}</p>
+            )}
+            {validationResult.isValid && validationResult.warnings && validationResult.warnings.length > 0 && (
+              <p className="text-sm text-yellow-600">{validationResult.warnings[0]}</p>
+            )}
+          </div>
+        )
+
+      case "richtext":
+        return (
+          <div className="space-y-1">
+            <SimpleRichTextEditor
+              value={(value as string) || ""}
+              onChange={handleTextChange}
+              placeholder={field.placeholder}
+              className={`!border-0 !p-0 ${!validationResult.isValid ? 'ring-2 ring-destructive' : ''}`}
+              rows={4}
             />
             {!validationResult.isValid && validationResult.error && (
               <p className="text-sm text-destructive">{validationResult.error}</p>
@@ -213,26 +271,49 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
 
       case "list":
         const listValue = (value as string[]) || []
-        const listValidation = validateField("text", listInput.trim(), field.label)
+        const listValidation = handleListValidation(listInput)
+
+        // Memoize list item handlers to prevent unnecessary re-renders
+        const handleRemoveItem = useCallback((index: number) => {
+          const newList = listValue.filter((_, i) => i !== index)
+          onChange(newList)
+        }, [listValue, onChange])
+
+        const handleAddItem = useCallback(() => {
+          if (listInput.trim() && listValidation.isValid) {
+            onChange([...listValue, listInput.trim()])
+            setListInput("")
+          }
+        }, [listInput, listValidation.isValid, listValue, onChange])
+
+        const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter" && listInput.trim()) {
+            e.preventDefault()
+            handleAddItem()
+          }
+        }, [listInput, handleAddItem])
+
+        // Memoize badges to prevent unnecessary re-renders
+        const memoizedBadges = useMemo(() => (
+          listValue.map((item, index) => (
+            <Badge key={`${item}-${index}`} variant="secondary" className="gap-1">
+              {item}
+              <button
+                type="button"
+                onClick={() => handleRemoveItem(index)}
+                className="ml-1 hover:text-destructive"
+                disabled={disabled}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))
+        ), [listValue, handleRemoveItem, disabled])
+
         return (
           <div className="space-y-2">
             <div className="flex flex-wrap gap-2">
-              {listValue.map((item, index) => (
-                <Badge key={index} variant="secondary" className="gap-1">
-                  {item}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newList = listValue.filter((_, i) => i !== index)
-                      onChange(newList)
-                    }}
-                    className="ml-1 hover:text-destructive"
-                    disabled={disabled}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
+              {memoizedBadges}
             </div>
             <div className="space-y-1">
               <div className="flex gap-2">
@@ -242,15 +323,7 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
                   placeholder={field.placeholder}
                   disabled={disabled}
                   className={!listValidation.isValid ? 'border-destructive focus:border-destructive' : ''}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && listInput.trim()) {
-                      e.preventDefault()
-                      if (listValidation.isValid) {
-                        onChange([...listValue, listInput.trim()])
-                        setListInput("")
-                      }
-                    }
-                  }}
+                  onKeyDown={handleKeyDown}
                   data-section-id={sectionId}
                   data-field-name={fieldName}
                 />
@@ -258,12 +331,7 @@ export function DynamicField({ field, value, onChange, disabled, sectionId, fiel
                   type="button"
                   variant="outline"
                   size="icon"
-                  onClick={() => {
-                    if (listInput.trim() && listValidation.isValid) {
-                      onChange([...listValue, listInput.trim()])
-                      setListInput("")
-                    }
-                  }}
+                  onClick={handleAddItem}
                   disabled={disabled || !listInput.trim() || !listValidation.isValid}
                 >
                   <Plus className="h-4 w-4" />

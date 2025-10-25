@@ -1,8 +1,9 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { cn } from "@/lib/utils"
+import { useThrottle } from "@/lib/hooks/use-performance-optimizations"
 
 interface EmailAutocompleteProps {
   value?: string
@@ -101,7 +102,10 @@ export function EmailAutocomplete({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Function to get email domain suggestions
+  // Memoize domains array to prevent recreation on every render
+  const memoizedDomains = useMemo(() => POPULAR_DOMAINS, [])
+
+  // Function to get email domain suggestions - throttled to reduce computation
   const getSuggestions = useCallback((text: string) => {
     const atIndex = text.lastIndexOf("@")
     if (atIndex === -1) return []
@@ -111,22 +115,28 @@ export function EmailAutocomplete({
 
     // If no domain characters typed yet, return top 3 suggestions
     if (domainPart === "") {
-      return POPULAR_DOMAINS.slice(0, 3).map(domain => `${localPart}@${domain}`)
+      return memoizedDomains.slice(0, 3).map(domain => `${localPart}@${domain}`)
     }
 
-    // Filter domains that start with what user typed
-    return POPULAR_DOMAINS
+    // Filter domains that start with what user typed - limit results for performance
+    return memoizedDomains
       .filter(domain => domain.startsWith(domainPart))
+      .slice(0, 8) // Limit to 8 suggestions max for performance
       .map(domain => `${localPart}@${domain}`)
-  }, [])
+  }, [memoizedDomains])
 
-  // Update suggestion when input value changes
-  useEffect(() => {
-    const suggestions = getSuggestions(value)
+  // Throttle input changes to reduce re-renders during rapid typing
+  const handleInputChange = useThrottle((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value)
+  }, 50) // Throttle to every 50ms
+
+  // Memoize suggestion update logic
+  const updateSuggestions = useCallback((currentValue: string) => {
+    const suggestions = getSuggestions(currentValue)
     const topSuggestion = suggestions[0] || ""
 
-    if (topSuggestion && topSuggestion !== value && topSuggestion.startsWith(value)) {
-      setSuggestion(topSuggestion.substring(value.length))
+    if (topSuggestion && topSuggestion !== currentValue && topSuggestion.startsWith(currentValue)) {
+      setSuggestion(topSuggestion.substring(currentValue.length))
       setShowSuggestion(true)
       suggestionRef.current = topSuggestion
     } else {
@@ -136,12 +146,12 @@ export function EmailAutocomplete({
     }
     // Reset dropdown selection when suggestions change
     setSelectedDropdownIndex(-1)
-  }, [value, getSuggestions])
+  }, [getSuggestions])
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value)
-  }
+  // Update suggestion when input value changes
+  useEffect(() => {
+    updateSuggestions(value)
+  }, [value, updateSuggestions])
 
   // Handle keyboard events
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -288,41 +298,44 @@ export function EmailAutocomplete({
         </div>
       )}
 
-      {/* Dropdown for multiple suggestions */}
-      {showSuggestion && getSuggestions(value).length > 1 && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-input rounded-md shadow-md">
-          <div className="py-1 max-h-40 overflow-auto">
-            {getSuggestions(value).slice(1, 5).map((suggestionEmail, index) => (
-              <button
-                key={index}
-                type="button"
-                className={`w-full px-4 py-3 text-left text-sm transition-colors flex items-center justify-between touch-manipulation min-h-[44px] ${
-                  selectedDropdownIndex === index
-                    ? 'bg-accent text-accent-foreground'
-                    : 'hover:bg-accent hover:text-accent-foreground active:bg-accent/80'
-                }`}
-                onClick={() => {
-                  onChange(suggestionEmail)
-                  setSuggestion("")
-                  setShowSuggestion(false)
-                  setSelectedDropdownIndex(-1)
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.classList.add('bg-accent/80')
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.classList.remove('bg-accent/80')
-                }}
-              >
-                <span className="select-none">{suggestionEmail}</span>
-                <kbd className="text-xs px-2 py-1 bg-muted rounded select-none">
-                  {index + 2}
-                </kbd>
-              </button>
-            ))}
+      {/* Memoized dropdown for multiple suggestions */}
+      {showSuggestion && (() => {
+        const suggestions = getSuggestions(value)
+        return suggestions.length > 1 ? (
+          <div key="dropdown" className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-input rounded-md shadow-md">
+            <div className="py-1 max-h-40 overflow-auto">
+              {suggestions.slice(1, 5).map((suggestionEmail, index) => (
+                <button
+                  key={`${suggestionEmail}-${index}`}
+                  type="button"
+                  className={`w-full px-4 py-3 text-left text-sm transition-colors flex items-center justify-between touch-manipulation min-h-[44px] ${
+                    selectedDropdownIndex === index
+                      ? 'bg-accent text-accent-foreground'
+                      : 'hover:bg-accent hover:text-accent-foreground active:bg-accent/80'
+                  }`}
+                  onClick={() => {
+                    onChange(suggestionEmail)
+                    setSuggestion("")
+                    setShowSuggestion(false)
+                    setSelectedDropdownIndex(-1)
+                  }}
+                  onTouchStart={(e) => {
+                    e.currentTarget.classList.add('bg-accent/80')
+                  }}
+                  onTouchEnd={(e) => {
+                    e.currentTarget.classList.remove('bg-accent/80')
+                  }}
+                >
+                  <span className="select-none">{suggestionEmail}</span>
+                  <kbd className="text-xs px-2 py-1 bg-muted rounded select-none">
+                    {index + 2}
+                  </kbd>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        ) : null
+      })()}
     </div>
   )
 }

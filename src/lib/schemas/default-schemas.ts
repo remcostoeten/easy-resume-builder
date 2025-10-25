@@ -106,7 +106,7 @@ export const summarySchema: SectionSchema = {
       id: "field_text",
       name: "text",
       label: "Summary",
-      type: "textarea",
+      type: "richtext",
       required: false,
       placeholder: "Write a brief professional summary...",
       order: 0,

@@ -1,7 +1,7 @@
 "use client"
 
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { SimpleRichTextEditor } from "@/components/ui/simple-rich-text-editor"
 import type { SummaryContent } from "@/lib/types/resume"
 
 interface SummaryEditorProps {
@@ -12,19 +12,34 @@ interface SummaryEditorProps {
 export function SummaryEditor({ content, onUpdate }: SummaryEditorProps) {
   const summaryContent = content as SummaryContent
 
+  const handleMarkdownChange = (markdown: string) => {
+    // Strip markdown for plain text fallback
+    const plainText = markdown
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '$1') // Remove italic
+      .replace(/^[\s]*•[\s]+/gm, '') // Remove bullet points
+      .replace(/^[\s]*\d+\.[\s]+/gm, '') // Remove numbered lists
+      .trim()
+
+    onUpdate({
+      ...summaryContent,
+      text: plainText,
+      richText: markdown // Store markdown in richText field
+    })
+  }
+
   return (
     <div className="space-y-2">
       <Label htmlFor="summary">Professional Summary</Label>
-      <Textarea
-        id="summary"
-        value={summaryContent.text}
-        onChange={(e) => onUpdate({ ...summaryContent, text: e.target.value })}
+      <SimpleRichTextEditor
+        value={summaryContent.richText || summaryContent.text}
+        onChange={handleMarkdownChange}
         placeholder="Write a brief professional summary..."
+        className="w-full"
         rows={6}
-        className="resize-none"
       />
       <p className="text-xs text-muted-foreground">
-        A concise overview of your professional background and key qualifications
+        Use **bold** for emphasis, *italic* for emphasis, and bullet points for lists. Ctrl+B for bold, Ctrl+I for italic.
       </p>
     </div>
   )

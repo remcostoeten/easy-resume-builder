@@ -114,7 +114,8 @@ export type HeaderContent = {
 }
 
 export type SummaryContent = {
-  text: string
+  text: string // Plain text fallback
+  richText?: string // Rich text with formatting (HTML/markdown)
 }
 
 export type ExperienceItem = {

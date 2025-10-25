@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { Mail, Phone, MapPin, Globe, Linkedin, Github, ZoomIn, ZoomOut, Download, Maximize2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Resume, ResumeSection, DateValue, FieldValue } from "@/lib/types/resume"
+import type { Resume, ResumeSection, DateValue, FieldValue, SummaryContent } from "@/lib/types/resume"
 import type { ResumeStyle } from "./style-panel"
 import { getSchemaById } from "@/lib/schemas/default-schemas"
 import { formatDateForDisplay } from "./flexible-date-picker"
+import { RichTextDisplay } from "@/components/ui/rich-text-display"
 
 interface ResumePreviewProps {
   resume: Resume
@@ -60,6 +61,30 @@ export function ResumePreview({ resume, showToolbar = true, style }: ResumePrevi
     }
   }
 
+  const getLayoutClass = () => {
+    if (!style) return "layout-single"
+    switch (style.layout) {
+      case "two-column":
+        return "layout-two-column"
+      case "modern":
+        return "layout-modern"
+      default:
+        return "layout-single"
+    }
+  }
+
+  const getColorSchemeClass = () => {
+    if (!style) return "color-scheme-default"
+    switch (style.colorScheme) {
+      case "minimal":
+        return "color-scheme-minimal"
+      case "professional":
+        return "color-scheme-professional"
+      default:
+        return "color-scheme-default"
+    }
+  }
+
   const fontSize = style?.fontSize || 12
 
   return (
@@ -104,13 +129,11 @@ export function ResumePreview({ resume, showToolbar = true, style }: ResumePrevi
           style={{ transform: `scale(${zoom / 100})` }}
         >
           <div
-            className={`mx-auto w-full max-w-[210mm] bg-white text-black shadow-2xl ring-1 ring-black/5 print:shadow-none print:ring-0 ${getFontFamily()} ${getSpacingClass()}`}
+            className={`mx-auto w-full max-w-[210mm] bg-white text-black shadow-2xl ring-1 ring-black/5 print:shadow-none print:ring-0 ${getFontFamily()} ${getSpacingClass()} ${getLayoutClass()} ${getColorSchemeClass()}`}
             id="resume-preview"
             style={{ fontSize: `${fontSize}px` }}
           >
-            {visibleSections.map((section) => (
-              <SectionPreview key={section.id} section={section} />
-            ))}
+            <ResumeContent sections={visibleSections} layout={style?.layout} />
           </div>
         </div>
       </div>
@@ -118,7 +141,52 @@ export function ResumePreview({ resume, showToolbar = true, style }: ResumePrevi
   )
 }
 
-function SectionPreview({ section }: { section: ResumeSection }) {
+function ResumeContent({ sections, layout }: { sections: ResumeSection[]; layout?: string }) {
+  const headerSection = sections.find(s => s.schemaId === 'header')
+  const otherSections = sections.filter(s => s.schemaId !== 'header')
+
+  // For single column and modern layouts, render all sections normally
+  if (layout !== 'two-column') {
+    return (
+      <>
+        {headerSection && <SectionPreview key={headerSection.id} section={headerSection} className="header-section" />}
+        {otherSections.map((section) => (
+          <SectionPreview key={section.id} section={section} />
+        ))}
+      </>
+    )
+  }
+
+  // For two-column layout, organize sections into left and right columns
+  const leftColumnSections = otherSections.filter(s =>
+    ['skills', 'languages', 'interests', 'projects'].some(keyword =>
+      s.title.toLowerCase().includes(keyword)
+    )
+  )
+  const rightColumnSections = otherSections.filter(s =>
+    !leftColumnSections.includes(s)
+  )
+
+  return (
+    <>
+      {headerSection && <SectionPreview key={headerSection.id} section={headerSection} className="header-section" />}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="left-column flex-1">
+          {leftColumnSections.map((section) => (
+            <SectionPreview key={section.id} section={section} />
+          ))}
+        </div>
+        <div className="right-column flex-1">
+          {rightColumnSections.map((section) => (
+            <SectionPreview key={section.id} section={section} />
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+function SectionPreview({ section, className }: { section: ResumeSection; className?: string }) {
   const schema = getSchemaById(section.schemaId)
   if (!schema) return null
 
@@ -209,14 +277,27 @@ function HeaderPreview({ section }: { section: ResumeSection }) {
 
 function SummaryPreview({ section }: { section: ResumeSection }) {
   const { fieldValues } = section.content
-  const text = fieldValues.text as string
 
-  if (!text) return null
+  // Create SummaryContent object from field values
+  const summaryContent: SummaryContent = {
+    text: fieldValues.text as string || "",
+    richText: fieldValues.richText as string || fieldValues.text as string || ""
+  }
+
+  if (!summaryContent.text && !summaryContent.richText) return null
 
   return (
     <div className="mb-5">
       <h2 className="mb-2 border-b border-gray-300 text-lg font-bold uppercase tracking-wide">{section.title}</h2>
-      <p className="text-sm leading-relaxed text-gray-800">{text}</p>
+      <div
+        className="text-sm leading-relaxed text-gray-800"
+        data-markdown={summaryContent.richText || summaryContent.text}
+      >
+        <RichTextDisplay
+          content={summaryContent}
+          className=""
+        />
+      </div>
     </div>
   )
 }

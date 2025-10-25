@@ -101,6 +101,8 @@ export function UrlAutocomplete({
   const inputRef = useRef<HTMLInputElement>(null)
   const isPastingRef = useRef(false)
   const previousValueRef = useRef("")
+  const [displayValue, setDisplayValue] = useState("") // What user sees in input
+  const [isUpdating, setIsUpdating] = useState(false)
 
   // Detect URL type based on field name
   const detectUrlType = useCallback((fieldName?: string): string => {
@@ -118,21 +120,63 @@ export function UrlAutocomplete({
     setPattern(URL_PATTERNS[detectedType])
   }, [fieldName, detectUrlType])
 
-  // Smart URL parsing - extracts username from pasted URLs
+  // Extract username from full URL for display
+  const extractUsername = useCallback((url: string, currentPattern: UrlPattern): string => {
+    if (!url) return ""
+
+    if (currentPattern.type === 'general') {
+      return url
+    }
+
+    // For LinkedIn/GitHub, extract just the username
+    const patterns = currentPattern.type === 'linkedin'
+      ? [
+          /^https?:\/\/(?:www\.)?linkedin\.com\/in\/([^\/\?]+)/,
+          /^linkedin\.com\/in\/([^\/\?]+)/,
+          /^https?:\/\/(?:www\.)?linkedin\.com\/([^\/\?]+)/,
+          /^linkedin\.com\/([^\/\?]+)/
+        ]
+      : [
+          /^https?:\/\/(?:www\.)?github\.com\/([^\/\?]+)/,
+          /^github\.com\/([^\/\?]+)/
+        ]
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match && match[1]) {
+        return match[1].replace(/\/$/, '').trim()
+      }
+    }
+
+    // If no pattern matches, return as-is (might already be username)
+    return url
+  }, [])
+
+  // Create full URL from username for storage
+  const createFullUrl = useCallback((username: string, currentPattern: UrlPattern): string => {
+    if (!username) return ""
+
+    if (currentPattern.type === 'general') {
+      return username.startsWith('http') ? username : `https://${username}`
+    }
+
+    return currentPattern.baseUrl + username.replace(/\/$/, '').trim()
+  }, [])
+
+  // Sync display value when external value changes
+  useEffect(() => {
+    if (!isUpdating) {
+      const username = extractUsername(value, pattern)
+      setDisplayValue(username)
+    }
+  }, [value, pattern, extractUsername, isUpdating])
+
+  // Smart URL parsing - extracts username from pasted URLs for display
   const parseUrl = useCallback((input: string, currentPattern: UrlPattern): string => {
     const trimmed = input.trim()
 
     // If it's empty, return empty
     if (!trimmed) return ""
-
-    // Check if it's already a full URL that matches our pattern
-    if (trimmed.startsWith('http')) {
-      for (const validationPattern of currentPattern.validation.patterns) {
-        if (validationPattern.test(trimmed)) {
-          return trimmed
-        }
-      }
-    }
 
     // Try to extract username from various URL formats
     const urlPatterns = currentPattern.type === 'linkedin'
@@ -155,60 +199,31 @@ export function UrlAutocomplete({
           /^https?:\/\/(?:www\.)?github\.com\/([^\/\?]+)\/?.*$/,
           /^github\.com\/([^\/\?]+)\/?.*$/
         ]
-      : [
-          // General URL patterns
-          /^https?:\/\/(.+)/,
-          /^(https?:\/\/)?(.+)/
-      ]
+      : []
 
     for (const urlPattern of urlPatterns) {
       const match = trimmed.match(urlPattern)
       if (match) {
-        const username = match[1] || match[2]
+        const username = match[1]
         if (username && username.trim()) {
-          // Clean up the username
-          const cleanUsername = username.replace(/\/$/, '').trim()
-
-          if (currentPattern.type === 'general') {
-            // For general URLs, reconstruct the full URL
-            return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
-          } else {
-            // For specific platforms, construct with base URL
-            return currentPattern.baseUrl + cleanUsername
-          }
+          // For LinkedIn/GitHub, ALWAYS return just the username for display
+          return username.replace(/\/$/, '').trim()
         }
       }
     }
 
-    // If no pattern matches, handle as username or general URL
-    if (currentPattern.type === 'general') {
-      return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
-    } else {
-      // For LinkedIn/GitHub, if it's just a username, add base URL
-      if (!trimmed.includes('/') && !trimmed.startsWith('http')) {
-        return currentPattern.baseUrl + trimmed
-      }
+    // If no pattern matches and it's a specific platform, return as-is (might already be username)
+    if (currentPattern.type !== 'general') {
+      return trimmed
     }
 
-    return trimmed
+    // For general URLs, return the full URL
+    return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
   }, [])
 
-  // Smart completion - what to show as suggestion
+  // Smart completion - what to show as suggestion (now simplified since we only show usernames)
   const getCompletion = useCallback((input: string, currentPattern: UrlPattern): string => {
-    const trimmed = input.trim()
-
-    if (currentPattern.type === 'general') {
-      if (trimmed === 'https://') return ''
-      if (!trimmed.startsWith('http')) return 'https://'
-      return ''
-    }
-
-    // For LinkedIn/GitHub
-    if (trimmed === currentPattern.baseUrl) return ''
-    if (!trimmed.startsWith('http') && !trimmed.includes('/')) {
-      return currentPattern.baseUrl
-    }
-
+    // No more suggestions since we only show usernames for LinkedIn/GitHub
     return ''
   }, [])
 
@@ -220,8 +235,8 @@ export function UrlAutocomplete({
       return
     }
 
-    const completion = getCompletion(value, pattern)
-    if (completion && completion !== value) {
+    const completion = getCompletion(displayValue, pattern)
+    if (completion && completion !== displayValue) {
       setSuggestion(completion)
       setShowSuggestion(true)
     } else {
@@ -230,23 +245,28 @@ export function UrlAutocomplete({
     }
 
     // Show help for empty inputs
-    setShowHelp(!value.trim())
-  }, [value, pattern, getCompletion])
+    setShowHelp(!displayValue.trim())
+  }, [displayValue, pattern, getCompletion])
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
-    const parsedValue = parseUrl(newValue, pattern)
+    setDisplayValue(newValue)
 
     if (isPastingRef.current) {
-      // During paste, use the parsed value immediately
-      onChange(parsedValue)
-      previousValueRef.current = parsedValue
+      // During paste, parse and store full URL
+      const parsedUsername = parseUrl(newValue, pattern)
+      const fullUrl = createFullUrl(parsedUsername, pattern)
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
       isPastingRef.current = false
     } else {
-      // During typing, show suggestion
-      onChange(newValue)
-      previousValueRef.current = newValue
+      // During typing, update display value and create full URL
+      const fullUrl = createFullUrl(newValue, pattern)
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
     }
   }
 
@@ -257,9 +277,13 @@ export function UrlAutocomplete({
 
     // Parse the pasted URL after a brief delay to allow the input value to update
     setTimeout(() => {
-      const parsedValue = parseUrl(pastedText, pattern)
-      if (parsedValue && parsedValue !== pastedText) {
-        onChange(parsedValue)
+      const parsedUsername = parseUrl(pastedText, pattern)
+      if (parsedUsername && parsedUsername !== pastedText) {
+        setDisplayValue(parsedUsername)
+        const fullUrl = createFullUrl(parsedUsername, pattern)
+        setIsUpdating(true)
+        onChange(fullUrl)
+        setIsUpdating(false)
       }
       isPastingRef.current = false
     }, 10)
@@ -270,15 +294,23 @@ export function UrlAutocomplete({
     if (e.key === "Tab" && showSuggestion && suggestion) {
       e.preventDefault()
       // Apply the suggestion
-      const newValue = value + suggestion
-      onChange(newValue)
+      const newValue = displayValue + suggestion
+      setDisplayValue(newValue)
+      const fullUrl = createFullUrl(newValue, pattern)
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
       setSuggestion("")
       setShowSuggestion(false)
     } else if (e.key === "ArrowRight" && showSuggestion && suggestion) {
       e.preventDefault()
       // Apply the suggestion
-      const newValue = value + suggestion
-      onChange(newValue)
+      const newValue = displayValue + suggestion
+      setDisplayValue(newValue)
+      const fullUrl = createFullUrl(newValue, pattern)
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
       setSuggestion("")
       setShowSuggestion(false)
     } else if (e.key === "Escape") {
@@ -292,10 +324,14 @@ export function UrlAutocomplete({
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     // Parse and clean up the input on blur
     setTimeout(() => {
-      const finalValue = parseUrl(e.target.value, pattern)
-      if (finalValue !== e.target.value) {
-        onChange(finalValue)
+      const finalUsername = parseUrl(e.target.value, pattern)
+      const fullUrl = createFullUrl(finalUsername, pattern)
+      if (finalUsername !== e.target.value) {
+        setDisplayValue(finalUsername)
       }
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
       setSuggestion("")
       setShowSuggestion(false)
       setShowHelp(false)
@@ -309,8 +345,12 @@ export function UrlAutocomplete({
   // Handle click on suggestion
   const handleSuggestionClick = () => {
     if (suggestion) {
-      const newValue = value + suggestion
-      onChange(newValue)
+      const newValue = displayValue + suggestion
+      setDisplayValue(newValue)
+      const fullUrl = createFullUrl(newValue, pattern)
+      setIsUpdating(true)
+      onChange(fullUrl)
+      setIsUpdating(false)
       setSuggestion("")
       setShowSuggestion(false)
       inputRef.current?.focus()
@@ -319,13 +359,8 @@ export function UrlAutocomplete({
 
   // Handle focus
   const handleFocus = () => {
-    if (!value.trim()) {
-      // Pre-fill with base URL on focus
-      if (pattern.type !== 'general') {
-        onChange(pattern.baseUrl)
-        setShowHelp(false)
-      }
-    }
+    // No more pre-filling with base URLs since we only show usernames
+    setShowHelp(true)
   }
 
   return (
@@ -333,7 +368,7 @@ export function UrlAutocomplete({
       <Input
         ref={inputRef}
         type="url"
-        value={value}
+        value={displayValue}
         onChange={handleInputChange}
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
@@ -382,14 +417,15 @@ export function UrlAutocomplete({
       )}
 
       {/* Help text overlay */}
-      {showHelp && !value && pattern.type !== 'general' && (
+      {showHelp && !displayValue && pattern.type !== 'general' && (
         <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-input rounded-md shadow-md p-3">
           <div className="flex items-center gap-2 text-sm">
             <span className="text-lg">{pattern.icon}</span>
             <div>
-              <div className="font-medium">{pattern.name} URL</div>
+              <div className="font-medium">{pattern.name} Username</div>
               <div className="text-xs text-muted-foreground">
-                Example: {pattern.example} → {pattern.baseUrl}{pattern.example}
+                Enter just your username (e.g., {pattern.example})<br/>
+                Smart paste: Paste full URLs like {pattern.baseUrl}{pattern.example}
               </div>
             </div>
           </div>

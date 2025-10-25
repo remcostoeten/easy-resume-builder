@@ -1,4 +1,5 @@
 import jsPDF from "jspdf"
+import { markdownToPlainText } from "./markdown"
 
 export async function exportToPDF(fileName = "resume") {
   const element = document.getElementById("resume-preview")
@@ -155,7 +156,10 @@ export async function exportToPDF(fileName = "resume") {
         const summaryText = section.querySelector('p.leading-relaxed')
         if (summaryText) {
           checkPageBreak(15)
-          const lines = pdf.splitTextToSize(summaryText.textContent || '', contentWidth)
+          // Get the markdown content from data attribute or use textContent as fallback
+          const markdownContent = summaryText.getAttribute('data-markdown') || summaryText.textContent || ''
+          const processedText = markdownToPlainText(markdownContent)
+          const lines = pdf.splitTextToSize(processedText, contentWidth)
           lines.forEach((line: string, index: number) => {
             const lineHeight = addText(line, margin, yPosition, {
               fontSize: 10,

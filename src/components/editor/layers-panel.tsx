@@ -267,11 +267,20 @@ function LayerItem({
         "group relative flex items-center gap-2 rounded-lg border px-2 py-2 transition-all duration-200",
         isSelected
           ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
-          : "border-border bg-card hover:border-primary/30 hover:bg-accent/50",
+          : "border-border bg-card hover:border-primary/30 hover:bg-accent/50 cursor-pointer",
         isDragging && "opacity-50 shadow-lg",
         !section.visible && "opacity-60",
         "min-w-0 max-w-full",
       )}
+      onClick={(e) => {
+        // Don't select if clicking on interactive elements
+        if ((e.target as HTMLElement).closest('button')) {
+          return
+        }
+        if (editingSectionId !== section.id) {
+          onSelect()
+        }
+      }}
     >
       {hasEntries && (
         <button
@@ -295,6 +304,7 @@ function LayerItem({
         )}
         {...attributes}
         {...listeners}
+        onClick={(e) => e.stopPropagation()}
       >
         <GripVertical className="h-4 w-4" />
       </button>
@@ -308,11 +318,7 @@ function LayerItem({
         <Icon className="h-3.5 w-3.5" />
       </div>
 
-      <button type="button" onClick={(e) => {
-      if (editingSectionId !== section.id) {
-        onSelect()
-      }
-    }} className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left overflow-hidden">
         {editingSectionId === section.id ? (
           <Input
             value={editingTitle}
@@ -344,7 +350,7 @@ function LayerItem({
             {entryCount} {entryCount === 1 ? "item" : "items"}
           </span>
         )}
-      </button>
+      </div>
 
       <div className="flex shrink-0 items-center gap-1">
         <Button

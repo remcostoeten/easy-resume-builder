@@ -5,6 +5,7 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ErrorBoundary } from "@/components/error-boundary"
+import { Frame760 } from "@/components/sidebar"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -30,7 +31,12 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         <ErrorBoundary>
           <ThemeProvider>
-            {children}
+            <div className="flex h-screen">
+              <Frame760 />
+              <main className="flex-1 overflow-auto">
+                {children}
+              </main>
+            </div>
           </ThemeProvider>
         </ErrorBoundary>
         <Toaster />

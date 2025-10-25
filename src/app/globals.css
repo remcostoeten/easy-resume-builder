@@ -276,4 +276,147 @@
     #resume-preview .border-b { border-bottom: 1px solid black !important; }
     #resume-preview .border-gray-300 { border-color: #d1d5db !important; }
   }
+
+  /* Resume Layout Templates */
+  .layout-single {
+    /* Default single column layout - no special styles needed */
+  }
+
+  .layout-two-column {
+    @apply grid grid-cols-12 gap-6;
+  }
+
+  .layout-two-column .header-section {
+    @apply col-span-12;
+  }
+
+  .layout-two-column .left-column {
+    @apply col-span-4;
+  }
+
+  .layout-two-column .right-column {
+    @apply col-span-8;
+  }
+
+  .layout-modern {
+    /* Modern layout with enhanced styling */
+    @apply bg-gradient-to-br from-gray-50 to-white;
+  }
+
+  .layout-modern .mb-6 {
+    @apply mb-8;
+  }
+
+  .layout-modern h1 {
+    @apply text-4xl font-bold text-gray-900 mb-2;
+  }
+
+  .layout-modern h2 {
+    @apply text-xl font-bold text-gray-800 mb-3 pb-2 border-b-2 border-gray-200;
+  }
+
+  .layout-modern .border-b {
+    @apply border-gray-200;
+  }
+
+  /* Resume Color Schemes */
+  .color-scheme-default {
+    /* Default black and white scheme */
+    --resume-text: #000000;
+    --resume-heading: #000000;
+    --resume-subtle: #6b7280;
+    --resume-accent: #000000;
+    --resume-border: #d1d5db;
+    --resume-background: #ffffff;
+  }
+
+  .color-scheme-minimal {
+    /* Minimal grayscale scheme */
+    --resume-text: #374151;
+    --resume-heading: #111827;
+    --resume-subtle: #9ca3af;
+    --resume-accent: #6b7280;
+    --resume-border: #e5e7eb;
+    --resume-background: #ffffff;
+  }
+
+  .color-scheme-professional {
+    /* Professional blue scheme */
+    --resume-text: #374151;
+    --resume-heading: #1e3a8a;
+    --resume-subtle: #6b7280;
+    --resume-accent: #2563eb;
+    --resume-border: #cbd5e1;
+    --resume-background: #ffffff;
+  }
+
+  /* Apply color scheme variables to resume elements */
+  .color-scheme-default,
+  .color-scheme-minimal,
+  .color-scheme-professional {
+    color: var(--resume-text);
+    background-color: var(--resume-background);
+  }
+
+  .color-scheme-default h1,
+  .color-scheme-default h2,
+  .color-scheme-default h3,
+  .color-scheme-minimal h1,
+  .color-scheme-minimal h2,
+  .color-scheme-minimal h3,
+  .color-scheme-professional h1,
+  .color-scheme-professional h2,
+  .color-scheme-professional h3 {
+    color: var(--resume-heading);
+  }
+
+  .color-scheme-default .text-gray-600,
+  .color-scheme-default .text-gray-700,
+  .color-scheme-default .text-gray-800,
+  .color-scheme-minimal .text-gray-600,
+  .color-scheme-minimal .text-gray-700,
+  .color-scheme-minimal .text-gray-800,
+  .color-scheme-professional .text-gray-600,
+  .color-scheme-professional .text-gray-700,
+  .color-scheme-professional .text-gray-800 {
+    color: var(--resume-subtle);
+  }
+
+  .color-scheme-default .border-b,
+  .color-scheme-default .border-b-2,
+  .color-scheme-default .border-gray-300,
+  .color-scheme-minimal .border-b,
+  .color-scheme-minimal .border-b-2,
+  .color-scheme-minimal .border-gray-300,
+  .color-scheme-professional .border-b,
+  .color-scheme-professional .border-b-2,
+  .color-scheme-professional .border-gray-300 {
+    border-color: var(--resume-border) !important;
+  }
+
+  .color-scheme-professional .text-blue-600 {
+    color: var(--resume-accent) !important;
+  }
+
+  /* For two-column layout, we need to wrap sections appropriately */
+  .layout-two-column .mb-5 {
+    @apply mb-4;
+  }
+
+  .layout-two-column .mb-6 {
+    @apply mb-4;
+  }
+
+  /* For modern layout, enhance spacing and typography */
+  .layout-modern .space-y-4 > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .layout-modern .space-y-2 > * + * {
+    margin-top: 0.75rem;
+  }
+
+  .layout-modern .space-y-1 > * + * {
+    margin-top: 0.5rem;
+  }
 }
