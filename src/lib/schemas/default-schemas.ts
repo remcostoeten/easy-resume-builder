@@ -1,4 +1,4 @@
-import type { SectionSchema } from "@/lib/types/resume"
+import type { SectionSchema, SectionContent, FieldValue, EntryData } from "@/lib/types/resume"
 
 // Header schema
 export const headerSchema: SectionSchema = {
@@ -429,15 +429,15 @@ export function getSchemaById(schemaId: string): SectionSchema | undefined {
 }
 
 // Helper to create empty section content from schema
-export function createEmptySectionContent(schema: SectionSchema): any {
-  const fieldValues: Record<string, any> = {}
+export function createEmptySectionContent(schema: SectionSchema): SectionContent {
+  const fieldValues: Record<string, FieldValue> = {}
 
   // Initialize direct fields with default values
   schema.fields.forEach((field) => {
-    fieldValues[field.name] = field.defaultValue ?? null
+    fieldValues[field.name] = (field.defaultValue as FieldValue) ?? null
   })
 
-  const groupEntries: Record<string, any[]> = {}
+  const groupEntries: Record<string, EntryData[]> = {}
 
   // Initialize repeatable groups as empty arrays
   schema.repeatableGroups.forEach((group) => {

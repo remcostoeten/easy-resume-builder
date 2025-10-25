@@ -41,7 +41,6 @@ class PerformanceOptimizer {
               this.recordMetric('navigation', {
                 componentLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart,
                 renderTime: navEntry.domContentLoadedEventEnd - navEntry.domContentLoadedEventStart,
-                timestamp: Date.now()
               })
             }
           }
@@ -56,7 +55,7 @@ class PerformanceOptimizer {
               const resourceEntry = entry as PerformanceResourceTiming
               this.recordMetric('resource', {
                 componentLoadTime: resourceEntry.responseEnd - resourceEntry.requestStart,
-                timestamp: Date.now()
+                renderTime: resourceEntry.responseEnd - resourceEntry.requestStart,
               })
             }
           }

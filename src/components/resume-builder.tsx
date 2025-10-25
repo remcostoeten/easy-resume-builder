@@ -32,6 +32,7 @@ export function ResumeBuilder({ initialResume, autoFocusFirstField: initialAutoF
     colorScheme: "default",
   })
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [autoFocusFirstField, setAutoFocusFirstField] = useState(false)
 
   useEffect(() => {
@@ -51,12 +52,18 @@ export function ResumeBuilder({ initialResume, autoFocusFirstField: initialAutoF
   useEffect(() => {
     if (currentResume) {
       setHasUnsavedChanges(true)
+      setIsSaving(true)
+      
       const timeoutId = setTimeout(() => {
         saveDraft(currentResume)
         setHasUnsavedChanges(false)
+        setIsSaving(false)
       }, 1000)
 
-      return () => clearTimeout(timeoutId)
+      return () => {
+        clearTimeout(timeoutId)
+        setIsSaving(false)
+      }
     }
   }, [currentResume, saveDraft])
 
@@ -95,10 +102,12 @@ export function ResumeBuilder({ initialResume, autoFocusFirstField: initialAutoF
 
   const handleSave = (name: string) => {
     if (currentResume) {
+      setIsSaving(true)
       const success = saveToAccount(currentResume, name)
       if (success) {
         setHasUnsavedChanges(false)
       }
+      setIsSaving(false)
     }
   }
 
@@ -167,8 +176,10 @@ export function ResumeBuilder({ initialResume, autoFocusFirstField: initialAutoF
   useKeyboardShortcuts({
     onSave: () => {
       if (currentResume) {
+        setIsSaving(true)
         saveDraft(currentResume)
         setHasUnsavedChanges(false)
+        setIsSaving(false)
         toast.success("Resume saved")
       }
     },
@@ -214,7 +225,7 @@ export function ResumeBuilder({ initialResume, autoFocusFirstField: initialAutoF
           autoFocusFirstField={autoFocusFirstField}
         />
       </EditorSuspenseWrapper>
-      {hasUnsavedChanges && (
+      {isSaving && (
         <div className="fixed bottom-4 right-4 rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground shadow-lg">
           Saving...
         </div>

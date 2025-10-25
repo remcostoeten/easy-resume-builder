@@ -13,6 +13,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_header",
+      type: "header",
       title: "Header",
       order: 0,
       visible: true,
@@ -34,6 +35,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_summary",
+      type: "summary",
       title: "Professional Summary",
       order: 1,
       visible: true,
@@ -48,6 +50,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_experience",
+      type: "experience",
       title: "Work Experience",
       order: 2,
       visible: true,
@@ -116,6 +119,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_education",
+      type: "education",
       title: "Education",
       order: 3,
       visible: true,
@@ -145,6 +149,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_skills",
+      type: "skills",
       title: "Skills",
       order: 4,
       visible: true,
@@ -188,6 +193,7 @@ function createSoftwareEngineerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_projects",
+      type: "projects",
       title: "Projects",
       order: 5,
       visible: true,
@@ -237,6 +243,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_header",
+      type: "header",
       title: "Header",
       order: 0,
       visible: true,
@@ -258,6 +265,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_summary",
+      type: "summary",
       title: "Professional Summary",
       order: 1,
       visible: true,
@@ -272,6 +280,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_experience",
+      type: "experience",
       title: "Work Experience",
       order: 2,
       visible: true,
@@ -341,6 +350,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_education",
+      type: "education",
       title: "Education",
       order: 3,
       visible: true,
@@ -370,6 +380,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_skills",
+      type: "skills",
       title: "Skills",
       order: 4,
       visible: true,
@@ -413,6 +424,7 @@ function createMarketingManagerResume(): Resume {
     {
       id: crypto.randomUUID(),
       schemaId: "schema_projects",
+      type: "projects",
       title: "Certifications & Projects",
       order: 5,
       visible: true,

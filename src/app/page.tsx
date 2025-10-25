@@ -26,6 +26,14 @@ import { AnimatedLogo } from "@/components/ui/animated-logo"
 const SAVED_RESUMES_KEY = "saved-resumes"
 const DRAFT_KEY = "resume-draft"
 
+interface ParsedResume {
+  [key: string]: unknown
+  data?: {
+    sections?: unknown[]
+    [key: string]: unknown
+  }
+}
+
 export default function LibraryPage() {
   const router = useRouter()
   const [savedResumes, setSavedResumes] = useState<SavedResume[]>([])
@@ -44,11 +52,11 @@ export default function LibraryPage() {
         if (savedData) {
           const parsedData = JSON.parse(savedData)
           // Ensure all resume data has properly initialized sections arrays
-          const validatedData = parsedData.map((item: any) => ({
+          const validatedData = parsedData.map((item: ParsedResume) => ({
             ...item,
             data: {
               ...item.data,
-              sections: item.data.sections || []
+              sections: item.data?.sections || []
             }
           }))
           setSavedResumes(validatedData)

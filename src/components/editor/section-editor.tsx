@@ -157,7 +157,7 @@ export function SectionEditor({
     }
 
     group.fields.forEach((field) => {
-      newEntry.values[field.name] = field.defaultValue ?? null
+      newEntry.values[field.name] = (field.defaultValue as FieldValue) ?? null
     })
 
     const currentEntries = section.content.groupEntries[groupName] || []

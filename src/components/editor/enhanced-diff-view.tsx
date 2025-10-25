@@ -53,7 +53,7 @@ export function EnhancedDiffView({
               {!isAccepted && !isRejected && (
                 <>
                   <Button
-                    size="xs"
+                    size="sm"
                     variant="ghost"
                     onClick={() => onToggleChange(changeId, true)}
                     className="h-6 w-6 p-0 bg-green-500/20 hover:bg-green-500/30 text-green-700"
@@ -61,7 +61,7 @@ export function EnhancedDiffView({
                     <Plus className="h-3 w-3" />
                   </Button>
                   <Button
-                    size="xs"
+                    size="sm"
                     variant="ghost"
                     onClick={() => onToggleChange(changeId, false)}
                     className="h-6 w-6 p-0 bg-red-500/20 hover:bg-red-500/30 text-red-700"
@@ -72,7 +72,7 @@ export function EnhancedDiffView({
               )}
               {isAccepted && (
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="ghost"
                   onClick={() => onToggleChange(changeId, false)}
                   className="h-6 w-6 p-0 bg-green-500/20 hover:bg-green-500/30 text-green-700"
@@ -82,7 +82,7 @@ export function EnhancedDiffView({
               )}
               {isRejected && (
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="ghost"
                   onClick={() => onToggleChange(changeId, true)}
                   className="h-6 w-6 p-0 bg-red-500/20 hover:bg-red-500/30 text-red-700"
@@ -119,7 +119,7 @@ export function EnhancedDiffView({
               {!isAccepted && !isRejected && (
                 <>
                   <Button
-                    size="xs"
+                    size="sm"
                     variant="ghost"
                     onClick={() => onToggleChange(changeId, false)}
                     className="h-6 w-6 p-0 bg-red-500/20 hover:bg-red-500/30 text-red-700"
@@ -127,7 +127,7 @@ export function EnhancedDiffView({
                     <Minus className="h-3 w-3" />
                   </Button>
                   <Button
-                    size="xs"
+                    size="sm"
                     variant="ghost"
                     onClick={() => onToggleChange(changeId, true)}
                     className="h-6 w-6 p-0 bg-green-500/20 hover:bg-green-500/30 text-green-700"
@@ -138,7 +138,7 @@ export function EnhancedDiffView({
               )}
               {isAccepted && (
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="ghost"
                   onClick={() => onToggleChange(changeId, false)}
                   className="h-6 w-6 p-0 bg-green-500/20 hover:bg-green-500/30 text-green-700"
@@ -148,7 +148,7 @@ export function EnhancedDiffView({
               )}
               {isRejected && (
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="ghost"
                   onClick={() => onToggleChange(changeId, true)}
                   className="h-6 w-6 p-0 bg-red-500/20 hover:bg-red-500/30 text-red-700"

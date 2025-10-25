@@ -236,7 +236,6 @@ export class PerformanceValidator {
       performanceOptimizer.recordMetric('test-component', {
         componentLoadTime: 100,
         renderTime: 50,
-        timestamp: Date.now()
       })
 
       const metrics = performanceOptimizer.getMetrics('test-component')

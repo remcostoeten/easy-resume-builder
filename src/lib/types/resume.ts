@@ -26,7 +26,7 @@ export type FieldDefinition = {
   required: boolean
   placeholder?: string
   helpText?: string
-  defaultValue?: any
+  defaultValue?: unknown
   order: number
   dateOptions?: {
     allowPrecisionToggle?: boolean 

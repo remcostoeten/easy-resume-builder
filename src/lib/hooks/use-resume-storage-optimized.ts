@@ -8,6 +8,14 @@ import { useDebounce } from "./use-performance-optimizations"
 const DRAFT_KEY = "resume-draft"
 const SAVED_RESUMES_KEY = "saved-resumes"
 
+interface ParsedSavedResume {
+  [key: string]: unknown
+  data?: {
+    sections?: unknown[]
+    [key: string]: unknown
+  }
+}
+
 export function useResumeStorageOptimized() {
   const [draft, setDraft] = useState<Resume | null>(null)
   const [savedResumes, setSavedResumes] = useState<SavedResume[]>([])
@@ -22,27 +30,27 @@ export function useResumeStorageOptimized() {
     try {
       const draftData = localStorage.getItem(DRAFT_KEY)
       if (draftData) {
-        const parsedDraft = JSON.parse(draftData)
+        const parsedDraft = JSON.parse(draftData) as ParsedSavedResume
         setDraft({
           ...parsedDraft,
-          sections: parsedDraft.sections || []
-        })
+          sections: (parsedDraft as Resume).sections || []
+        } as Resume)
         setPendingDraft({
           ...parsedDraft,
-          sections: parsedDraft.sections || []
-        })
+          sections: (parsedDraft as Resume).sections || []
+        } as Resume)
       }
 
       const savedData = localStorage.getItem(SAVED_RESUMES_KEY)
       if (savedData) {
-        const parsedData = JSON.parse(savedData)
-        const validatedData = parsedData.map((item: any) => ({
+        const parsedData = JSON.parse(savedData) as ParsedSavedResume[]
+        const validatedData = parsedData.map((item: ParsedSavedResume) => ({
           ...item,
           data: {
             ...item.data,
-            sections: item.data.sections || []
+            sections: (item.data?.sections as unknown[]) || []
           }
-        }))
+        } as SavedResume))
         setSavedResumes(validatedData)
       }
     } catch (error) {

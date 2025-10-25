@@ -231,11 +231,9 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <PhoneAutocomplete
-            id="phone"
             value={headerContent.phone || ""}
             onChange={(value) => handleChange('phone', value)}
             placeholder="+1 (555) 123-4567"
-            autoComplete="tel"
           />
         </div>
       </div>
@@ -265,23 +263,21 @@ export function HeaderEditor({ content, onUpdate }: HeaderEditorProps) {
         <div className="space-y-2">
           <Label htmlFor="linkedin">LinkedIn</Label>
           <SegmentedUrlInput
-            id="linkedin"
             value={headerContent.linkedin || ""}
             onChange={handleLinkedInChange}
             placeholder="johndoe"
-            autoComplete="url"
             data-field-name="linkedin"
+            urlType="linkedin"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="github">GitHub</Label>
           <SegmentedUrlInput
-            id="github"
             value={headerContent.github || ""}
             onChange={handleGithubChange}
             placeholder="johndoe"
-            autoComplete="url"
             data-field-name="github"
+            urlType="github"
           />
         </div>
       </div>

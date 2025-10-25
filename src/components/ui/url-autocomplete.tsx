@@ -42,9 +42,9 @@ const URL_PATTERNS: Record<string, UrlPattern> = {
     example: "johndoe",
     validation: {
       patterns: [
-        /^https:\/\/www\.linkedin\.com\/in\/[\w-]+$/,
-        /^https:\/\/linkedin\.com\/in\/[\w-]+$/,
-        /^[\w-]+$/,
+        "^https://www\\.linkedin\\.com/in/[\\w-]+$",
+        "^https://linkedin\\.com/in/[\\w-]+$",
+        "^[\\w-]+$",
       ],
       message: "Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)"
     }
@@ -58,9 +58,9 @@ const URL_PATTERNS: Record<string, UrlPattern> = {
     example: "johndoe",
     validation: {
       patterns: [
-        /^https:\/\/www\.github\.com\/[\w-]+$/,
-        /^https:\/\/github\.com\/[\w-]+$/,
-        /^[\w-]+$/,
+        "^https://www\\.github\\.com/[\\w-]+$",
+        "^https://github\\.com/[\\w-]+$",
+        "^[\\w-]+$",
       ],
       message: "Please enter a valid GitHub URL (e.g., https://github.com/username)"
     }
@@ -74,7 +74,7 @@ const URL_PATTERNS: Record<string, UrlPattern> = {
     example: "www.example.com",
     validation: {
       patterns: [
-        /^https?:\/\/.+\..+/,
+        "^https?://.+\\..+",
       ],
       message: "Please enter a valid URL (e.g., https://example.com)"
     }

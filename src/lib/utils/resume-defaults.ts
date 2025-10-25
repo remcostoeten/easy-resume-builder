@@ -5,6 +5,7 @@ export function createDefaultResume(): Resume {
   const sections: ResumeSection[] = defaultSchemas.map((schema, index) => ({
     id: crypto.randomUUID(),
     schemaId: schema.id,
+    type: schema.name,
     title: schema.displayName,
     order: index,
     visible: true,

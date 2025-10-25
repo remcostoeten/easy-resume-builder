@@ -92,9 +92,6 @@ export function ChangelogView() {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         />
         <Dithering
-          colors={["#ffffff", "#f2f2f2", "#eaeaea"]}
-          intensity={0.18}
-          shape="simplex"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/30" />
